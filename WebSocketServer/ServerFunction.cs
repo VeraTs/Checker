@@ -9,19 +9,9 @@ namespace ServerAttempt3
         static internal String getFunction(String request)
         {
             String functionName = "";
-
-            functionName = request.Substring(5);
-            bool hasParams = false;
             try
             {
-                functionName = functionName.Substring(0, functionName.IndexOf(' '));
-                hasParams = functionName.IndexOf('?') >= 0 ? true : false;
-                if (hasParams)
-                {
-                    functionName = functionName.Substring(0, functionName.IndexOf('?'));
-                    functionName = functionName.Trim();
-                }
-                
+                functionName = getServiceName(request);
             }
             catch (Exception ex)
             {
@@ -30,24 +20,17 @@ namespace ServerAttempt3
                 functionName = "";
             }
 
-            if (!hasParams)
+            switch (functionName)
             {
-                functionName = "default";
-            }
-            else
-            {
-                switch (functionName)
-                {
-                    case "":
-                        functionName = "default";
-                        break;
-                    case null:
-                        functionName = "default";
-                        break;
-                    case "Greet":
-                        functionName = "greeter";
-                        break;
-                }
+                case null:
+                    functionName = "default";
+                    break;
+                case "":
+                    functionName = "default";
+                    break;
+                case "Greet":
+                    functionName = "greeter";
+                    break;
             }
 
             return functionName;
@@ -56,16 +39,45 @@ namespace ServerAttempt3
         static internal String greeter(String request)
         {
             String response = "";
+            bool isError = false;
+            Dictionary<String, String> paramsAndValues = extractParams(request);
 
-            String temp = request.Substring(request.IndexOf("?") + 1);
-            String param = temp.Substring(0, temp.IndexOf("="));
-            String name = temp.Substring(temp.IndexOf("=") + 1);
-            name = name.Substring(0, name.IndexOf(" "));
+            String param = "";
+            String name = "";
+            String resHeader;
+            String resBody;
 
-            String resHeader = "HTTP/1.1 200 Everything is Fine\n" +
+            if (paramsAndValues.Count > 0)
+            {
+                if (paramsAndValues.ContainsKey("Name"))
+                {
+                    param = "Name";
+                    name = paramsAndValues[param];
+                }
+                else
+                    isError = true;
+            }
+            else
+                isError = true;
+
+            if (!isError)
+            {
+                resHeader = "HTTP/1.1 " + System.Net.HttpStatusCode.OK + " Everything is Fine\n" +
         "Server: ServerAttempt2\n" +
         "Content-Type: text/plain\n\n";
-            String resBody = "Hello, your " + param + " must be " + name + "!";
+                resBody = "Hello, your " + param + " must be " + name + "!";
+            }
+            else
+            {
+                // error occured
+                
+                resHeader = "HTTP/1.1 " + System.Net.HttpStatusCode.Forbidden + " An error occured\n" +
+        "Server: ServerAttempt2\n" +
+        "Content-Type: text/plain\n\n";
+                resBody = "You must enter a parameter 'Name' for this service";
+            }
+
+            
             response = resHeader + resBody;
 
             return response;
@@ -77,10 +89,55 @@ namespace ServerAttempt3
             String resHeader = "HTTP/1.1 200 Everything is Fine\n" +
                     "Server: ServerAttempt2\n" +
                     "Content-Type: text/plain\n\n";
-            String resBody = "Some Plain Text" + time;
+            String resBody = "Some Plain Text - and here's the time: " + time;
             response = resHeader + resBody;
 
             return response;
+        }
+
+        static private Dictionary<String, String> extractParams(String request)
+        {
+            Dictionary<String, String> paramsAndValues = new Dictionary<string, string>();
+
+            if (hasParams(request))
+            {
+                String paramsOnly = request.Substring(request.IndexOf('?') + 1);
+                paramsOnly = paramsOnly.Substring(0, paramsOnly.IndexOf(' '));
+                string[] keyAndValues = paramsOnly.Split('&');
+                foreach(String kvp in keyAndValues)
+                {
+                    paramsAndValues.Add(kvp.Substring(0, kvp.IndexOf('=')),
+                        kvp.Substring(kvp.IndexOf('=') + 1));
+                }
+            }
+
+            return paramsAndValues;
+        }
+
+        static private bool hasParams(String request)
+        {
+            bool res = false;
+            String temp;
+            temp = request.Substring(request.IndexOf('/'));
+            temp = temp.Substring(0, temp.IndexOf(' '));
+            res = temp.IndexOf('?') >= 0 ? true : false;
+
+            return res;
+        }
+
+        static private String getServiceName(String request)
+        {
+            String name = "";
+            String temp = request.Substring(request.IndexOf('/'));
+            temp = temp.Substring(0, temp.IndexOf(' '));
+            if(temp.IndexOf('?') > 0)
+            {
+                name = temp.Substring(1, temp.IndexOf('?') - 1);
+            }
+
+
+            
+            return name;
         }
 
     }
