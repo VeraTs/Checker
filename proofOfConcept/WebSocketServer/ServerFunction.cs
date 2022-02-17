@@ -62,19 +62,18 @@ namespace ServerAttempt3
 
             if (!isError)
             {
-                resHeader = "HTTP/1.1 " + System.Net.HttpStatusCode.OK + " Everything is Fine\n" +
+                resHeader = "HTTP/1.1 200 Everything is Fine\n" +
         "Server: ServerAttempt2\n" +
         "Content-Type: text/plain\n\n";
-                resBody = "Hello, your " + param + " must be " + name + "!";
+                resBody = "Hello, your " + param + " must be " + name + "!\n" + resHeader;
             }
             else
             {
-                // error occured
-                
-                resHeader = "HTTP/1.1 " + System.Net.HttpStatusCode.Forbidden + " An error occured\n" +
+                // error occured   
+                resHeader = "HTTP/1.1 403 An error occured\n" +
         "Server: ServerAttempt2\n" +
         "Content-Type: text/plain\n\n";
-                resBody = "You must enter a parameter 'Name' for this service";
+                resBody = "You must enter a parameter 'Name' for this service\n" + resHeader;
             }
 
             
@@ -121,6 +120,8 @@ namespace ServerAttempt3
             temp = request.Substring(request.IndexOf('/'));
             temp = temp.Substring(0, temp.IndexOf(' '));
             res = temp.IndexOf('?') >= 0 ? true : false;
+            if (res)
+                res = res && temp.Substring(temp.IndexOf('?')+1).Length > 0;
 
             return res;
         }

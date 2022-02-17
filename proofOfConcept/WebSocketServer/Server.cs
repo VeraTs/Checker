@@ -24,7 +24,7 @@ namespace ServerAttempt3
         public Server()
         {
             Console.WriteLine("We will now be starting a TCP\\IP local server");
-            Console.WriteLine("At port " + 8085);
+            Console.WriteLine("At port " + serverPort);
         }
 
         public void TestLocalServerInDOTNET()
@@ -51,7 +51,7 @@ namespace ServerAttempt3
                 // denoting an endpoint
                 IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, serverPort);
                 httpServer.Bind(endpoint); // binding to server
-                httpServer.Listen(1);   // setting a max of 1 active connection, any more will be rejected
+                httpServer.Listen(3);   // setting a max of 1 active connection, any more will be rejected
                 startListening();   // start listening for requests
                 stop(); // stop - does not actually belong here, as in any other server has to live *outside* the thread
 
