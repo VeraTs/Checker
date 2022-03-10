@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             x:Class="CheckerUI.LoggedMainPage" Title="Options Menu" BackgroundColor="PowderBlue" >
+<ContentPage.BindingContext>
+    <local:LoggedMainPageViewModel/>
+</ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="MyKitchenButton"
+                    Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" 
+                    Text="My Kitchen " BackgroundColor="Thistle"  Font="Large" HorizontalOptions="Fill"
+                    VerticalOptions="Center" Command="{Binding MyKitchenCommand}"/>
+            <Button x:Name="UpdateKitchenButton" 
+                    Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" 
+                    Text="Update Kitchen" BackgroundColor="Thistle"  Font="Large" HorizontalOptions="Fill"
+                    VerticalOptions="Center" Command="{Binding UpdateKitchenCommand}" />
+            <Button x:Name="MangeIngButton" 
+                    Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" 
+                    Text="Mange Ingredients" BackgroundColor="Thistle"  Font="Large" HorizontalOptions="Fill"
+                    VerticalOptions="Center" Command="{Binding MangeKitchenCommand}"/>
+            <Button x:Name="ShowStatisticsButton" 
+                    Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" 
+                    Text="Show Statistics" BackgroundColor="Thistle"  Font="Large" HorizontalOptions="Fill"
+                    VerticalOptions="Center" Command="{Binding ShowStatisticsCommand}"/>
+            <Button x:Name="ExitKitchenButton" 
+                    Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="1" 
+                    Text="Exit Kitchen" BackgroundColor="Thistle"  Font="Large" HorizontalOptions="Fill"
+                    VerticalOptions="End"  Command="{Binding ReturnCommand}" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

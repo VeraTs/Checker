@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             x:Class="CheckerUI.SignUpPage" Title="Registration">
+  
+    <ContentPage.BindingContext>
+        <local:SignUpPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid BackgroundColor="PowderBlue">
+            <Grid.RowDefinitions>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+                <RowDefinition Height=".25*"/>
+               
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+                <Label Text ="Enter Your Details : "
+                       Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" FontSize="Title"/>
+                <Label Text="Nickname :"
+                       Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" FontSize="Title" VerticalOptions="EndAndExpand" TextColor="Black"/>
+                <Editor Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" Placeholder="example: Avi"
+                        BackgroundColor="AliceBlue"  VerticalOptions="EndAndExpand" MaxLength="20" />
+            <Label Text="Password :" 
+                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" FontSize="Title" VerticalOptions="EndAndExpand" TextColor="Black"/> 
+            <Editor Grid.Column="2" Grid.ColumnSpan="1" Grid.Row="2" Placeholder="*******"
+                    VerticalOptions="EndAndExpand" BackgroundColor="AliceBlue" MaxLength="20"/>
+                <Editor Grid.Column="3" Grid.ColumnSpan="1" Grid.Row="2" Placeholder="validate" 
+                        BackgroundColor="AliceBlue" VerticalOptions="EndAndExpand" />
+            <Label Text="Email :" 
+                   Grid.Column="0" Grid.Row="3"  FontSize="Title" VerticalOptions="EndAndExpand" TextColor="Black"/>
+            <Editor Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="3" Placeholder="****@gmail.com" 
+                        BackgroundColor="AliceBlue" VerticalOptions="EndAndExpand" MaxLength="20"/>
+            <Label Text="File loc :" 
+                   Grid.Column="0" Grid.Row="4"  FontSize="Title" VerticalOptions="EndAndExpand" TextColor="Black"/>
+                <Button x:Name="BrowseButton" 
+                        Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Grid.RowSpan="1" 
+                        Text="Browse" BackgroundColor="Thistle"  Font="Large" HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"/>
+                <Button x:Name="NewUserButton" 
+                        Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="2" 
+                        Text="Sign-Up" BackgroundColor="ForestGreen" Font="Large" 
+                        HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                <Button x:Name="DismissSignButton" 
+                        Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4"  
+                        Text="Dismiss" BackgroundColor="MistyRose"  Font="Large" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Command="{Binding ReturnCommand}" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

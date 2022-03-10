@@ -1,0 +1,3 @@
+Hot Stripe
+Cold Stripe
+Oven Stripe
