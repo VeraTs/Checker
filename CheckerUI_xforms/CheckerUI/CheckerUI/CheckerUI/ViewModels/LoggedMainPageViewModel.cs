@@ -23,30 +23,30 @@ namespace CheckerUI.ViewModels
             });
             MyKitchenCommand = new Command(async () =>
             {
-                var KitchenVM = new KitchenPageViewModel();
-                var KitchenPage = new KitchenPage();
-                KitchenPage.BindingContext = KitchenVM;
-                await Application.Current.MainPage.Navigation.PushAsync(KitchenPage);
+                var kitchenVm = new KitchenPageViewModel();
+                var kitchenPage = new KitchenPage();
+                kitchenPage.BindingContext = kitchenVm;
+                await Application.Current.MainPage.Navigation.PushAsync(kitchenPage);
             });
             UpdateKitchenCommand = new Command(async () =>
             {
-                var UpdateVM = new UpdateKitchenViewModel();
-                var UpdatePage = new UpdateKitchenPage();
-                UpdatePage.BindingContext = UpdateVM;
-                await Application.Current.MainPage.Navigation.PushAsync(UpdatePage);
+                var updateVm = new UpdateKitchenViewModel();
+                var updatePage = new UpdateKitchenPage();
+                updatePage.BindingContext = updateVm;
+                await Application.Current.MainPage.Navigation.PushAsync(updatePage);
             });
             MangeKitchenCommand = new Command(async () =>
             {
-                var mangeKitchenVM = new MangePageViewModel();
+                var mangeKitchenVm = new MangePageViewModel();
                 var mangeKitchenPage = new MangePage();
-               mangeKitchenPage.BindingContext = mangeKitchenVM;
+               mangeKitchenPage.BindingContext = mangeKitchenVm;
                 await Application.Current.MainPage.Navigation.PushAsync(mangeKitchenPage);
             });
             ShowStatisticsCommand = new Command(async () =>
             {
-                var statisticsVM = new ShowStatisticsPageViewModel();
+                var statisticsVm = new ShowStatisticsPageViewModel();
                 var statisticsPage = new ShowStatisticsPage();
-                statisticsPage.BindingContext = statisticsVM;
+                statisticsPage.BindingContext = statisticsVm;
                 await Application.Current.MainPage.Navigation.PushAsync(statisticsPage);
             });
             ReturnCommand = new Command(async () =>

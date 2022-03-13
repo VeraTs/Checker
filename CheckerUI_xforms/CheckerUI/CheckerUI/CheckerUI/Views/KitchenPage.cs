@@ -7,9 +7,9 @@ namespace CheckerUI.Views // dynamic ui
 {
     public class KitchenPage : ContentPage
     {
-        private Label text;
-        private Button saveButton;
-        private Button deleteButton;
+        private Label _text;
+        private Button _saveButton;
+        private Button _deleteButton;
         public KitchenPage()
         {
             this.Title = "Choose a Stripe ";
@@ -49,7 +49,7 @@ namespace CheckerUI.Views // dynamic ui
             };
         }
 
-        private string[] readStripes()
+        private string[] ReadStripes()
         {
             // read stripes file or let the user choose his stripes , by that sort the array
             string[] lines = new string[10];

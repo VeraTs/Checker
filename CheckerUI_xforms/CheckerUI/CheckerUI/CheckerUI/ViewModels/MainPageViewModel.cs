@@ -1,43 +1,66 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using CheckerUI.Views;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
 {
-    public class MainPageViewModel: INotifyPropertyChanged
+    public class MainPageViewModel: TriggerAction<ImageButton>,INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Command SaveCommand { get; }
-        public Command EraseCommand { get; }
+        public Command EnterCommand { get; }
+        public Command SignUpCommand { get; }
         
         public Command ExitCommand { get; }
         public ObservableCollection<string> AllNotes { get; set; } =  new ObservableCollection<string>();
-        string m_UserName;
-        private string m_Password;
+        string _mUserName;
+        private string _mPassword;
+
+        public string ShowIcon { get; set; }
+        public string HideIcon { get; set; }
+
+        bool _hidePassword = true;
         public string UserName
         {
-            get => m_UserName;
+            get => _mUserName;
             set
             {
-                m_UserName = value;
+                _mUserName = value;
                 var args = new PropertyChangedEventArgs(nameof(UserName));
                 PropertyChanged?.Invoke(this,args);
             }
         }
-
-        public string Password
+        public bool HidePassword
         {
-            get => m_Password;
             set
             {
-                m_Password = value;
+                if (_hidePassword != value)
+                {
+                    _hidePassword = value;
+
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HidePassword)));
+                }
+            }
+            get => _hidePassword;
+        }
+        public string Password
+        {
+            get => _mPassword;
+            set
+            {
+                _mPassword = value;
                 var args = new PropertyChangedEventArgs(nameof(Password));
                 PropertyChanged?.Invoke(this, args);
             }
         }
+        protected override void Invoke(ImageButton sender)
+        {
+            sender.Source = HidePassword ? ShowIcon : HideIcon;
+            HidePassword = !HidePassword;
+        }
         public MainPageViewModel()
         {
-            SaveCommand = new Command(async () =>
+            EnterCommand = new Command(async () =>
             {
                 AllNotes.Add(UserName);
                 AllNotes.Add(Password);
@@ -46,16 +69,16 @@ namespace CheckerUI.ViewModels
                 //Check if to last notes are good user name and password if so next page?
                 // else -Bad
 
-                var LoggedVM = new LoggedMainPageViewModel();
-                var LoggedPage = new LoggedMainPage();
-                LoggedPage.BindingContext = LoggedVM;
-                await Application.Current.MainPage.Navigation.PushAsync(LoggedPage);
+                var loggedVm = new LoggedMainPageViewModel();
+                var loggedPage = new LoggedMainPage();
+                loggedPage.BindingContext = loggedVm;
+                await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
             });
-            EraseCommand = new Command(async () =>
+            SignUpCommand = new Command(async () =>
             {
-                var signVM = new SignUpPageViewModel();
+                var signVm = new SignUpPageViewModel();
                 var signPage = new SignUpPage();
-                signPage.BindingContext = signVM;
+                signPage.BindingContext = signVm;
                 await Application.Current.MainPage.Navigation.PushAsync(signPage);
                 // await Application.Current.MainPage.Navigation.PushModalAsync(new NavigationPage(signPage));
             });

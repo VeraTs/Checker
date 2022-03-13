@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
 {
-    public class SignUpPageViewModel : INotifyPropertyChanged
+    public class SignUpPageViewModel : TriggerAction<ImageButton>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<string> UserDetails { get; set; } = new ObservableCollection<string>();
@@ -14,25 +14,25 @@ namespace CheckerUI.ViewModels
         public Command ReturnCommand { get; }
         
 
-        private string m_TempUserName;
-        private string m_TempPassword;
-        private string m_TempEmail;
+        private string _mTempUserName;
+        private string _mTempPassword;
+        private string _mTempEmail;
         public string TempUserName
         {
-            get => m_TempUserName;
+            get => _mTempUserName;
             set
             {
-                m_TempUserName = value;
+                _mTempUserName = value;
                 var args = new PropertyChangedEventArgs(nameof(TempUserName));
                 PropertyChanged?.Invoke(this, args);
             }
         }
         public string TempEmail
         {
-            get => m_TempEmail;
+            get => _mTempEmail;
             set
             {
-                m_TempEmail = value;
+                _mTempEmail = value;
                 var args = new PropertyChangedEventArgs(nameof(TempEmail));
                 PropertyChanged?.Invoke(this, args);
             }
@@ -40,15 +40,39 @@ namespace CheckerUI.ViewModels
 
         public string TempPassword
         {
-            get => m_TempPassword;
+            get => _mTempPassword;
             set
             {
-                m_TempPassword = value;
+                _mTempPassword = value;
                 var args = new PropertyChangedEventArgs(nameof(TempPassword));
                 PropertyChanged?.Invoke(this, args);
             }
         }
+        public string ShowIcon { get; set; }
+        public string HideIcon { get; set; }
 
+        bool _hidePassword = true;
+      
+        
+        public bool HidePassword
+        {
+            set
+            {
+                if (_hidePassword != value)
+                {
+                    _hidePassword = value;
+
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HidePassword)));
+                }
+            }
+            get => _hidePassword;
+        }
+       
+        protected override void Invoke(ImageButton sender)
+        {
+            sender.Source = HidePassword ? ShowIcon : HideIcon;
+            HidePassword = !HidePassword;
+        }
         public SignUpPageViewModel()
         {
             SignCommand = new Command(() =>

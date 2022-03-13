@@ -20,23 +20,23 @@ namespace CheckerUI.ViewModels
             });
             HotStripeCommand = new Command(async () =>
             {
-                var hotStripeVM = new HotStripePageViewModel();
+                var hotStripeVm = new HotStripePageViewModel();
                 var hotStripePage = new HotStripePage();
-                hotStripePage.BindingContext = hotStripeVM;
+                hotStripePage.BindingContext = hotStripeVm;
                 await Application.Current.MainPage.Navigation.PushAsync(hotStripePage);
             });
             ColdStripeCommand = new Command(async () =>
             {
-                var coldStripeVM = new ColdStripePageViewModel();
+                var coldStripeVm = new ColdStripePageViewModel();
                 var coldStripePage = new ColdStripePage();
-                coldStripePage.BindingContext = coldStripeVM;
+                coldStripePage.BindingContext = coldStripeVm;
                 await Application.Current.MainPage.Navigation.PushAsync(coldStripePage);
             });
             OvenStripeCommand = new Command(async () =>
             {
-                var ovenStripeVM = new OvenStripePageViewModel();
+                var ovenStripeVm = new OvenStripePageViewModel();
                 var ovenStripePage = new OvenStripePage();
-                ovenStripePage.BindingContext = ovenStripeVM;
+                ovenStripePage.BindingContext = ovenStripeVm;
                 await Application.Current.MainPage.Navigation.PushAsync(ovenStripePage);
             });
         }

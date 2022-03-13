@@ -7,8 +7,9 @@ namespace CheckerUI.Views
     {
         public HotStripePage()
         {
-            this.Title = "Hot Stripe ";
+            
             BindingContext = new HotStripePageViewModel();
+            this.Title = "Hot Stripe ";
             BackgroundColor = Color.PowderBlue;
          
 
