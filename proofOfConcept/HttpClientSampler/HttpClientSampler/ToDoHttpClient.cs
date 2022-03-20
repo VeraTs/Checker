@@ -14,43 +14,14 @@ namespace HttpClientSampler
             client = new HttpClient();
             client.BaseAddress = new Uri(url);
         }
+        
+        // returns the content of the response as a string
         public String SendRequest()
         {
             client.Timeout = TimeSpan.FromMinutes(5);
-            Task<HttpResponseMessage> response = client.GetAsync("");
-            response.Wait();
-            if(response != null)
-            {
-                var stream = response.Result.Content.ReadAsStream();
-                byte[] buffer = new byte[1024];
-                StringBuilder res = new StringBuilder();
-                int offset = 0;
-                bool read = true;
-                int bytesRead = 0;
-                while(read)
-                {
+            String res = await client.GetStringAsync();    // get the content of the response
 
-                    bytesRead = stream.Read(buffer, offset, buffer.Length);
-                    if(bytesRead > 0)
-                    {
-                        String temp = System.Text.Encoding.UTF8.GetString(buffer);
-                        res.Append(temp.Substring(0, bytesRead));
-                        offset += bytesRead;
-                    } else
-                    {
-                        read = false;
-                    }
-
-                    if(offset >= stream.Length)
-                    {
-                        read = false;
-                    }
-                }
-
-                return res.ToString();
-            }
-
-            return "";            
+            return res;            
         }
     }
 }
