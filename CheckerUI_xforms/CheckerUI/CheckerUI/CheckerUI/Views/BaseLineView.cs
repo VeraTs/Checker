@@ -1,15 +1,20 @@
-﻿using CheckerUI.ViewModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using CheckerUI.ViewModels;
 using Xamarin.Forms;
 
-namespace CheckerUI.Views
+namespace CheckerUI.Views // here to add the board 
 {
-    public class ColdStripePage : ContentPage
+    public class BaseLineView : ContentPage
     {
-        public ColdStripePage()
+        public BaseLineView(string m_Title)
         {
-            BindingContext = new ColdStripePageViewModel();
+            BindingContext = new BaseLineViewModel();
+            this.Title = m_Title;
             BackgroundColor = Color.PowderBlue;
-            this.Title = "Cold Stripe ";
+         
 
             Button returnButton = new Button()
             {
@@ -29,5 +34,4 @@ namespace CheckerUI.Views
             };
         }
     }
-    
 }

@@ -6,38 +6,35 @@ namespace CheckerUI.ViewModels
     public class KitchenPageViewModel 
     {
         public Command ReturnCommand { get; }
-        public Command HotStripeCommand { get; }
-        public Command ColdStripeCommand { get; }
-        public Command OvenStripeCommand { get; }
+        public Command HotLineCommand { get; }
+        public Command ColdLineCommand { get; }
+        public Command OvenLineCommand { get; }
         
         public KitchenPageViewModel()
         {
+            var baseLineVM = new BaseLineViewModel();
             
             ReturnCommand = new Command(async () =>
             {
-                
                 await Application.Current.MainPage.Navigation.PopAsync();
             });
-            HotStripeCommand = new Command(async () =>
+            HotLineCommand = new Command(async () =>
             {
-                var hotStripeVm = new HotStripePageViewModel();
-                var hotStripePage = new HotStripePage();
-                hotStripePage.BindingContext = hotStripeVm;
-                await Application.Current.MainPage.Navigation.PushAsync(hotStripePage);
+                var baseLinePage = new BaseLineView("Hot Line");
+                baseLinePage.BindingContext = baseLineVM;
+                await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
-            ColdStripeCommand = new Command(async () =>
+            ColdLineCommand = new Command(async () =>
             {
-                var coldStripeVm = new ColdStripePageViewModel();
-                var coldStripePage = new ColdStripePage();
-                coldStripePage.BindingContext = coldStripeVm;
-                await Application.Current.MainPage.Navigation.PushAsync(coldStripePage);
+                var baseLinePage = new BaseLineView("Cold Line");
+                baseLinePage.BindingContext = baseLineVM;
+                await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
-            OvenStripeCommand = new Command(async () =>
+            OvenLineCommand = new Command(async () =>
             {
-                var ovenStripeVm = new OvenStripePageViewModel();
-                var ovenStripePage = new OvenStripePage();
-                ovenStripePage.BindingContext = ovenStripeVm;
-                await Application.Current.MainPage.Navigation.PushAsync(ovenStripePage);
+                var baseLinePage = new BaseLineView("Oven Line");
+                baseLinePage.BindingContext = baseLineVM;
+                await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
         }
 
