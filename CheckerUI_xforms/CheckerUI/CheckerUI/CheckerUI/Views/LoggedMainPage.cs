@@ -15,14 +15,14 @@ namespace CheckerUI.Views
             this.Title = " Options Menu ";
             BackgroundColor = Color.PowderBlue;
 
-            Button enterKichenButton = new Button()
+            Button enterKitchenButton = new Button()
             {
                 Text = "Kitchen",
                 BackgroundColor = Color.DarkOrange,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(20)
             };
-            enterKichenButton.SetBinding(Button.CommandProperty, "MyKitchenCommand");
+            enterKitchenButton.SetBinding(Button.CommandProperty, "MyKitchenCommand");
 
             Button updateButton = new Button()
             {
@@ -66,7 +66,7 @@ namespace CheckerUI.Views
                 
                 Children =
                 {
-                    enterKichenButton,
+                    enterKitchenButton,
                     updateButton,
                     mangeIngButton,
                     showStatisticsButton,
