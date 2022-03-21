@@ -20,20 +20,23 @@ namespace CheckerUI.ViewModels
             });
             HotLineCommand = new Command(async () =>
             {
-                var baseLinePage = new BaseLineView("Hot Line");
-                baseLinePage.BindingContext = baseLineVM;
+                var baseLinePage = new LineView("Hot Line");
                 await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
             ColdLineCommand = new Command(async () =>
             {
-                var baseLinePage = new BaseLineView("Cold Line");
-                baseLinePage.BindingContext = baseLineVM;
+                var baseLinePage = new LineView("Cold Line")
+                {
+                    BindingContext = baseLineVM
+                };
                 await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
             OvenLineCommand = new Command(async () =>
             {
-                var baseLinePage = new BaseLineView("Oven Line");
-                baseLinePage.BindingContext = baseLineVM;
+                var baseLinePage = new LineView("Oven Line")
+                {
+                    BindingContext = baseLineVM
+                };
                 await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
         }
