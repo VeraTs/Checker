@@ -16,10 +16,10 @@ namespace HttpClientSampler
         }
         
         // returns the content of the response as a string
-        public String SendRequest()
+        public async Task<String> SendRequest()
         {
             client.Timeout = TimeSpan.FromMinutes(5);
-            String res = await client.GetStringAsync();    // get the content of the response
+            String res = await client.GetStringAsync("");    // get the content of the response
 
             return res;            
         }
