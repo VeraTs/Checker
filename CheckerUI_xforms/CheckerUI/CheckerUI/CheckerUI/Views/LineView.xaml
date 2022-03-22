@@ -2,18 +2,59 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CheckerUI.Views.LineView">
-   
-    <AbsoluteLayout x:Name="AL">
-        <BoxView AbsoluteLayout.LayoutBounds="0.5,1,0.01,1" AbsoluteLayout.LayoutFlags="All"
-                 Color="Black"/>
-        <BoxView AbsoluteLayout.LayoutBounds="0.05,0.05,1,0.005" AbsoluteLayout.LayoutFlags="All" 
-                 Color="Black"/>
-        <BoxView AbsoluteLayout.LayoutBounds="1,0.528,0.5,0.005" AbsoluteLayout.LayoutFlags="All" 
-                 Color="Black"/>
-        <Label Text="ToMake" TextColor="Black" AbsoluteLayout.LayoutBounds="0.25,0,0.4,1" AbsoluteLayout.LayoutFlags="All"
-               FontSize="25"/>
-        <Label Text="InProgress" TextColor="Black" AbsoluteLayout.LayoutBounds="1,0,0.4,1" AbsoluteLayout.LayoutFlags="All"
-               FontSize="25"/>
 
-    </AbsoluteLayout>
+    <StackLayout  x:Name="m_Layout"  >
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row ="0" Grid.Column="0" Text ="To Make" Font="Large" HorizontalOptions="CenterAndExpand"/>
+            <Label Grid.Row ="0" Grid.Column="1" Text ="In Progress" Font="Large" HorizontalOptions="CenterAndExpand"/>
+            <Label Grid.Row ="0" Grid.Column="2" Text ="View" Font="Large" HorizontalOptions="CenterAndExpand"/>
+            <Grid x:Name="m_GridLayoutInProgress" Grid.Row="1" Grid.Column="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+                </Grid>
+            <Grid x:Name="m_GridLayoutToMake" Grid.Row="1" Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+               
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+
+            <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="2" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+              
+            </Grid>
+
+        </Grid >
+    </StackLayout>
 </ContentPage>
