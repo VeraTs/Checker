@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             xmlns:fontAwesome="clr-namespace:FontAwesome;assembly=CheckerUI"
              x:Class="CheckerUI.SignUpPage" Title="Registration">
     <ContentPage.BindingContext>
         <local:SignUpPageViewModel/>
@@ -37,31 +38,31 @@
                 IsPassword="{Binding  Path=HidePassword}">
             </Entry>
             <Entry 
-                Placeholder="*****@gmail.com" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="3"
+                Placeholder="*****@gmail.com" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="3" 
                 BindingContext="{Binding TempEmail}">
             </Entry>
             <Label
-                Text ="Enter Your Details : "
+                Text ="set up" FontFamily ="FAS"
                 Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" FontSize="Title">
             </Label>
             <Label 
-                Text="Nickname :"
+                Text="Nickname :" FontFamily ="FAS"
                 Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" FontSize="Large"
                 HorizontalOptions="Center" VerticalOptions="Center" 
                 TextColor="Black">
             </Label>
             <Label 
-                Text="Password :" 
+                Text="Password :"  FontFamily ="FAS"
                 Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" FontSize="Large"
                 HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black">
             </Label>
             <Label
-                Text="Email :" 
+                Text="Email :" FontFamily ="FAS"
                 Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" FontSize="Large" 
                 VerticalOptions="Center" TextColor="Black" 
                 HorizontalOptions="Center"/>
             <Label
-                Text="File loc :" 
+                Text="File loc :" FontFamily ="FAS"
                 Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" FontSize="Large"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"  TextColor="Black"/>

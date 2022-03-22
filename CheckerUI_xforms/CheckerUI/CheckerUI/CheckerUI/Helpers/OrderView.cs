@@ -72,12 +72,27 @@ namespace CheckerUI.Helpers
             m_Labels.Add(new Label { Text = "Status: " });
             m_Labels.Add(new Label { Text = "Table: " + m_OrderID });
             m_Labels.Add(new Label { Text = "Description: " });
-
-             m_DoneButton = new ImageButton {Source = "icon_Checked", HorizontalOptions = LayoutOptions.Center, Command = DoneCommand,};
+            m_DoneButton = new ImageButton
+            {
+                Source = "icon_Checked",
+                HorizontalOptions = LayoutOptions.Center, BackgroundColor = Color.Transparent,
+                Command = DoneCommand
+            };
+            
             // doneButton.Clicked += doneButton_Clicked;
-             m_StartButton = new ImageButton { Source = "icon_Start", HorizontalOptions = LayoutOptions.Center, Command = StartCommand };
+             m_StartButton = new ImageButton
+             { 
+                 Source = "icon_Start",
+                 HorizontalOptions = LayoutOptions.Center, BackgroundColor = Color.Transparent,
+                 Command = StartCommand
+             };
             //  startButton.Clicked += StartButton_Clicked;
-             m_StopButton = new ImageButton { Source = "icon_Hold", HorizontalOptions = LayoutOptions.Center, Command = StopCommand };
+             m_StopButton = new ImageButton
+             {
+                 Source = "icon_Hold",
+                 HorizontalOptions = LayoutOptions.Center, BackgroundColor = Color.Transparent,
+                 Command = StopCommand
+             };
           
             GenerateGrid();
             //  stopButton.Clicked += StopButton_Clicked;
