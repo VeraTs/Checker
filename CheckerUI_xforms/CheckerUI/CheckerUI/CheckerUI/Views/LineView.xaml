@@ -1,51 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:fontAwesome="clr-namespace:FontAwesome"
              x:Class="CheckerUI.Views.LineView">
 
-    <StackLayout  x:Name="m_Layout"  >
-        <Grid >
+    <ScrollView>
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".4*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row ="0" Grid.Column="0" Text ="To Make" Font="Large" HorizontalOptions="CenterAndExpand"/>
-            <Label Grid.Row ="0" Grid.Column="1" Text ="In Progress" Font="Large" HorizontalOptions="CenterAndExpand"/>
-            <Label Grid.Row ="0" Grid.Column="2" Text ="View" Font="Large" HorizontalOptions="CenterAndExpand"/>
-            <Grid x:Name="m_GridLayoutInProgress" Grid.Row="1" Grid.Column="1" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-                </Grid>
-            <Grid x:Name="m_GridLayoutToMake" Grid.Row="1" Grid.Column="0" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-               
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <Button x:Name="m_GetOrdersButton" Grid.Row="0" Grid.Column="3" VerticalOptions="End" FontFamily="FAS"
+                        Text="{x:Static fontAwesome:FontAwesomeIcons.FireAlt }" FontSize="Title"/>
+            <Label Grid.Row ="0" Grid.Column="0" Text ="Locked"
+                   FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
+                   HorizontalOptions="CenterAndExpand"/>
+            <Label Grid.Row ="0" Grid.Column="1" Text ="To Make"
+                   FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
+                   HorizontalOptions="CenterAndExpand"/>
+            <Label Grid.Row ="0" Grid.Column="2" Text ="In Progress"
+                   FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
+                   HorizontalOptions="CenterAndExpand"/>
+            
+            <ScrollView Grid.Row="1" Grid.Column="2" BackgroundColor="YellowGreen">
+                <Grid x:Name="m_GridLayoutInProgress"  >
             </Grid>
-
-            <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="2" >
+            </ScrollView>
+            <ScrollView Grid.Row="1" Grid.Column="0"  BackgroundColor="Tomato">
+                <Grid x:Name="m_GridLayoutToMakeLoc"  HorizontalOptions="Fill" VerticalOptions="FillAndExpand"/>  
+            </ScrollView>
+            <ScrollView Grid.Row="1" Grid.Column="1" BackgroundColor="Orange">
+                <Grid x:Name="m_GridLayoutToMakeAvail" HorizontalOptions="Fill" VerticalOptions="FillAndExpand"/>
+            </ScrollView>
+            <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="3" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -55,5 +48,5 @@
             </Grid>
 
         </Grid >
-    </StackLayout>
+    </ScrollView>
 </ContentPage>
