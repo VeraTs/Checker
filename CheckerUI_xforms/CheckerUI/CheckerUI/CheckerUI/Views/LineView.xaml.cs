@@ -26,11 +26,11 @@ namespace CheckerUI.Views
         {
             InitializeComponent();
             this.Title = i_Title;
-            BackgroundColor = Color.PowderBlue;
+            BackgroundColor = Color.Transparent;
             var baseVM =  new BaseLineViewModel(m_GridLayoutToMakeAvail, m_GridLayoutToMakeLoc, m_GridLayoutInProgress, m_OrdersLayout);
             BindingContext = baseVM;
             m_GetOrdersButton.Command = baseVM.FeelOrdersCommand;
-
+            
             //fillLayout();
         }
     }

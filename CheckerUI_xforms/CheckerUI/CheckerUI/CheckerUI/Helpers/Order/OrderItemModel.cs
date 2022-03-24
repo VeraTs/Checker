@@ -18,5 +18,9 @@ namespace CheckerUI.Helpers.Order
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public override string ToString()
+        {
+           return  m_OrderItemName+" , ID :" + m_OrderItemID.ToString();
+        }
     }
 }

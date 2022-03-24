@@ -6,15 +6,17 @@ using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using FontAwesome;
+using Prism.Behaviors;
+
 namespace CheckerUI.Helpers
 {
     public class OrderItemView : BaseViewModel
     {
         private Grid m_Grid { get; set; }
         public Button m_Button { get; set; }
-       
+
         private readonly List<Label> m_Labels;
-        
+
         private readonly Button m_DoneButton;
         private readonly Button m_StartButton;
         private readonly Button m_StopButton;
@@ -22,77 +24,74 @@ namespace CheckerUI.Helpers
         public Command StartCommand { get; }
         public Command DoneCommand { get; }
 
-        private OrderItemModel m_orderItem;
+        private readonly OrderItemModel m_orderItem;
         private string m_OrderStatusText;
-        public OrderItemView(int i_ID, string i_Name,Button i_Button)
+
+        public OrderItemView(string i_Name, Button i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
         {
             m_Button = new Button();
             m_Button = i_Button;
             m_orderItem = new OrderItemModel();
-            m_orderItem = CreateItemView(i_ID, i_Name, -1, 100,"some notes", 1);
-            m_Grid = new Grid
-            {
-                Margin = new Thickness(5, 5, 5, 5),
-                IsVisible   = false,
-                RowDefinitions =
-                {
-                    new RowDefinition { Height = new GridLength(2, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(2, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(2, GridUnitType.Star) },
-                    new RowDefinition { Height = new GridLength(2, GridUnitType.Star) }
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition(){Width = new GridLength(2, GridUnitType.Star)},
-                    new ColumnDefinition(){Width = new GridLength(2, GridUnitType.Star)},
-                    new ColumnDefinition(){Width = new GridLength(2, GridUnitType.Star)}
-                },
-                BackgroundColor = Color.CadetBlue
-            };
-
+            m_orderItem = CreateItemView(idNotifier.OrderID, i_Name, idNotifier.Status, 100, "some notes", 1);
+            CreateGrid();
+            
             StopCommand = new Command(() =>
             {
-                m_Labels[0].Text = " Stopped ";
+                m_Labels[1].Text = " Stopped ";
                 OrderStatus = 2;
+                idNotifier.Status = 2;
                 m_OrderStatusText = OrderStatusToString();
             });
 
             StartCommand = new Command(() =>
             {
-                m_Labels[0].Text = " In progress ";
+                m_Labels[1].Text = " In progress ";
                 OrderStatus = 1;
+                idNotifier.Status = 1;
                 m_OrderStatusText = OrderStatusToString();
             });
             DoneCommand = new Command(() =>
             {
-                if (OrderStatus > 0)
+                if (IsInProgress)
                 {
-                    m_Labels[0].Text = "Done";
+                    m_Labels[1].Text = "Done";
                     m_Grid.IsVisible = false;
                     OrderStatus = 3;
+                    idNotifier.Status = 3;
                     m_OrderStatusText = OrderStatusToString();
+                    m_Grid.Children.Remove(m_DoneButton);
+                    m_Grid.Children.Remove(m_StartButton);
+                    m_Grid.Children.Remove(m_StopButton);
                 }
                 else
                 {
                     Application.Current.MainPage.DisplayAlert("Order Locked", m_orderItem.m_OrderItemName, "Ok");
                 }
             });
+
+            OrderStatus = idNotifier.Status;
             m_OrderStatusText = this.OrderStatusToString();
             m_Labels = new List<Label>();
             m_Labels.Add(new Label
-            { 
-                Text = m_OrderStatusText, FontFamily = "FAS",BindingContext = m_OrderStatusText,
+            {
+                Text = m_orderItem.ToString(),
+                FontFamily = "FAS",
+                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+            });
+            m_Labels.Add(new Label
+            {
+                Text = m_OrderStatusText, FontFamily = "FAS", BindingContext = m_OrderStatusText,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
             m_Labels.Add(new Label
             {
                 Text = "Table : " + m_orderItem.m_TableNumber, FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
             });
             m_Labels.Add(new Label
             {
                 Text = "Description :" + m_orderItem.m_Description, FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
             });
             m_DoneButton = new Button
             {
@@ -103,49 +102,72 @@ namespace CheckerUI.Helpers
                 FontFamily = "FAS",
                 Command = DoneCommand
             };
+
+            m_StartButton = new Button
+            {
+                Text = FontAwesomeIcons.Play,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                BackgroundColor = Color.Transparent,
+                FontFamily = "FAS",
+                Command = StartCommand
+            };
             
-            // doneButton.Clicked += doneButton_Clicked;
-             m_StartButton = new Button
-             {
-                 Text = FontAwesomeIcons.Play,
-                 HorizontalOptions = LayoutOptions.StartAndExpand,
-                 VerticalOptions = LayoutOptions.StartAndExpand,
-                 BackgroundColor = Color.Transparent,
-                 FontFamily = "FAS",
-                 Command = StartCommand
-             };
-            //  startButton.Clicked += StartButton_Clicked;
-             m_StopButton = new Button
-             {
-                 Text = FontAwesomeIcons.Stop, 
-                 HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.StartAndExpand,
-                 BackgroundColor = Color.Transparent,
+            m_StopButton = new Button
+            {
+                Text = FontAwesomeIcons.Stop,
+                HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.StartAndExpand,
+                BackgroundColor = Color.Transparent,
                 FontFamily = "FAS",
                 Command = StopCommand
-             };
-          
+            };
             GenerateGrid();
-            //  stopButton.Clicked += StopButton_Clicked;
         }
-
+        
         public void GenerateGrid()
         {
-     //       m_Grid.IsVisible = false;
-           
-            m_Grid.Children.Add(m_Labels[0], 0, 2,0,1); 
-            m_Grid.Children.Add(m_Labels[1],0,2,1,2); 
-            m_Grid.Children.Add(m_Labels[2],0,2,2,3); 
-            m_Grid.Children.Add(m_DoneButton,0,1,3,4);
-            m_Grid.Children.Add(m_StartButton,1,2,3,4);
-            m_Grid.Children.Add(m_StopButton,2,3,3,4);
-           
+            int i = 0;
+            foreach (var label in m_Labels)
+            {
+                m_Grid.Children.Add(label, 0, 3, i, i+1);
+                i++;
+            }
+            m_Grid.Children.Add(m_DoneButton, 0, 1, 4, 5);
+            m_Grid.Children.Add(m_StartButton, 1, 2, 4, 5);
+            m_Grid.Children.Add(m_StopButton, 2, 3, 4, 5);
         }
 
+        private void CreateGrid()
+        {
+            m_Grid = new Grid
+            {
+                Margin = new Thickness(0, 5, 0, 5),
+                IsVisible = false,
+                RowDefinitions =
+                {
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)}
+
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)},
+                    new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)},
+                    new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)}
+                },
+                BackgroundColor = Color.CadetBlue
+            };
+        }
         public Grid OderGrid
         {
             get => m_Grid;
             private set => m_Grid = value;
         }
+
         public int OderID
         {
             get => m_orderItem.m_OrderItemID;
@@ -160,33 +182,34 @@ namespace CheckerUI.Helpers
 
         public string OrderStatusToString()
         {
-            string output = "";
+            string output = "Status";
             switch (m_orderItem.m_Status)
             {
                 case -1:
                 {
-                    output += "Locked";
+                    output += " Locked";
                     break;
                 }
                 case 0:
                 {
-                    output += "Available";
+                    output += " Available";
                     break;
                 }
                 case 1:
                 {
-                    output += "In Progress";
+                    output += " In Progress";
                     break;
                 }
                 default:
                 {
-                    output += "Done";
+                    output += " Done";
                     break;
                 }
             }
 
             return output;
         }
+
         //replace with enum !
         public bool IsLocked => OrderStatus < 0;
         public bool IsStarted => OrderStatus > 0;
@@ -194,9 +217,11 @@ namespace CheckerUI.Helpers
         public bool IsHolding => OrderStatus == 2;
         public bool IsCompleted => OrderStatus == 3;
 
-        internal OrderItemModel CreateItemView(int i_ID, string i_Name, int i_Status, int i_Table,string i_Desc, int i_DeptID)
+        internal OrderItemModel CreateItemView(int i_ID, string i_Name, int i_Status, int i_Table, string i_Desc,
+            int i_DeptID)
         {
-            return OrderItemBuilder.GenerateOrderItem(i_ID, i_Name, i_Status, i_Table,i_Desc, i_DeptID);
+            return OrderItemBuilder.GenerateOrderItem(i_ID, i_Name, i_Status, i_Table, i_Desc, i_DeptID);
         }
     }
+
 }
