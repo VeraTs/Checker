@@ -7,9 +7,7 @@ namespace CheckerUI.Views // dynamic ui
 {
     public class KitchenPage : ContentPage
     {
-        private Label _text;
-        private Button _saveButton;
-        private Button _deleteButton;
+     
         public KitchenPage()
         {
             this.Title = "Choose a Line ";

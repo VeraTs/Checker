@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using CheckerUI.Helpers.Order;
+using CheckerUI.Models;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using FontAwesome;
@@ -13,7 +14,7 @@ namespace CheckerUI.Helpers
     public class OrderItemView : BaseViewModel
     {
         private Grid m_Grid { get; set; }
-        public Button m_Button { get; set; }
+        public OrderButtonModel m_Button { get; set; }
 
         private readonly List<Label> m_Labels;
 
@@ -27,9 +28,9 @@ namespace CheckerUI.Helpers
         private readonly OrderItemModel m_orderItem;
         private string m_OrderStatusText;
 
-        public OrderItemView(string i_Name, Button i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
+        public OrderItemView(string i_Name, OrderButtonModel i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
         {
-            m_Button = new Button();
+            m_Button = new OrderButtonModel();
             m_Button = i_Button;
             m_orderItem = new OrderItemModel();
             m_orderItem = CreateItemView(idNotifier.OrderID, i_Name, idNotifier.Status, 100, "some notes", 1);

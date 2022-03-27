@@ -1,9 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:fontAwesome="clr-namespace:FontAwesome"
-             x:Class="CheckerUI.Views.LineView">
+             xmlns:fontAwesome="clr-namespace:FontAwesome" 
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
+             xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
 
+             x:Class="CheckerUI.Views.LineView">
+    <ContentPage.BindingContext>
+        <viewModels:BaseLineViewModel/>
+    </ContentPage.BindingContext>
     <ScrollView  >
         <Grid >
             <Grid.RowDefinitions>
@@ -32,16 +38,55 @@
             <Label Grid.Row ="0" Grid.Column="2" Text ="In Progress"
                    FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
                    HorizontalOptions="CenterAndExpand"/>
+            
+                <ListView  Grid.Row="1" Grid.Column="2" x:Name="m_InProgressView"
+                            ItemsSource = "{Binding ButtonsInProgress}" RowHeight="50"
+                            SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell Text="{Binding m_OrderButtonID}" x:DataType ="models:OrderButtonModel">
+                            <ImageCell.ContextActions>
+                                <MenuItem Text="Delete" IsDestructive="True" >  </MenuItem>
+                            </ImageCell.ContextActions>
+                        </ImageCell>
+                    </DataTemplate>
+                    </ListView.ItemTemplate>
+                      
+                </ListView>
 
-            <ScrollView Grid.Row="1" Grid.Column="2"  >
-                <Grid x:Name="m_GridLayoutInProgress"  />
-            </ScrollView>
-            <ScrollView Grid.Row="1" Grid.Column="0" >
-                <Grid x:Name="m_GridLayoutToMakeLoc" />  
-            </ScrollView>
-            <ScrollView Grid.Row="1" Grid.Column="1" >
-                <Grid x:Name="m_GridLayoutToMakeAvail" />
-            </ScrollView>
+            <ListView  Grid.Row="1" Grid.Column="1" x:Name="m_ToMakeView"
+                       ItemsSource = "{Binding ToMakeOrderIdCollection}" RowHeight="50"
+                       SelectionMode="Single"
+                       ItemSelected="M_ToMakeView_OnItemSelected">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate >
+                        <ImageCell Text="{Binding m_OrderButtonID}"  x:DataType ="models:OrderButtonModel" >
+                            <ImageCell.ContextActions>
+                                <MenuItem Text="Delete" IsDestructive="True" ></MenuItem>
+                            </ImageCell.ContextActions>
+                        </ImageCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+
+            <ListView  Grid.Row="1" Grid.Column="0" x:Name="m_LockedView"
+                       ItemsSource = "{Binding ButtonsLocked}" RowHeight="50"
+                       SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell Text="{Binding m_OrderButtonID}" x:DataType ="models:OrderButtonModel">
+                            <ImageCell.ContextActions>
+                                <MenuItem Text="Delete" IsDestructive="True" ></MenuItem>
+                            </ImageCell.ContextActions>
+                        </ImageCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
                 <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>

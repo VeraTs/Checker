@@ -13,25 +13,33 @@ namespace CheckerUI.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LineView : ContentPage
     {
-        private Button buttonToMake;
-        private Button buttonInProgress;
         private List<OrderItemView> OrdersViews = new List<OrderItemView>(10);
 
-        bool isVisible = false;
         private Grid m_currentViewableGrid =null;
 
-       
+        private BaseLineViewModel baseVM;
 
         public LineView(string i_Title)
         {
             InitializeComponent();
             this.Title = i_Title;
             BackgroundColor = Color.Transparent;
-            var baseVM =  new BaseLineViewModel(m_GridLayoutToMakeAvail, m_GridLayoutToMakeLoc, m_GridLayoutInProgress, m_OrdersLayout);
+             baseVM = new BaseLineViewModel();
+            baseVM.init(m_OrdersLayout);
             BindingContext = baseVM;
             m_GetOrdersButton.Command = baseVM.FeelOrdersCommand;
             
             //fillLayout();
+        }
+
+        private void M_ToMakeView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            baseVM.Button_Clicked(sender , EventArgs.Empty);
+        }
+
+        private void Button_OnClicked(object sender, EventArgs e)
+        {
+            baseVM.Button_Clicked(sender, EventArgs.Empty);
         }
     }
 }
