@@ -12,8 +12,6 @@ namespace CheckerUI.ViewModels
         
         public KitchenPageViewModel()
         {
-            var baseLineVM = new BaseLineViewModel();
-            
             ReturnCommand = new Command(async () =>
             {
                 await Application.Current.MainPage.Navigation.PopAsync();
@@ -25,18 +23,12 @@ namespace CheckerUI.ViewModels
             });
             ColdLineCommand = new Command(async () =>
             {
-                var baseLinePage = new LineView("Cold Line")
-                {
-                    BindingContext = baseLineVM
-                };
+                var baseLinePage = new LineView("Cold Line");
                 await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
             OvenLineCommand = new Command(async () =>
             {
-                var baseLinePage = new LineView("Oven Line")
-                {
-                    BindingContext = baseLineVM
-                };
+                var baseLinePage = new LineView("Oven Line");
                 await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
             });
         }

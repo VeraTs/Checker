@@ -3,6 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CheckerUI.App" NavigationPage.HasNavigationBar="True">
     <Application.Resources>
+        <ResourceDictionary>
+            <x:String x:Key ="IconStart">&#xf04b;</x:String>
+            <x:String x:Key ="IconStop">&#xf28d;</x:String>
+            <x:String x:Key ="IconDone">&#xf00c;</x:String>
 
+        </ResourceDictionary>
+        
     </Application.Resources>
 </Application>

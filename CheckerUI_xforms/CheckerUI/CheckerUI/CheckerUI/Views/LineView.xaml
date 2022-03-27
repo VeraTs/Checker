@@ -1,19 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:fontAwesome="clr-namespace:FontAwesome"
              x:Class="CheckerUI.Views.LineView">
-   
-    <AbsoluteLayout x:Name="AL">
-        <BoxView AbsoluteLayout.LayoutBounds="0.5,1,0.01,1" AbsoluteLayout.LayoutFlags="All"
-                 Color="Black"/>
-        <BoxView AbsoluteLayout.LayoutBounds="0.05,0.05,1,0.005" AbsoluteLayout.LayoutFlags="All" 
-                 Color="Black"/>
-        <BoxView AbsoluteLayout.LayoutBounds="1,0.528,0.5,0.005" AbsoluteLayout.LayoutFlags="All" 
-                 Color="Black"/>
-        <Label Text="ToMake" TextColor="Black" AbsoluteLayout.LayoutBounds="0.25,0,0.4,1" AbsoluteLayout.LayoutFlags="All"
-               FontSize="25"/>
-        <Label Text="InProgress" TextColor="Black" AbsoluteLayout.LayoutBounds="1,0,0.4,1" AbsoluteLayout.LayoutFlags="All"
-               FontSize="25"/>
 
-    </AbsoluteLayout>
+    <ScrollView  >
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions > 
+                <ColumnDefinition Width=".4*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions >
+            <BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Tomato" Margin="-1,0,-4,0"/>
+            <BoxView Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" BackgroundColor="Goldenrod" Margin="-2,0,-4,0"/>
+            <BoxView Grid.Row ="0" Grid.Column="2" Grid.RowSpan="2" BackgroundColor="YellowGreen" Margin="-2,0,-5,0"/>
+            <BoxView Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="SlateGray" Margin="-1,0,0,0"></BoxView>
+                <Button x:Name="m_GetOrdersButton" Grid.Row="0" Grid.Column="3" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand"  FontFamily="FAS"
+                        Text="{x:Static fontAwesome:FontAwesomeIcons.FireAlt }" FontSize="Title" Margin="0,-1,0,-1"/>
+
+            <Label Grid.Row ="0" Grid.Column="0" Text ="Locked"
+                   FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
+                   HorizontalOptions="CenterAndExpand"/>
+            <Label Grid.Row ="0" Grid.Column="1" Text ="To Make"
+                   FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
+                   HorizontalOptions="CenterAndExpand"/>
+            <Label Grid.Row ="0" Grid.Column="2" Text ="In Progress"
+                   FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
+                   HorizontalOptions="CenterAndExpand"/>
+
+            <ScrollView Grid.Row="1" Grid.Column="2"  >
+                <Grid x:Name="m_GridLayoutInProgress"  />
+            </ScrollView>
+            <ScrollView Grid.Row="1" Grid.Column="0" >
+                <Grid x:Name="m_GridLayoutToMakeLoc" />  
+            </ScrollView>
+            <ScrollView Grid.Row="1" Grid.Column="1" >
+                <Grid x:Name="m_GridLayoutToMakeAvail" />
+            </ScrollView>
+                <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                </Grid>
+          
+        </Grid >
+    </ScrollView>
 </ContentPage>
