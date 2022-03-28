@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using DotNetCoreSqlDb.Hubs;
 
 namespace DotNetCoreSqlDb
 {
@@ -14,7 +15,9 @@ namespace DotNetCoreSqlDb
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            IHostBuilder builder = CreateHostBuilder(args);
+ 
+            builder.Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

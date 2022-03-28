@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using DotNetCoreSqlDb.Models;
+using DotNetCoreSqlDb.Hubs;
 
 namespace DotNetCoreSqlDb
 {
@@ -28,6 +29,17 @@ namespace DotNetCoreSqlDb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            try
+            {
+                services.AddSignalR();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("-------------------------------------");
+                Console.WriteLine(ex);
+                Console.WriteLine("-------------------------------------");
+            }
+
             services.AddDbContext<MyDatabaseContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MyDbConnection")));
         }
@@ -43,10 +55,10 @@ namespace DotNetCoreSqlDb
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //app.UseHsts();
+                app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -58,6 +70,8 @@ namespace DotNetCoreSqlDb
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Todos}/{action=Index}/{id?}");
+
+                endpoints.MapHub<ToDosHub>("/todosHub");
             });
         }
     }
