@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using CheckerUI.Helpers.Order;
+using CheckerUI.Models;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using FontAwesome;
@@ -13,7 +14,7 @@ namespace CheckerUI.Helpers
     public class OrderItemView : BaseViewModel
     {
         private Grid m_Grid { get; set; }
-        public Button m_Button { get; set; }
+        public OrderButtonModel m_Button { get; set; }
 
         private readonly List<Label> m_Labels;
 
@@ -23,32 +24,52 @@ namespace CheckerUI.Helpers
         public Command StopCommand { get; }
         public Command StartCommand { get; }
         public Command DoneCommand { get; }
+        public Command ReadyCommand { get; }
 
         private readonly OrderItemModel m_orderItem;
         private string m_OrderStatusText;
 
-        public OrderItemView(string i_Name, Button i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
+        public OrderItemView(string i_Name, OrderButtonModel i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
         {
-            m_Button = new Button();
+            m_Button = new OrderButtonModel();
             m_Button = i_Button;
             m_orderItem = new OrderItemModel();
             m_orderItem = CreateItemView(idNotifier.OrderID, i_Name, idNotifier.Status, 100, "some notes", 1);
             CreateGrid();
-            
+            ReadyCommand = new Command(() =>
+            {
+                if (OrderStatus == 0)
+                {
+                    m_Labels[1].Text = "Available";
+                    idNotifier.Status = 2;
+                    m_OrderStatusText = OrderStatusToString();
+                }
+            }); // this command will bind to timer , idNotifier is already a listener
+
             StopCommand = new Command(() =>
             {
+                if(OrderStatus != -1)
+                {
                 m_Labels[1].Text = " Stopped ";
                 OrderStatus = 2;
                 idNotifier.Status = 2;
                 m_OrderStatusText = OrderStatusToString();
+                }
             });
 
             StartCommand = new Command(() =>
             {
-                m_Labels[1].Text = " In progress ";
-                OrderStatus = 1;
-                idNotifier.Status = 1;
-                m_OrderStatusText = OrderStatusToString();
+                if (OrderStatus != -1)
+                {
+                    m_Labels[1].Text = " In progress ";
+                    OrderStatus = 1;
+                    idNotifier.Status = 1;
+                    m_OrderStatusText = OrderStatusToString();
+                }
+                else
+                {
+                    // need to think about that case
+                }
             });
             DoneCommand = new Command(() =>
             {
@@ -187,22 +208,22 @@ namespace CheckerUI.Helpers
             {
                 case -1:
                 {
-                    output += " Locked";
+                    output += "Locked";
                     break;
                 }
                 case 0:
                 {
-                    output += " Available";
+                    output += "Available";
                     break;
                 }
                 case 1:
                 {
-                    output += " In Progress";
+                    output += "In Progress";
                     break;
                 }
                 default:
                 {
-                    output += " Done";
+                    output += "Done";
                     break;
                 }
             }
@@ -212,7 +233,7 @@ namespace CheckerUI.Helpers
 
         //replace with enum !
         public bool IsLocked => OrderStatus < 0;
-        public bool IsStarted => OrderStatus > 0;
+        public bool IsAvailable => OrderStatus == 0;
         public bool IsInProgress => OrderStatus == 1;
         public bool IsHolding => OrderStatus == 2;
         public bool IsCompleted => OrderStatus == 3;
