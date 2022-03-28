@@ -12,6 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\SignalRViewPage.xaml.cs">
+      <DependentUpon>SignalRViewPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\SignalRViewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\GetListViewPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>

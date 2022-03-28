@@ -33,6 +33,7 @@
        <!-- <ShellContent Title="About" Icon="icon_about.png" Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" /> -->
         <ShellContent Title="Mock" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:ListViewPage}" />
         <ShellContent Title="Web" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:GetListViewPage}" />
+        <ShellContent Title="SignalR" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:SignalRViewPage}" />
     </TabBar>
 
     <!--

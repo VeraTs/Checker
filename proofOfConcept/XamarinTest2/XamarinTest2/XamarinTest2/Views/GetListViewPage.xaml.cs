@@ -26,7 +26,7 @@ namespace XamarinTest2.Views
             MyListView.ItemsSource = await App.Store.GetItemsAsync();
         }
 
-        /*async void OnAddItemClicked(object sender, EventArgs e)
+       /* async void OnAddItemClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new TodoItemPage(true)
             {
