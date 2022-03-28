@@ -19,7 +19,7 @@ namespace XamarinTest2.Services
         
         // returns the content of the response as a string
         public async Task<String> SendRequest()
-        {   
+		{
             // get the content of the response
             return await client.GetStringAsync("");
         }

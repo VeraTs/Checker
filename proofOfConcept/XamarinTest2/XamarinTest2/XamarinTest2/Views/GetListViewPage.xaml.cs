@@ -25,24 +25,5 @@ namespace XamarinTest2.Views
 
             MyListView.ItemsSource = await App.Store.GetItemsAsync();
         }
-
-       /* async void OnAddItemClicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new TodoItemPage(true)
-            {
-                BindingContext = new TodoItem
-                {
-                    ID = Guid.NewGuid().ToString()
-                }
-            });
-        }
-
-        async void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            await Navigation.PushAsync(new TodoItemPage
-            {
-                BindingContext = e.SelectedItem as TodoItem
-            });
-        }*/
     }
 }
