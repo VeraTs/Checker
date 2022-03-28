@@ -5,27 +5,28 @@
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
              xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
+
              x:Class="CheckerUI.Views.LineView">
     <ContentPage.BindingContext>
         <viewModels:BaseLineViewModel/>
     </ContentPage.BindingContext>
-    <FlexLayout  >
-        <Grid>
+    <ScrollView  >
+        <Grid >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions >
+            <Grid.ColumnDefinitions > 
                 <ColumnDefinition Width=".4*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions >
-            <BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Brown"  Margin="-1,0,-4,0"/>
-            <BoxView Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" BackgroundColor="DarkGoldenrod"  Margin="-2,0,-4,0"/>
-            <BoxView Grid.Row ="0" Grid.Column="2" Grid.RowSpan="2" BackgroundColor="Green"  Margin="-2,0,-5,0"/>
+            <BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" BackgroundColor="Tomato" Margin="-1,0,-4,0"/>
+            <BoxView Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" BackgroundColor="Goldenrod" Margin="-2,0,-4,0"/>
+            <BoxView Grid.Row ="0" Grid.Column="2" Grid.RowSpan="2" BackgroundColor="YellowGreen" Margin="-2,0,-5,0"/>
             <BoxView Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="SlateGray" Margin="-1,0,0,0"></BoxView>
-            <Button x:Name="m_GetOrdersButton" Grid.Row="0" Grid.Column="3" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand"  FontFamily="FAS"
+                <Button x:Name="m_GetOrdersButton" Grid.Row="0" Grid.Column="3" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand"  FontFamily="FAS"
                         Text="{x:Static fontAwesome:FontAwesomeIcons.FireAlt }" FontSize="Title" Margin="0,-1,0,-1"/>
 
             <Label Grid.Row ="0" Grid.Column="0" Text ="Locked"
@@ -37,82 +38,64 @@
             <Label Grid.Row ="0" Grid.Column="2" Text ="In Progress"
                    FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
                    HorizontalOptions="CenterAndExpand"/>
-
-            <ListView  Grid.Row="1" Grid.Column="2" x:Name="m_InProgressView"
+            
+                <ListView  Grid.Row="1" Grid.Column="2" x:Name="m_InProgressView"
                             ItemsSource = "{Binding ButtonsInProgress}" RowHeight="50"
-                            ItemSelected="toMakeView_OnItemSelected">
-                <ListView.ItemTemplate>
+                            SelectionMode="Single">
+                    <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell Tapped="Cell_OnTapped">
-                            <Grid  BackgroundColor="OliveDrab"  Margin="0,5,0,5" PropertyChanged="BindableObject_OnPropertyChanged">
-                                <Grid.ColumnDefinitions >
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width=".5*"/>
-                                </Grid.ColumnDefinitions >
-                                <Image Grid.Column="0" Grid.ColumnSpan="2" Source="icon_OnFireNew" Aspect="Fill" />
-                                <Label Grid.Column="2" Text="{Binding m_OrderButtonID}"></Label>
-                            </Grid>
-                        </ViewCell>
+                        <ImageCell Text="{Binding m_OrderButtonID}" x:DataType ="models:OrderButtonModel">
+                            <ImageCell.ContextActions>
+                                <MenuItem Text="Delete" IsDestructive="True" >  </MenuItem>
+                            </ImageCell.ContextActions>
+                        </ImageCell>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                    </ListView.ItemTemplate>
+                      
+                </ListView>
 
             <ListView  Grid.Row="1" Grid.Column="1" x:Name="m_ToMakeView"
                        ItemsSource = "{Binding ToMakeOrderIdCollection}" RowHeight="50"
-                       ItemSelected="toMakeView_OnItemSelected">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell Tapped="Cell_OnTapped">
-                            <Grid BackgroundColor="Gold"  Margin="0,5,0,5" PropertyChanged="BindableObject_OnPropertyChanged">
-                                <Grid.ColumnDefinitions >
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width=".5*"/>
-                                </Grid.ColumnDefinitions >
-                                <Image Grid.Column="0" Grid.ColumnSpan="2" Source="icon_AvailableNew"
-                                       Aspect="Fill" HorizontalOptions="StartAndExpand"/>
-                                <Label Grid.Column="2" Text="{Binding m_OrderButtonID}"></Label>
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                       SelectionMode="Single"
+                       ItemSelected="M_ToMakeView_OnItemSelected">
 
-            <ListView  Grid.Row="1" Grid.Column="0" 
-                       ItemsSource = "{Binding LockedCollection}" RowHeight="50"
-                       ItemSelected="toMakeView_OnItemSelected">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell Tapped="Cell_OnTapped">
-                            <Grid BackgroundColor="OrangeRed"  Margin="0,5,0,5" PropertyChanged="BindableObject_OnPropertyChanged">
-                                <Grid.ColumnDefinitions >
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width=".5*"/>
-                                </Grid.ColumnDefinitions >
-                                <Image Grid.Column="0" Grid.ColumnSpan="2" Source="icon_LockedNew"
-                                       Aspect="Fill" HorizontalOptions="StartAndExpand"/>
-                                <Label Grid.Column="2" Text="{Binding m_OrderButtonID}"></Label>
-                            </Grid>
-                        </ViewCell>
+                    <DataTemplate >
+                        <ImageCell Text="{Binding m_OrderButtonID}"  x:DataType ="models:OrderButtonModel" >
+                            <ImageCell.ContextActions>
+                                <MenuItem Text="Delete" IsDestructive="True" ></MenuItem>
+                            </ImageCell.ContextActions>
+                        </ImageCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+
             </ListView>
 
 
+            <ListView  Grid.Row="1" Grid.Column="0" x:Name="m_LockedView"
+                       ItemsSource = "{Binding ButtonsLocked}" RowHeight="50"
+                       SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ImageCell Text="{Binding m_OrderButtonID}" x:DataType ="models:OrderButtonModel">
+                            <ImageCell.ContextActions>
+                                <MenuItem Text="Delete" IsDestructive="True" ></MenuItem>
+                            </ImageCell.ContextActions>
+                        </ImageCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 
+            </ListView>
 
-
-            <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="3">
+                <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-            </Grid>
-
+                </Grid>
+          
         </Grid >
-    </FlexLayout>
+    </ScrollView>
 </ContentPage>
