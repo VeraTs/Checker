@@ -27,6 +27,7 @@ namespace XamarinTest2.Views
             {
                 ToDo todo = new ToDo() { createdDate = date, description = desc };
                 Items.Add(todo);
+
             });
 
         }

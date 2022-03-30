@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace CheckerUI.Models
 {
@@ -12,7 +9,6 @@ namespace CheckerUI.Models
 
         public OrderButtonModel()
         {
-            
         }
         public OrderButtonModel(int i_ID, Button i_Button)
         {

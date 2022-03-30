@@ -7,7 +7,7 @@
             <x:String x:Key ="IconStart">&#xf04b;</x:String>
             <x:String x:Key ="IconStop">&#xf28d;</x:String>
             <x:String x:Key ="IconDone">&#xf00c;</x:String>
-
+            <x:String x:Key ="IconX">&#xf00d;</x:String>
         </ResourceDictionary>
         
     </Application.Resources>

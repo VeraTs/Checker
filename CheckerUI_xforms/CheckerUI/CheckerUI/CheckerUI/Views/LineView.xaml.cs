@@ -2,12 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using CheckerUI.Helpers;
 using CheckerUI.Models;
+using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -30,6 +27,24 @@ namespace CheckerUI.Views
             baseVM.init(m_OrdersLayout);
             BindingContext = baseVM;
             m_GetOrdersButton.Command = baseVM.FeelOrdersCommand;
+            m_ReturnButton.Command = baseVM.ReturnCommand;
+        }
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            // this is the only place of initiating the connection
+            if (App.HubConn.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await App.HubConn.StartAsync();     // start async connection to SignalR Hub at server
+                    await App.HubConn.InvokeAsync("InitialToDos");  // invoke initial event - to get all current listings
+                }
+                catch (System.Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
         private void toMakeView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {

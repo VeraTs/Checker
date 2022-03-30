@@ -1,22 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.Collections.Generic;
 using CheckerUI.Helpers.Order;
 using CheckerUI.Models;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using FontAwesome;
-using Prism.Behaviors;
 
+//Here we produce the display of a single order item in its line, the grid consists of three rows (currently)
+//In the first row, the name of the dish and an ID card
+//In the second row, the status of the dish varies depending on the button being pressed
+//And in the third row three buttons are linked to the command respectively
+//An order item knows to update those responsible for a change in its status
+
+
+// To Do:  Status should be changed to Enum
 namespace CheckerUI.Helpers
 {
     public class OrderItemView : BaseViewModel
     {
         private Grid m_Grid { get; set; }
-        public OrderButtonModel m_Button { get; set; }
+        private OrderButtonModel m_OrderButton { get; set; }
 
         private readonly List<Label> m_Labels;
+        private readonly OrderItemModel m_orderItem;
+        private string m_OrderStatusText;
+
 
         private readonly Button m_DoneButton;
         private readonly Button m_StartButton;
@@ -26,15 +33,12 @@ namespace CheckerUI.Helpers
         public Command DoneCommand { get; }
         public Command ReadyCommand { get; }
 
-        private readonly OrderItemModel m_orderItem;
-        private string m_OrderStatusText;
-
-        public OrderItemView(string i_Name, OrderButtonModel i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
+        public OrderItemView(string i_Name, OrderButtonModel i_OrderButton, OrderIDNotifier idNotifier)
         {
-            m_Button = new OrderButtonModel();
-            m_Button = i_Button;
+            m_OrderButton = new OrderButtonModel();
+            m_OrderButton = i_OrderButton;
             m_orderItem = new OrderItemModel();
-            m_orderItem = CreateItemView(idNotifier.OrderID, i_Name, idNotifier.Status, 100, "some notes", 1);
+            m_orderItem = CreateItemView( i_Name,  100, "some notes", 1, idNotifier);
             CreateGrid();
             ReadyCommand = new Command(() =>
             {
@@ -50,7 +54,7 @@ namespace CheckerUI.Helpers
             {
                 if(OrderStatus != -1)
                 {
-                m_Labels[1].Text = " Stopped ";
+                m_Labels[1].Text = "Stopped";
                 OrderStatus = 2;
                 idNotifier.Status = 2;
                 m_OrderStatusText = OrderStatusToString();
@@ -61,7 +65,7 @@ namespace CheckerUI.Helpers
             {
                 if (OrderStatus != -1)
                 {
-                    m_Labels[1].Text = " In progress ";
+                    m_Labels[1].Text = "In progress";
                     OrderStatus = 1;
                     idNotifier.Status = 1;
                     m_OrderStatusText = OrderStatusToString();
@@ -144,7 +148,6 @@ namespace CheckerUI.Helpers
             };
             GenerateGrid();
         }
-        
         public void GenerateGrid()
         {
             int i = 0;
@@ -191,20 +194,31 @@ namespace CheckerUI.Helpers
 
         public int OderID
         {
-            get => m_orderItem.m_OrderItemID;
-            set => m_orderItem.m_OrderItemID = value;
+            get => m_orderItem.m_ID_Status_Notifier.OrderID;
+            set => m_orderItem.m_ID_Status_Notifier.OrderID = value;
         }
 
         public int OrderStatus
         {
-            get => m_orderItem.m_Status;
-            set => m_orderItem.m_Status = value;
+            get => m_orderItem.m_ID_Status_Notifier.Status;
+            set => m_orderItem.m_ID_Status_Notifier.Status = value;
         }
 
-        public string OrderStatusToString()
+        public OrderButtonModel OrderButton
+        {
+            get => m_OrderButton;
+            set => m_OrderButton = value;
+        }
+
+        public OrderIDNotifier OrderNotifier
+        {
+            get => m_orderItem.m_ID_Status_Notifier;
+            set => m_orderItem.m_ID_Status_Notifier = value;
+        } 
+        public string OrderStatusToString() // expensive , try to swap it
         {
             string output = "Status";
-            switch (m_orderItem.m_Status)
+            switch (m_orderItem.m_ID_Status_Notifier.Status)
             {
                 case -1:
                 {
@@ -227,7 +241,6 @@ namespace CheckerUI.Helpers
                     break;
                 }
             }
-
             return output;
         }
 
@@ -238,11 +251,10 @@ namespace CheckerUI.Helpers
         public bool IsHolding => OrderStatus == 2;
         public bool IsCompleted => OrderStatus == 3;
 
-        internal OrderItemModel CreateItemView(int i_ID, string i_Name, int i_Status, int i_Table, string i_Desc,
-            int i_DeptID)
+        internal OrderItemModel CreateItemView(string i_Name, int i_Table, string i_Desc,
+            int i_DeptID, OrderIDNotifier i_Notifier)
         {
-            return OrderItemBuilder.GenerateOrderItem(i_ID, i_Name, i_Status, i_Table, i_Desc, i_DeptID);
+            return OrderItemBuilder.GenerateOrderItem(i_Name, i_Table, i_Desc, i_DeptID, i_Notifier);
         }
     }
-
 }

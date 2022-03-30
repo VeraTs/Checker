@@ -5,7 +5,7 @@
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
              xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
-             x:Class="CheckerUI.Views.LineView">
+             x:Class="CheckerUI.Views.LineView" NavigationPage.HasNavigationBar="false">
     <ContentPage.BindingContext>
         <viewModels:BaseLineViewModel/>
     </ContentPage.BindingContext>
@@ -25,9 +25,27 @@
             <BoxView Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" BackgroundColor="DarkGoldenrod"  Margin="-2,0,-4,0"/>
             <BoxView Grid.Row ="0" Grid.Column="2" Grid.RowSpan="2" BackgroundColor="Green"  Margin="-2,0,-5,0"/>
             <BoxView Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="SlateGray" Margin="-1,0,0,0"></BoxView>
-            <Button x:Name="m_GetOrdersButton" Grid.Row="0" Grid.Column="3" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand"  FontFamily="FAS"
+            <Grid Grid.Row="0" Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="m_GetOrdersButton" Grid.Column="0"
+                        VerticalOptions="FillAndExpand"  HorizontalOptions="FillAndExpand"
+                        FontFamily="FAS"
                         Text="{x:Static fontAwesome:FontAwesomeIcons.FireAlt }" FontSize="Title" Margin="0,-1,0,-1"/>
+                <Button x:Name="m_NoJobYet" Grid.Column="1"
+                        VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+                        FontFamily="FAS"
+                        Text="{x:Static fontAwesome:FontAwesomeIcons.Bars}" FontSize="Title" Margin="0,-1,0,-1"/>
+                <Button x:Name ="m_ReturnButton" Grid.Column="2"
+                        VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+                        FontFamily="FAS"
+                        Text="{x:StaticResource IconX}" FontSize="Title" Margin="0,-1,0,-1"/>
+            </Grid>
 
+            
             <Label Grid.Row ="0" Grid.Column="0" Text ="Locked"
                    FontAttributes ="Bold"  FontSize="Title" FontFamily ="FAS"
                    HorizontalOptions="CenterAndExpand"/>
@@ -100,17 +118,14 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-
-
-
-
-            <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.Column="3">
+            <Grid Grid.Row="1" Grid.Column="3" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height=".6*"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+                <Grid x:Name="m_OrdersLayout" Grid.Row="0" Grid.RowSpan="2">
+                </Grid>
             </Grid>
 
         </Grid >
