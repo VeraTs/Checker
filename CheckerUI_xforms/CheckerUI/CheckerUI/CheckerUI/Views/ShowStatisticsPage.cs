@@ -9,7 +9,7 @@ namespace CheckerUI.Views
         public ShowStatisticsPage()
         {
             BindingContext = new ShowStatisticsPageViewModel();
-            BackgroundColor = Color.PowderBlue;
+            BackgroundImageSource = "Checker_Logo";
             this.Title = " Restaurant Statistics ";
 
             Button returnButton = new Button()

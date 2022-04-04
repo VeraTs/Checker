@@ -8,7 +8,7 @@ namespace CheckerUI.Views
         public UpdateKitchenPage()
         {
             BindingContext = new UpdateKitchenViewModel();
-            BackgroundColor = Color.PowderBlue;
+            BackgroundImageSource = "Checker_Logo";
             this.Title = " Update Kitchen Menu";
 
             Button returnButton = new Button()

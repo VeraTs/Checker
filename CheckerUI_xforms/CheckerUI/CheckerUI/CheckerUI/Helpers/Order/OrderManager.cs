@@ -32,10 +32,12 @@ namespace CheckerUI.Helpers.Order
                 m_ToDoList.Add(todo);
                 addToOrdersList(todo);
             });
+            for (int i = 10; i < 20; i++) feel_layout(i);
         }
 
         private void sortOrders() // each time a new order entered
-                                  // need to sort it to her right line - only the one added
+                                  // need to sort it to her right line -
+                                  // only the one added
         {
             getHotLineOrders();
         }
@@ -69,15 +71,28 @@ namespace CheckerUI.Helpers.Order
         {
             List<string> nmList = new List<string>()
             {
-                "pizza", "burger", "fish"
+                "Pizza", "Burger", "Fish"
             };
             int status = 0;
             int id = m_TotalOrdersCounterID++;
             Button buttonToMake = generateButton(id);
 
             OrderIDNotifier m = new OrderIDNotifier(id, status);
-            OrderButtonModel model = new OrderButtonModel(id, buttonToMake);
-            OrderItemView order = new OrderItemView(nmList[0], model, m);
+            OrderItemView order = new OrderItemView(nmList[m_TotalOrdersCounterID%3], m);
+            m_Orders.Add(id, order);
+            m_HotLineOrders.Add(order);
+        }
+        private void feel_layout(int i_id)
+        {
+            List<string> nmList = new List<string>()
+            {
+                "Pizza", "Burger", "Fish"
+            };
+            int status = 0;
+            int id = i_id;
+            Button buttonToMake = generateButton(id);
+            OrderIDNotifier m = new OrderIDNotifier(id, status);
+            OrderItemView order = new OrderItemView(nmList[i_id%3], m);
             m_Orders.Add(id, order);
             m_HotLineOrders.Add(order);
         }

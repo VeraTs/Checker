@@ -13,57 +13,50 @@ namespace CheckerUI.Views
         {
             BindingContext = new LoggedMainPageViewModel();
             this.Title = " Options Menu ";
-            BackgroundColor = Color.PowderBlue;
+            BackgroundImageSource = "Checker_Logo";
 
             Button enterKitchenButton = new Button()
             {
                 Text = "Kitchen",
-                BackgroundColor = Color.DarkOrange,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(20)
+                Margin = new Thickness(5)
             };
             enterKitchenButton.SetBinding(Button.CommandProperty, "MyKitchenCommand");
 
             Button updateButton = new Button()
             {
                 Text = "Update Kitchen",
-                BackgroundColor = Color.DarkOrange,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(20)
+                Margin = new Thickness(5)
             };
             updateButton.SetBinding(Button.CommandProperty, "UpdateKitchenCommand");
 
             Button mangeIngButton = new Button()
             {
                 Text = "Mange Ingredients",
-                BackgroundColor = Color.DarkOrange,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(20)
+                Margin = new Thickness(5)
             };
             mangeIngButton.SetBinding(Button.CommandProperty, "MangeKitchenCommand");
 
             Button showStatisticsButton = new Button()
             {
                 Text = "Show Statistics",
-                BackgroundColor = Color.DarkOrange,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(20)
+                Margin = new Thickness(5)
             };
             showStatisticsButton.SetBinding(Button.CommandProperty, "ShowStatisticsCommand");
 
             Button returnButton = new Button()
             {
                 Text = "Exit",
-                BackgroundColor = Color.OrangeRed,
                 VerticalOptions = LayoutOptions.End,
-                Margin = new Thickness(20),
+                Margin = new Thickness(5),
             };
             returnButton.SetBinding(Button.CommandProperty, "ReturnCommand");
 
-            Content = new StackLayout
+            var inner = new StackLayout()
             {
-                Padding = new Thickness(20, 20, 20, 20),
-                
                 Children =
                 {
                     enterKitchenButton,
@@ -73,6 +66,13 @@ namespace CheckerUI.Views
                     returnButton
                 }
             };
+            var layout = new StackLayout()
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children = { inner }
+            };
+            Content = layout;
+
         }
     }
 }

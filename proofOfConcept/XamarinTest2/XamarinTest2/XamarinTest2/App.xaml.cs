@@ -18,9 +18,9 @@ namespace XamarinTest2
             DependencyService.Register<WebDataStore>();
             DependencyService.Register<MockDataStore>();
 
-            Store = new WebDataStore("https://coresqltester.azurewebsites.net/JsonToDos/");
+            Store = new WebDataStore("https://checkertester.azurewebsites.net/JsonToDos/");
             HubConn = new HubConnectionBuilder()
-                .WithUrl("https://coresqltester.azurewebsites.net/todosHub")
+                .WithUrl("https://checkertester.azurewebsites.net/todosHub")
                 .WithAutomaticReconnect()
                 .Build();
 

@@ -5,22 +5,13 @@ namespace CheckerUI.ViewModels
 {
     public class LoggedMainPageViewModel 
     {
-        public Command SignCommand { get; }
         public Command ReturnCommand { get; }
-
         public Command MyKitchenCommand { get; }
         public Command UpdateKitchenCommand { get; }
         public Command MangeKitchenCommand { get; }
         public Command ShowStatisticsCommand { get; }
         public LoggedMainPageViewModel()
         {
-            SignCommand = new Command(() =>
-            {
-                // check if user already exists
-                // save user details
-                //login user
-                //navigate main page
-            });
             MyKitchenCommand = new Command(async () =>
             {
                 var kitchenVm = new KitchenPageViewModel();

@@ -17,36 +17,41 @@ namespace CheckerUI.Helpers
 {
     public class OrderItemView : BaseViewModel
     {
+        //Properties
         private Grid m_Grid { get; set; }
-        private OrderButtonModel m_OrderButton { get; set; }
-
         private readonly List<Label> m_Labels;
         private readonly OrderItemModel m_orderItem;
-        private string m_OrderStatusText;
-
-
         private readonly Button m_DoneButton;
         private readonly Button m_StartButton;
         private readonly Button m_StopButton;
+        private readonly Button m_RestoreButton;
+
+        private bool m_OrderRestored = false;
+        // Commands
         public Command StopCommand { get; }
         public Command StartCommand { get; }
         public Command DoneCommand { get; }
         public Command ReadyCommand { get; }
+        public Command RestoreCommand { get; }
 
-        public OrderItemView(string i_Name, OrderButtonModel i_OrderButton, OrderIDNotifier idNotifier)
+        public OrderItemView()
         {
-            m_OrderButton = new OrderButtonModel();
-            m_OrderButton = i_OrderButton;
+
+        }
+        public OrderItemView(string i_Name, OrderIDNotifier idNotifier)
+        {
+           
             m_orderItem = new OrderItemModel();
-            m_orderItem = CreateItemView( i_Name,  100, "some notes", 1, idNotifier);
+            m_orderItem = CreateItemView( i_Name,  100, "Notes ...", 1, idNotifier);
             CreateGrid();
             ReadyCommand = new Command(() =>
             {
                 if (OrderStatus == 0)
                 {
-                    m_Labels[1].Text = "Available";
-                    idNotifier.Status = 2;
-                    m_OrderStatusText = OrderStatusToString();
+                    OrderStatus = 1;
+                    m_Labels[2].Text = idNotifier.StatusString;
+                    OrderStatusColor = idNotifier.StatusColor;
+                    OrderStatusString = idNotifier.StatusString;
                 }
             }); // this command will bind to timer , idNotifier is already a listener
 
@@ -54,10 +59,10 @@ namespace CheckerUI.Helpers
             {
                 if(OrderStatus != -1)
                 {
-                m_Labels[1].Text = "Stopped";
-                OrderStatus = 2;
-                idNotifier.Status = 2;
-                m_OrderStatusText = OrderStatusToString();
+                    OrderStatus = 2;
+                    m_Labels[2].Text = idNotifier.StatusString;
+                    OrderStatusColor = idNotifier.StatusColor;
+                    OrderStatusString = idNotifier.StatusString;
                 }
             });
 
@@ -65,10 +70,10 @@ namespace CheckerUI.Helpers
             {
                 if (OrderStatus != -1)
                 {
-                    m_Labels[1].Text = "In progress";
                     OrderStatus = 1;
-                    idNotifier.Status = 1;
-                    m_OrderStatusText = OrderStatusToString();
+                    m_Labels[2].Text = idNotifier.StatusString;
+                    OrderStatusColor = idNotifier.StatusColor;
+                    OrderStatusString = idNotifier.StatusString;
                 }
                 else
                 {
@@ -79,51 +84,65 @@ namespace CheckerUI.Helpers
             {
                 if (IsInProgress)
                 {
-                    m_Labels[1].Text = "Done";
-                    m_Grid.IsVisible = false;
                     OrderStatus = 3;
-                    idNotifier.Status = 3;
-                    m_OrderStatusText = OrderStatusToString();
-                    m_Grid.Children.Remove(m_DoneButton);
-                    m_Grid.Children.Remove(m_StartButton);
-                    m_Grid.Children.Remove(m_StopButton);
+                    m_Labels[2].Text = idNotifier.StatusString;
+                    OrderStatusColor = idNotifier.StatusColor;
+                    OrderStatusString = idNotifier.StatusString;
+                    removeGridButtons();
+                    m_Grid.Children.Add(m_RestoreButton, 0, 1, 5, 6);
+                    m_OrderRestored = true;
                 }
                 else
                 {
                     Application.Current.MainPage.DisplayAlert("Order Locked", m_orderItem.m_OrderItemName, "Ok");
                 }
             });
-
-            OrderStatus = idNotifier.Status;
-            m_OrderStatusText = this.OrderStatusToString();
+            RestoreCommand = new Command(() =>
+            {
+                idNotifier.Status = 1;
+                OrderStatus = 1;
+                m_Labels[2].Text = idNotifier.StatusString;
+                OrderStatusColor = idNotifier.StatusColor;
+                OrderStatusString = idNotifier.StatusString;
+                m_Grid.Children.Remove(m_RestoreButton);
+                addGridButtons();
+            });
             m_Labels = new List<Label>();
             m_Labels.Add(new Label
             {
-                Text = m_orderItem.ToString(),
+                Text = "Type :" + m_orderItem.m_OrderItemName,
                 FontFamily = "FAS",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
             m_Labels.Add(new Label
             {
-                Text = m_OrderStatusText, FontFamily = "FAS", BindingContext = m_OrderStatusText,
+                Text = "ID : " + m_orderItem.m_ID_Status_Notifier.OrderID,
+                FontFamily = "FAS",
+                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
+            });
+            m_Labels.Add(new Label
+            {
+                Text =   m_orderItem.m_ID_Status_Notifier.StatusString ,
+                FontFamily = "FAS",
+                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                BindingContext = m_orderItem.m_ID_Status_Notifier.StatusString
+            });
+            m_Labels.Add(new Label
+            {
+                Text = "Time Left :",
+                FontFamily = "FAS",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
             m_Labels.Add(new Label
             {
-                Text = "Table : " + m_orderItem.m_TableNumber, FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
-            });
-            m_Labels.Add(new Label
-            {
                 Text = "Description :" + m_orderItem.m_Description, FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
+                FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label))
             });
             m_DoneButton = new Button
             {
                 Text = FontAwesomeIcons.Check,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Transparent,
                 FontFamily = "FAS",
                 Command = DoneCommand
             };
@@ -133,7 +152,6 @@ namespace CheckerUI.Helpers
                 Text = FontAwesomeIcons.Play,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Transparent,
                 FontFamily = "FAS",
                 Command = StartCommand
             };
@@ -141,10 +159,18 @@ namespace CheckerUI.Helpers
             m_StopButton = new Button
             {
                 Text = FontAwesomeIcons.Stop,
-                HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Transparent,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.StartAndExpand,
                 FontFamily = "FAS",
                 Command = StopCommand
+            };
+            m_RestoreButton = new Button()
+            {
+                Text = FontAwesomeIcons.Undo,
+                HorizontalOptions = LayoutOptions.StartAndExpand,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                FontFamily = "FAS",
+                Command = RestoreCommand
             };
             GenerateGrid();
         }
@@ -156,16 +182,15 @@ namespace CheckerUI.Helpers
                 m_Grid.Children.Add(label, 0, 3, i, i+1);
                 i++;
             }
-            m_Grid.Children.Add(m_DoneButton, 0, 1, 4, 5);
-            m_Grid.Children.Add(m_StartButton, 1, 2, 4, 5);
-            m_Grid.Children.Add(m_StopButton, 2, 3, 4, 5);
+
+            addGridButtons();
         }
 
         private void CreateGrid()
         {
             m_Grid = new Grid
             {
-                Margin = new Thickness(0, 5, 0, 5),
+                Margin = new Thickness(-1, 0, 0, 0),
                 IsVisible = false,
                 RowDefinitions =
                 {
@@ -174,7 +199,7 @@ namespace CheckerUI.Helpers
                     new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
                     new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
                     new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)}
+                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
 
                 },
                 ColumnDefinitions =
@@ -185,6 +210,20 @@ namespace CheckerUI.Helpers
                 },
                 BackgroundColor = Color.CadetBlue
             };
+        }
+
+        private void removeGridButtons()
+        {
+            m_Grid.Children.Remove(m_DoneButton);
+            m_Grid.Children.Remove(m_StopButton);
+            m_Grid.Children.Remove(m_StartButton);
+        }
+
+        private void addGridButtons()
+        {
+            m_Grid.Children.Add(m_DoneButton, 0, 1, 5, 6);
+            m_Grid.Children.Add(m_StartButton, 1, 2, 5, 6);
+            m_Grid.Children.Add(m_StopButton, 2, 3, 5, 6);
         }
         public Grid OderGrid
         {
@@ -204,44 +243,46 @@ namespace CheckerUI.Helpers
             set => m_orderItem.m_ID_Status_Notifier.Status = value;
         }
 
-        public OrderButtonModel OrderButton
+        public bool isRestored
         {
-            get => m_OrderButton;
-            set => m_OrderButton = value;
+            get => m_OrderRestored;
+            set => m_OrderRestored = value;
+        }
+        public string OrderStatusString
+        {
+            get => m_orderItem.m_ID_Status_Notifier.StatusString;
+            set
+            {
+                m_orderItem.m_ID_Status_Notifier.StatusString = value;
+                OnPropertyChanged(nameof(OrderStatusString));
+            }
+        }
+
+        public string OrderItemName
+        {
+            get => m_orderItem.m_OrderItemName;
+            private set => m_orderItem.m_OrderItemName = value;
+        }
+        public Button OrderButton
+        {
+            get => m_orderItem.m_OrderButton;
+            set => m_orderItem.m_OrderButton = value;
         }
 
         public OrderIDNotifier OrderNotifier
         {
             get => m_orderItem.m_ID_Status_Notifier;
             set => m_orderItem.m_ID_Status_Notifier = value;
-        } 
-        public string OrderStatusToString() // expensive , try to swap it
+        }
+
+        public Color OrderStatusColor
         {
-            string output = "Status";
-            switch (m_orderItem.m_ID_Status_Notifier.Status)
+            get => m_orderItem.m_ID_Status_Notifier.StatusColor;
+            set
             {
-                case -1:
-                {
-                    output += "Locked";
-                    break;
-                }
-                case 0:
-                {
-                    output += "Available";
-                    break;
-                }
-                case 1:
-                {
-                    output += "In Progress";
-                    break;
-                }
-                default:
-                {
-                    output += "Done";
-                    break;
-                }
+                m_orderItem.m_ID_Status_Notifier.StatusColor = value;
+                OnPropertyChanged(nameof(OrderStatusColor));
             }
-            return output;
         }
 
         //replace with enum !

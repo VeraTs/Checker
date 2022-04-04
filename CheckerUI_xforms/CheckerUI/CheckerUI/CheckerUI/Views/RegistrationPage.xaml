@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             x:Class="CheckerUI.Views.RegistrationPage"
+             Title="Registration" BackgroundImageSource="Checker_Logo">
+    <ContentPage.BindingContext>
+        <viewModels:RegistrationPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout  Margin="25">
+                <Entry Text ="{Binding UserName}" FontFamily="FAS"
+                       Placeholder="Type Name" ClearButtonVisibility="WhileEditing"/>
+                <Entry Text="{Binding Email}" FontFamily="FAS"
+                       Placeholder="Type Email"/>
+                <Entry Text="{Binding EmailConfirmed}" FontFamily="FAS"
+                       Placeholder="Confirmed Email "/>
+                <Entry Text="{Binding Password}" FontFamily="FAS"
+                       Placeholder="Type Password" IsPassword="{Binding  Path=HidePassword}"/>
+                <Entry Text="{Binding PasswordConfirmed}" FontFamily="FAS"
+                       Placeholder="Confirmed Password " IsPassword="{Binding  Path=HidePassword}"/>
+                <Entry Text="{Binding PhoneNumber}" FontFamily="FAS"
+                       Placeholder="Phone Number"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="1" Grid.Column="0" x:Name="m_SignUpButton"
+                            Text ="Sign Up" Command ="{Binding SignCommand}"/>
+                    <Button Grid.Row="1" Grid.Column="1" x:Name="m_ReturnButton"
+                            Text="Return" Command="{Binding ReturnCommand}"/>
+                </Grid>
+
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

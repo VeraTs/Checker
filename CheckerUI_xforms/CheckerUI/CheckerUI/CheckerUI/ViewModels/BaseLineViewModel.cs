@@ -18,6 +18,12 @@ using Xamarin.Forms;
 // In addition, this panel also has an order display with buttons,
 // so by clicking on one of them (item status changes) and we must respond accordingly.
 // There are pointers for the last user selection.
+// in here we are getting ref of the ui layouts , those method need to become async !
+
+// to do : adding / removing / updating
+// any one of the lists should be a critical sections 
+
+
 //// </summary>
 
 namespace CheckerUI.ViewModels
@@ -25,58 +31,71 @@ namespace CheckerUI.ViewModels
     public class BaseLineViewModel : BaseViewModel
     {
         private static int m_counterID = 0;
-        
-        private Button buttonToMake;
-        public Command FeelOrdersCommand;
-        public Command ReturnCommand;
-        ObservableCollection<OrderItemView> m_Orders { get; set; } = new ObservableCollection<OrderItemView>();
-        
-        public ObservableCollection<OrderButtonModel> m_ButtonsInProgress = new ObservableCollection<OrderButtonModel>();
-        public ObservableCollection<OrderButtonModel> m_ButtonsLocked = new ObservableCollection<OrderButtonModel>();
-        public ObservableCollection<OrderButtonModel> m_ButtonsToMake = new ObservableCollection<OrderButtonModel>();
-        
-        public Grid m_LastGridInCell = new Grid();
-        private List<OrderItemView> m_DoneOrdersList { get; set; } = new List<OrderItemView>();
-        private Grid m_currentViewableGrid = null;
-        private Grid m_GridOrders;
-        // in here we are getting ref of the ui layouts , those method need to become async !
+        public ObservableCollection<OrderItemView> m_Orders { get; set; }
+        private Dictionary<int, OrderItemView> m_OrdersList { get; set; }
+        private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
+        private ObservableCollection<OrderItemView> m_ButtonsLocked { get; set; }
+        private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
+        private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
+        public Grid m_LastGridInCell { get; set; }
+        private List<OrderItemView> m_DoneOrdersList { get; set; }
+        private Grid m_currentViewableGrid { get; set; }
+        private Grid m_GridOrders { get; set; }
+       
+        public Command FeelOrdersCommand { get; set; }
+        public Command ReturnCommand { get; set; }
 
         public void init(Grid i_GridOrders)
         {
-            m_GridOrders = new Grid();
+            allocations();
+
             m_GridOrders = i_GridOrders;
-            FeelOrdersCommand = new Command(refresh);
-            OrderIDNotifier m = new OrderIDNotifier(-1, -1);
-            var mCurrentOrder = new OrderItemView("Dummy", null, m);
-            m_currentViewableGrid = mCurrentOrder.OderGrid;
+            
+            OrderIDNotifier notifier = new OrderIDNotifier(-1, -1);
+            var currentOrder = new OrderItemView("Dummy", notifier);
+            m_currentViewableGrid = currentOrder.OderGrid;
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-            OrderManager om = new OrderManager(m_Orders);
+            OrderManager om = new OrderManager(m_Orders); // connect to OrderManger orders
 
             ReturnCommand = new Command(async () =>
             {
                 await Application.Current.MainPage.Navigation.PopAsync();
             });
+            //   for(int i = 0;i<3;i++) feel_layout(i);
         }
 
+        private void allocations()
+        {
+            m_Orders = new ObservableCollection<OrderItemView>();
+            m_OrdersList = new Dictionary<int, OrderItemView>();
+            m_ButtonsInProgress = new ObservableCollection<OrderItemView>();
+            m_ButtonsLocked = new ObservableCollection<OrderItemView>();
+            m_ButtonsToMake = new ObservableCollection<OrderItemView>();
+            m_ButtonsDone = new ObservableCollection<OrderItemView>();
+            m_DoneOrdersList = new List<OrderItemView>();
+            m_LastGridInCell = new Grid();
+            m_currentViewableGrid = new Grid();
+            m_GridOrders = new Grid();
+            FeelOrdersCommand = new Command(refresh);
+        }
         private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (m_counterID < m_Orders.Count) // new order is entered
             {
                 OrderItemView last = m_Orders.Last();
-                OrderButtonModel obm = last.OrderButton;
-                m_ButtonsToMake.Add(obm);
-                obm.m_OrderButton.Clicked += Button_Clicked;
+                m_ButtonsToMake.Add(last);
+                last.OrderButton.Clicked += Button_Clicked;
                 OrderIDNotifier notifier = last.OrderNotifier;
-                notifier.PropertyChanged += OrderIDNotifierPropertyChanged;
+                notifier.PropertyChanged += OrderStatusNotifierPropertyChanged;
+                m_OrdersList.Add(last.OderID, last);
                 m_counterID++;
             }
         }
-
         private void refresh()
         {
 
         }
-        private void OrderIDNotifierPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OrderStatusNotifierPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var m = sender as OrderIDNotifier;
             var order = getOrderByID(m.OrderID);
@@ -84,11 +103,15 @@ namespace CheckerUI.ViewModels
             m_currentViewableGrid = order.OderGrid;
             m_LastGridInCell = LastTappedCell.LogicalChildren.Last() as Grid;
 
-            if (order.IsAvailable)
+            if (order.isRestored)
+            {
+                caseIsRestored(order);
+            }
+            else if (order.IsAvailable)
             {
                 caseIsAvailable(order);
             }
-            if (order.IsHolding)
+            else if (order.IsHolding)
             {
                 caseIsHolding(order);
             }
@@ -119,101 +142,96 @@ namespace CheckerUI.ViewModels
 
         private void caseIsAvailable(OrderItemView i_Order)
         {
-            if (m_ButtonsLocked.Contains(i_Order.OrderButton))
+            if (m_ButtonsLocked.Contains(i_Order))
             {
-                m_ButtonsToMake.Add(i_Order.OrderButton);
-                m_ButtonsLocked.Remove(i_Order.OrderButton);
+                m_ButtonsToMake.Add(i_Order);
+                m_ButtonsLocked.Remove(i_Order);
             }
-            m_LastGridInCell.BackgroundColor = Color.DarkOrange;
             m_currentViewableGrid.BackgroundColor = Color.DarkOrange;
         }
 
+        private void caseIsRestored(OrderItemView i_Order)
+        {
+            i_Order.isRestored = false;
+            m_ButtonsInProgress.Add(i_Order);
+            m_ButtonsDone.Remove(i_Order);
+            m_DoneOrdersList.Remove(i_Order);
+            m_currentViewableGrid.BackgroundColor = Color.DarkOrange;
+        }
         private void caseIsHolding(OrderItemView i_Order)
         {
-            m_LastGridInCell.BackgroundColor = Color.OrangeRed;
-            m_currentViewableGrid.BackgroundColor = Color.OrangeRed;
+            m_currentViewableGrid.BackgroundColor = Color.Firebrick;
         }
 
         private void caseIsInProgress(OrderItemView i_Order)
         {
-            m_LastGridInCell.BackgroundColor = Color.YellowGreen;
-            if (!m_ButtonsInProgress.Contains(i_Order.OrderButton))
+            if (!m_ButtonsInProgress.Contains(i_Order))
             {
-                m_ButtonsInProgress.Add(i_Order.OrderButton);
+                m_ButtonsInProgress.Add(i_Order);
             }
-            m_ButtonsToMake.Remove(i_Order.OrderButton);
+            m_ButtonsToMake.Remove(i_Order);
             m_currentViewableGrid.BackgroundColor = Color.YellowGreen;
         }
 
         private void caseIsCompleted(OrderItemView i_Order)
         {
-            if (m_ButtonsInProgress.Contains(i_Order.OrderButton))
+            if (m_ButtonsInProgress.Contains(i_Order))
             {
-                m_ButtonsInProgress.Remove(i_Order.OrderButton);
-                m_currentViewableGrid.BackgroundColor = Color.ForestGreen;
-                // done list
+                m_ButtonsInProgress.Remove(i_Order);
+                m_ButtonsDone.Add(i_Order);
+                m_currentViewableGrid.BackgroundColor = Color.Chartreuse;
+                m_DoneOrdersList.Add(i_Order);
+                m_counterID--;
+                
             }
             else
             {
 
             }
         }
-
-        public Button generateButton(int i_ID)
-        {
-            buttonToMake = new Button()
-            {
-                Padding = new Thickness(20, 20, 20, 20),
-                Text = i_ID.ToString(),
-                CornerRadius = 10,
-                BackgroundColor = Color.Gold,
-                IsVisible = true,
-            };
-            buttonToMake.Clicked += Button_Clicked; // keep it !
-            return buttonToMake;
-        }
-
         public void Button_Clicked(object sender, EventArgs e)
         {
             var vc = sender as ViewCell;
-            var id = int.Parse(LastSelectedOBM.m_OrderButtonID);
-            if (m_currentViewableGrid.IsVisible)
+            var id = LastSelectedItem.OderID;
+            var currentGrid = m_OrdersList[id].OderGrid;
+
+            if (currentGrid != m_currentViewableGrid)
             {
-                m_currentViewableGrid.IsVisible = false;
-                m_GridOrders.Children.Remove(m_currentViewableGrid);
+                if (m_currentViewableGrid.IsVisible)
+                {
+                    m_currentViewableGrid.IsVisible = false;
+                    m_GridOrders.Children.Clear();
+                }
+                m_currentViewableGrid = currentGrid;
+                m_GridOrders.Children.Add(currentGrid);
             }
-            var currentGrid = m_Orders[id].OderGrid;
-            currentGrid.IsVisible = true;
-            m_currentViewableGrid = currentGrid;
-            m_GridOrders.Children.Add(currentGrid);
-            m_LastGridInCell = vc.LogicalChildren[0] as Grid;
+            m_currentViewableGrid.IsVisible = true;
         }
 
-        public ObservableCollection<OrderButtonModel> ButtonsInProgress
+        public ObservableCollection<OrderItemView> ButtonsInProgress
         {
             get => m_ButtonsInProgress;
             set => m_ButtonsInProgress = value;
         }
 
-        public ObservableCollection<OrderButtonModel> ToMakeOrderIdCollection
+        public ObservableCollection<OrderItemView> ToMakeOrderIdCollection
         {
             get => m_ButtonsToMake;
             set => m_ButtonsToMake = value;
         }
-        public ObservableCollection<OrderButtonModel> LockedCollection
+
+        public ObservableCollection<OrderItemView> DoneOrdersCollection
+        {
+            get => m_ButtonsDone;
+            set => m_ButtonsDone = value;
+        }
+        public ObservableCollection<OrderItemView> LockedCollection
         {
             get => m_ButtonsLocked;
             set => m_ButtonsLocked = value;
         }
-        public OrderButtonModel LastSelectedOBM { get; set; } = new OrderButtonModel();
+        public OrderItemView LastSelectedItem { get; set; } = new OrderItemView();
 
         public ViewCell LastTappedCell { get; set; } = new ViewCell();
-
-        public ObservableCollection<OrderButtonModel> ButtonsLocked
-        {
-            get => m_ButtonsLocked;
-            set => m_ButtonsLocked = value;
-        }
-       
     }
 }

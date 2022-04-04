@@ -1,5 +1,7 @@
 ﻿using System;
 using CheckerUI.Services;
+using CheckerUI.ViewModels;
+using CheckerUI.Views;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -17,16 +19,15 @@ namespace CheckerUI
              DependencyService.Register<WebDataStore>();
             DependencyService.Register<MockDataStore>();
 
-            Store = new WebDataStore("https://coresqltester.azurewebsites.net/JsonToDos/");
+            Store = new WebDataStore("https://checkertester.azurewebsites.net/JsonToDos/");
             HubConn = new HubConnectionBuilder()
-                .WithUrl("https://coresqltester.azurewebsites.net/todosHub")
+                .WithUrl("https://checkertester.azurewebsites.net/todosHub")
                 .WithAutomaticReconnect()
                 .Build();
             Application.Current.SavePropertiesAsync();
             MainPage = new NavigationPage(new MainPage())
             {
             };
-
         }
 
         protected override void OnStart()

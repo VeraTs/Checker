@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace CheckerUI
+namespace CheckerUI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SignUpPage : ContentPage
+    public partial class RegistrationPage : ContentPage
     {
-        public SignUpPage()
+        public RegistrationPage()
         {
             InitializeComponent();
         }
-
     }
 }

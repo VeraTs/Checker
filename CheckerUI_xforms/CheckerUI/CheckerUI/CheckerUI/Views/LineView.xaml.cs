@@ -46,10 +46,10 @@ namespace CheckerUI.Views
                 }
             }
         }
-        private void toMakeView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void ListView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             ListView lv = sender as ListView;
-            baseVM.LastSelectedOBM = lv.SelectedItem as OrderButtonModel;
+            baseVM.LastSelectedItem = lv.SelectedItem as OrderItemView;
             m_LastListWithItemSelected = lv;
         }
         private void Cell_OnTapped(object sender, EventArgs e)
