@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
 using CheckerUI.Models;
+using CheckerUI.Views;
+using Lottie.Forms;
 using Xamarin.Forms;
 //// <summary>
 // Basic line, if we want to add features to it we will do it by inheritance
@@ -31,31 +35,30 @@ namespace CheckerUI.ViewModels
     public class BaseLineViewModel : BaseViewModel
     {
         private static int m_counterID = 0;
+        private static int m_tempCounter = 60;
         public ObservableCollection<OrderItemView> m_Orders { get; set; }
         private Dictionary<int, OrderItemView> m_OrdersList { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsLocked { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
-        public Grid m_LastGridInCell { get; set; }
+      
         private List<OrderItemView> m_DoneOrdersList { get; set; }
-        private Grid m_currentViewableGrid { get; set; }
         private Grid m_GridOrders { get; set; }
-       
+        private OrderManager m_Manager;
         public Command FeelOrdersCommand { get; set; }
         public Command ReturnCommand { get; set; }
 
-        public void init(Grid i_GridOrders)
+
+
+        public void init()
         {
             allocations();
 
-            m_GridOrders = i_GridOrders;
-            
             OrderIDNotifier notifier = new OrderIDNotifier(-1, -1);
             var currentOrder = new OrderItemView("Dummy", notifier);
-            m_currentViewableGrid = currentOrder.OderGrid;
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-            OrderManager om = new OrderManager(m_Orders); // connect to OrderManger orders
+            m_Manager  = new OrderManager(m_Orders); // connect to OrderManger orders
 
             ReturnCommand = new Command(async () =>
             {
@@ -73,8 +76,7 @@ namespace CheckerUI.ViewModels
             m_ButtonsToMake = new ObservableCollection<OrderItemView>();
             m_ButtonsDone = new ObservableCollection<OrderItemView>();
             m_DoneOrdersList = new List<OrderItemView>();
-            m_LastGridInCell = new Grid();
-            m_currentViewableGrid = new Grid();
+         
             m_GridOrders = new Grid();
             FeelOrdersCommand = new Command(refresh);
         }
@@ -84,24 +86,24 @@ namespace CheckerUI.ViewModels
             {
                 OrderItemView last = m_Orders.Last();
                 m_ButtonsToMake.Add(last);
-                last.OrderButton.Clicked += Button_Clicked;
+                //last.OrderButton.Clicked += Button_Clicked;
                 OrderIDNotifier notifier = last.OrderNotifier;
                 notifier.PropertyChanged += OrderStatusNotifierPropertyChanged;
                 m_OrdersList.Add(last.OderID, last);
                 m_counterID++;
+                
             }
         }
-        private void refresh()
+        public void refresh()
         {
-
+            m_Manager.feel_layout(m_tempCounter++);
         }
         private void OrderStatusNotifierPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var m = sender as OrderIDNotifier;
             var order = getOrderByID(m.OrderID);
-            m_currentViewableGrid.IsVisible = false;
-            m_currentViewableGrid = order.OderGrid;
-            m_LastGridInCell = LastTappedCell.LogicalChildren.Last() as Grid;
+          
+            
 
             if (order.isRestored)
             {
@@ -124,7 +126,7 @@ namespace CheckerUI.ViewModels
             {
                 caseIsCompleted(order);
             }
-            m_currentViewableGrid.IsVisible = true;
+           
         }
 
         private OrderItemView getOrderByID(int i_ID) // expensive method !! 
@@ -147,7 +149,6 @@ namespace CheckerUI.ViewModels
                 m_ButtonsToMake.Add(i_Order);
                 m_ButtonsLocked.Remove(i_Order);
             }
-            m_currentViewableGrid.BackgroundColor = Color.DarkOrange;
         }
 
         private void caseIsRestored(OrderItemView i_Order)
@@ -156,11 +157,10 @@ namespace CheckerUI.ViewModels
             m_ButtonsInProgress.Add(i_Order);
             m_ButtonsDone.Remove(i_Order);
             m_DoneOrdersList.Remove(i_Order);
-            m_currentViewableGrid.BackgroundColor = Color.DarkOrange;
         }
         private void caseIsHolding(OrderItemView i_Order)
         {
-            m_currentViewableGrid.BackgroundColor = Color.Firebrick;
+            
         }
 
         private void caseIsInProgress(OrderItemView i_Order)
@@ -170,7 +170,6 @@ namespace CheckerUI.ViewModels
                 m_ButtonsInProgress.Add(i_Order);
             }
             m_ButtonsToMake.Remove(i_Order);
-            m_currentViewableGrid.BackgroundColor = Color.YellowGreen;
         }
 
         private void caseIsCompleted(OrderItemView i_Order)
@@ -179,7 +178,6 @@ namespace CheckerUI.ViewModels
             {
                 m_ButtonsInProgress.Remove(i_Order);
                 m_ButtonsDone.Add(i_Order);
-                m_currentViewableGrid.BackgroundColor = Color.Chartreuse;
                 m_DoneOrdersList.Add(i_Order);
                 m_counterID--;
                 
@@ -189,24 +187,7 @@ namespace CheckerUI.ViewModels
 
             }
         }
-        public void Button_Clicked(object sender, EventArgs e)
-        {
-            var vc = sender as ViewCell;
-            var id = LastSelectedItem.OderID;
-            var currentGrid = m_OrdersList[id].OderGrid;
-
-            if (currentGrid != m_currentViewableGrid)
-            {
-                if (m_currentViewableGrid.IsVisible)
-                {
-                    m_currentViewableGrid.IsVisible = false;
-                    m_GridOrders.Children.Clear();
-                }
-                m_currentViewableGrid = currentGrid;
-                m_GridOrders.Children.Add(currentGrid);
-            }
-            m_currentViewableGrid.IsVisible = true;
-        }
+       
 
         public ObservableCollection<OrderItemView> ButtonsInProgress
         {
@@ -232,6 +213,12 @@ namespace CheckerUI.ViewModels
         }
         public OrderItemView LastSelectedItem { get; set; } = new OrderItemView();
 
-        public ViewCell LastTappedCell { get; set; } = new ViewCell();
+        public void StartButton_Clicked(object sender, EventArgs e)
+        {
+            Button b = (Button)sender;
+            Grid g = b.Parent as Grid;
+            g.BackgroundColor = Color.White;
+        }
+
     }
 }

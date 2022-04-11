@@ -75,14 +75,14 @@ namespace CheckerUI.Helpers.Order
             };
             int status = 0;
             int id = m_TotalOrdersCounterID++;
-            Button buttonToMake = generateButton(id);
+           
 
             OrderIDNotifier m = new OrderIDNotifier(id, status);
             OrderItemView order = new OrderItemView(nmList[m_TotalOrdersCounterID%3], m);
             m_Orders.Add(id, order);
             m_HotLineOrders.Add(order);
         }
-        private void feel_layout(int i_id)
+        public void feel_layout(int i_id) // make it private
         {
             List<string> nmList = new List<string>()
             {
@@ -90,23 +90,12 @@ namespace CheckerUI.Helpers.Order
             };
             int status = 0;
             int id = i_id;
-            Button buttonToMake = generateButton(id);
+           
             OrderIDNotifier m = new OrderIDNotifier(id, status);
             OrderItemView order = new OrderItemView(nmList[i_id%3], m);
             m_Orders.Add(id, order);
             m_HotLineOrders.Add(order);
         }
-        private Button generateButton(int i_ID)
-        {
-            Button buttonToMake = new Button()
-            {
-                Padding = new Thickness(20, 20, 20, 20),
-                Text = i_ID.ToString(),
-                CornerRadius = 10,
-                BackgroundColor = Color.Gold,
-                IsVisible = true,
-            };
-            return buttonToMake;
-        }
+       
     }
 }

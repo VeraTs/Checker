@@ -14,10 +14,13 @@ namespace CheckerUI.ViewModels
         {
             MyKitchenCommand = new Command(async () =>
             {
-                var kitchenVm = new KitchenPageViewModel();
-                var kitchenPage = new KitchenPage();
-                kitchenPage.BindingContext = kitchenVm;
-                await Application.Current.MainPage.Navigation.PushAsync(kitchenPage);
+                //var kitchenVm = new KitchenPageViewModel();
+                //var kitchenPage = new KitchenPage();
+                //kitchenPage.BindingContext = kitchenVm;
+                //await Application.Current.MainPage.Navigation.PushAsync(kitchenPage);
+               
+                DeptsPage page = new DeptsPage();
+                await Application.Current.MainPage.Navigation.PushAsync(page);
             });
             UpdateKitchenCommand = new Command(async () =>
             {

@@ -66,6 +66,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Lottie_order_received.json" />
+    <AndroidAsset Include="Assets\check_Lottie.json" />
+    <AndroidAsset Include="Assets\fire_Lottie.json" />
+    <AndroidAsset Include="Assets\loading_Lottie.json" />
+    <AndroidAsset Include="Assets\newDish_Lottie.json" />
+    <AndroidAsset Include="Assets\plate_Lottie.json" />
+    <AndroidAsset Include="Assets\playButton_Lottie.json" />
+    <AndroidAsset Include="Assets\workingChef_Lottie.json" />
+    <AndroidAsset Include="Assets\burgerCookingLottie.json" />
+    <AndroidAsset Include="Assets\chef_Lottie.json" />
+    <AndroidAsset Include="Assets\coldCooking_Lottie.json" />
+    <AndroidAsset Include="Assets\HotCooking_Lottie.json" />
+    <AndroidAsset Include="Assets\pizzaCooking_Lottie.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -154,6 +167,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon_DoneNew.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\icon_Printer.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\chefBackground.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

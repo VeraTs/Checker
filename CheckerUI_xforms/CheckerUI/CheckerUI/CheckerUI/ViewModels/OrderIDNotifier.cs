@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
@@ -9,13 +10,17 @@ namespace CheckerUI.ViewModels
         private string m_StatusString;
         private Color m_StatusColor;
         public event PropertyChangedEventHandler PropertyChanged;
-
+        private DateTime m_CreatedTime;
         public OrderIDNotifier(int i_ID, int i_Status)
         {
             OrderID = i_ID;
             m_status = i_Status;
             m_StatusColor = new Color();
             OrderStatusToString();
+            m_CreatedTime = new DateTime();
+            m_CreatedTime = DateTime.Now;
+            TimeLeftString = m_CreatedTime.ToString();
+
         }
         protected void OnPropertyChanged(PropertyChangedEventArgs e)
         {
@@ -65,6 +70,16 @@ namespace CheckerUI.ViewModels
             }
         }
 
+        public string TimeLeftString
+        {
+            get => m_CreatedTime.ToString();
+            set
+            {
+                m_CreatedTime = DateTime.Now;
+                OnPropertyChanged(nameof(TimeLeftString));
+            }
+        }
+
         public void OrderStatusToString() // expensive , try to swap it
         {
             string output = "Status : ";
@@ -85,7 +100,7 @@ namespace CheckerUI.ViewModels
                 case 1:
                 {
                     output += "In Progress";
-                    m_StatusColor = Color.YellowGreen;
+                    m_StatusColor = Color.DarkOrange;
                     break;
                 }
                 case 2:

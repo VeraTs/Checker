@@ -89,7 +89,8 @@ namespace CheckerUI.ViewModels
       
         private bool checkUserDetails()
         {
-            return (UserName == "admin" && Password == "admin");
+           // return (UserName == "admin" && Password == "admin");
+           return true;
         }
         private async Task<RegistrationPageViewModel> loadUserDetails()
         {

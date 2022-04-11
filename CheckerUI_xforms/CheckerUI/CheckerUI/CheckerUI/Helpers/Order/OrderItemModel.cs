@@ -15,8 +15,6 @@ namespace CheckerUI.Helpers.Order
         public DateTime m_StartDate { get; set; }
         public DateTime m_CreatedDate { get; set; }
 
-        public Button m_OrderButton { get; set; }
-
         public OrderIDNotifier m_ID_Status_Notifier { get; set; }
         public override string ToString()
         {

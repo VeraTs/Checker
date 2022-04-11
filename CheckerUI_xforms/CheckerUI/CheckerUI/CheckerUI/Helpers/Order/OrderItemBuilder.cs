@@ -19,22 +19,11 @@ namespace CheckerUI.Helpers.Order
                 m_CreatedDate = DateTime.Now,
                 m_StartDate = DateTime.MinValue,
                 m_ID_Status_Notifier = i_Notifier,
-                m_OrderButton = generateButton(i_Notifier.OrderID),
+              
             };
             return m_Order;
         }
-        private static Button generateButton(int i_ID)
-        {
-            Button buttonToMake = new Button()
-            {
-                Padding = new Thickness(20, 20, 20, 20),
-                Text = i_ID.ToString(),
-                CornerRadius = 10,
-                BackgroundColor = Color.Gold,
-                IsVisible = true,
-            };
-            return buttonToMake;
-        }
+        
 
     }
 }

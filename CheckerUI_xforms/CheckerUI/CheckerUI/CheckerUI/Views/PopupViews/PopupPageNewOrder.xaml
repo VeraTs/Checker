@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<views:Popup  xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:forms="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+             x:Class="CheckerUI.Views.PopupViews.PopupPageNewOrder"
+             Size="150,150">
+    <StackLayout>
+        <forms:AnimationView x:Name="m_NewOrderLottie"
+                                 Animation="Lottie_order_received.json" 
+                                 AutoPlay="True"
+                                 BackgroundColor="Transparent"
+                                 OnFinishedAnimation="M_NewOrderLottie_OnOnFinishedAnimation"/>
+            <Label Text="New Order !" HorizontalTextAlignment="Center"/>
+</StackLayout>
+</views:Popup>

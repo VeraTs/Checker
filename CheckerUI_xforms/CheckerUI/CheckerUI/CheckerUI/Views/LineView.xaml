@@ -5,7 +5,12 @@
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
              xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
+             xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:views="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:helpers="clr-namespace:CheckerUI.Helpers;assembly=CheckerUI"
+             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
              x:Class="CheckerUI.Views.LineView" NavigationPage.HasNavigationBar="false">
+
     <ContentPage.BindingContext>
         <viewModels:BaseLineViewModel/>
     </ContentPage.BindingContext>
@@ -37,7 +42,8 @@
                 <Button x:Name="m_NoJobYet" Grid.Column="1"
                         VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
                         FontFamily="FAS"
-                        Text="{x:Static fontAwesome:FontAwesomeIcons.Bars}" FontSize="Title" Margin="0,-1,0,-1"/>
+                        Text="{x:Static fontAwesome:FontAwesomeIcons.Bars}" FontSize="Title" Margin="0,-1,0,-1"
+                        Clicked="M_NoJobYet_OnClicked"/>
                 <Button x:Name ="m_ReturnButton" Grid.Column="2"
                         VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
                         FontFamily="FAS"
@@ -47,215 +53,368 @@
 
             <Grid x:Name="m_GridInProgress" Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height=".1*"/>
+                    <RowDefinition Height=".2*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <BoxView Grid.Row="0" Grid.RowSpan="2" 
                          BackgroundColor="Green"
                          Margin="-2,0,-4,0"/>
-                <Label Grid.Row ="0" Grid.Column="0"
-                       Text ="In Progress"
-                       FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
-                       HorizontalOptions="CenterAndExpand" Margin="0"/>
-                <ScrollView Grid.Row="1" >
-                    <ListView x:Name="InProgressListView"
-                        Grid.Row="1" Grid.Column="2"
-                           ItemsSource = "{Binding ButtonsInProgress}" RowHeight="50"
-                           ItemSelected="ListView_OnItemSelected">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell Tapped="Cell_OnTapped">
-                                    <Grid  BackgroundColor="{Binding OrderStatusColor}"  Margin="5,1,-1,5" PropertyChanged="BindableObject_OnPropertyChanged">
+                <FlexLayout Grid.Row="0">
+                    <Label  Text ="To Make" x:Name="m_LabelInProgress"
+                            FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
+                            HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="0"/>
+                    <lottie:AnimationView   x:Name="m_FireLottie"
+                                            Animation="fire_Lottie.json" 
+                                            AutoPlay="false" IsVisible="False" BackgroundColor="Transparent" 
+                                            HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"/>
+                </FlexLayout>
+                <CollectionView x:Name="InProgressListView" Grid.Row="1" Margin="5" 
+                                ItemsSource = "{Binding ButtonsInProgress}"
+                                SelectionMode="Single"
+                                ChildAdded="InProgressListView_OnChildAdded">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <views:Expander CollapseAnimationLength="500" AnimationLength="500" Tapped="Expander_OnTapped" Padding="2" >
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" >
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="SlateGray" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <views:Expander.Header>
+                                    <Grid  BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5"  >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                           
+                                        </Grid.ColumnDefinitions >
+                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
+                                    </Grid>
+                                </views:Expander.Header>
+                                <views:Expander.Content>
+                                    <Grid BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="30"/>
+                                        </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions >
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
-                                        <Image Grid.Column="2"
-                                       Source="icon_OnFireNew" 
-                                       Aspect="Fill"/>
-                                        <Grid  Grid.Column="0" Grid.ColumnSpan="2">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions >
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions >
-                                            <Label Grid.Row="0" Grid.Column="0" 
-                                           Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                            <Label Grid.Row="0" Grid.Column="1"  
-                                           Text="{Binding OderID }"  FontFamily="FAS"/>
-                                            <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
-                                           Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
-                                        </Grid>
+                                        <Label Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemDescription}" FontFamily="FAS" />
+                                        <Button Grid.Row="4" Grid.Column="0" 
+                                                BackgroundColor="YellowGreen" CornerRadius="30" Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Check }" FontSize="Body"  FontFamily="FAS"
+                                               Command="{Binding DoneCommand }"  />
+                                        <Button Grid.Row="4" Grid.Column="1" 
+                                                CornerRadius="30" BackgroundColor="DarkOrange"  Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Fire }" FontSize="Body" FontFamily="FAS"
+                                                Command="{Binding StartCommand }"/>
+                                        <Button Grid.Row="4" Grid.Column="2"
+                                                CornerRadius="30"  BackgroundColor="Firebrick"  Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Stop }" FontSize="Body" FontFamily="FAS"
+                                                Command="{Binding StopCommand }"/>
                                     </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollView>
+                                </views:Expander.Content>
+                            </views:Expander>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </Grid>
 
-
-            <Grid x:Name="m_GridToMake" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
+                <Grid x:Name="m_GridToMake" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height=".1*"/>
+                    <RowDefinition Height=".2*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <BoxView Grid.Row="0" Grid.RowSpan="2" 
+                <BoxView Grid.Row="0" Grid.RowSpan="2"
                          BackgroundColor="DarkGoldenrod" 
                          Margin="-2,0,-4,0"/>
-                <Label Grid.Row ="0" Grid.Column="0"
-                       Text ="To Make"
-                       FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
-                       HorizontalOptions="CenterAndExpand" Margin="0"/>
-                <ScrollView Grid.Row="1" >
-                    <ListView x:Name ="ToMakeListView"
-                        Grid.Row="1" Grid.Column="1"
-                          ItemsSource = "{Binding ToMakeOrderIdCollection}" RowHeight="50"
-                          ItemSelected="ListView_OnItemSelected">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell Tapped="Cell_OnTapped">
-                                    <Grid BackgroundColor="{Binding OrderStatusColor}"  Margin="5,1,0,5" PropertyChanged="BindableObject_OnPropertyChanged">
+                <FlexLayout x:Name="check" Grid.Row="0" Grid.RowSpan="1">
+                    <Label  Text ="To Make" x:Name="m_LabelToMake"
+                           FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
+                           HorizontalOptions="CenterAndExpand" VerticalOptions="Start" Margin="0"/>
+                    <lottie:AnimationView   x:Name="m_NewOrderLottie"
+                                           Animation="Lottie_order_received.json" 
+                                           AutoPlay="false" IsVisible="False" BackgroundColor="Transparent" 
+                                           HorizontalOptions="Start" VerticalOptions="Start"/>
+                </FlexLayout>
+            
+                <CollectionView Grid.Row="1" x:Name ="ToMakeListView" Margin="5" 
+                                ItemsSource = "{Binding ToMakeOrderIdCollection}" HeightRequest="20" 
+                                SelectionMode="Single"
+                                 ChildAdded="ToMakeListView_OnChildAdded">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10" SnapPointsAlignment="End"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <views:Expander CollapseAnimationLength="500" AnimationLength="500" Tapped="Expander_OnTapped" Padding="2" >
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" >
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="SlateGray" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <views:Expander.Header>
+
+                                    <Grid  BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5" 
+                                           views:VisualFeedbackEffect.FeedbackColor="Black">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                        </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions >
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
-                                        <Image Grid.Column="2"
-                                       Source="icon_AvailableNew" 
-                                       Aspect="Fill"/>
-                                        <Grid  Grid.Column="0" Grid.ColumnSpan="2">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions >
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions >
-                                            <Label Grid.Row="0" Grid.Column="0" 
-                                           Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                            <Label Grid.Row="0" Grid.Column="1"  
-                                           Text="{Binding OderID }"  FontFamily="FAS"/>
-                                            <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
-                                           Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
-                                        </Grid>
+                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
                                     </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollView>
-            </Grid>
+                                </views:Expander.Header>
+                                <views:Expander.Content>
+                                    <Grid BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="30"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions >
+                                        <Label Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemDescription}" FontFamily="FAS" />
+                                        <Button Grid.Row="4" Grid.Column="0" 
+                                                BackgroundColor="YellowGreen" CornerRadius="30" Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Check }" FontSize="Body"  FontFamily="FAS"
+                                               Command="{Binding DoneCommand }"  />
+                                        <Button Grid.Row="4" Grid.Column="1" 
+                                                CornerRadius="30" BackgroundColor="DarkOrange"  Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Fire }" FontSize="Body" FontFamily="FAS"
+                                                Command="{Binding StartCommand }"/>
+                                        <Button Grid.Row="4" Grid.Column="2"
+                                                CornerRadius="30"  BackgroundColor="Firebrick"  Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Stop }" FontSize="Body" FontFamily="FAS"
+                                                Command="{Binding StopCommand }"/>
+                                    </Grid>
+                                </views:Expander.Content>
+                            </views:Expander>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
+                </Grid>
+          
 
-            <Grid x:Name ="m_GridLockAndDone" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
+            <Grid x:Name ="m_GridLock" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height=".1*"/>
-                    <RowDefinition Height="*"/>
                     <RowDefinition Height=".1*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                          BackgroundColor="Brown"  Margin="-1,0,-4,-3"/>
-                <BoxView Grid.Row="2" Grid.Column="0" Grid.RowSpan="2"
-                         BackgroundColor="DarkCyan"  Margin="-1,-3,-4,0"/>
                 <Label Grid.Row ="0" Grid.Column="0"
                        Text ="Locked"
                        FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
                        HorizontalOptions="CenterAndExpand"/>
-                <Label Grid.Row ="2" Grid.Column="0"
-                       Text ="Done"
-                       FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
-                       HorizontalOptions="CenterAndExpand"/>
-
-                <ScrollView Grid.Row="1">
-                    <ListView x:Name ="m_LockedListView"
-                           ItemsSource = "{Binding LockedCollection}" RowHeight="50"
-                           ItemSelected="ListView_OnItemSelected">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell Tapped="Cell_OnTapped">
-                                    <Grid BackgroundColor="{Binding OrderStatusColor}"  Margin="0,5,0,5" PropertyChanged="BindableObject_OnPropertyChanged">
-                                        <Grid.ColumnDefinitions >
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width=".5*"/>
-                                        </Grid.ColumnDefinitions >
-                                        <Image Grid.Column="0" Grid.ColumnSpan="2"
-                                           Source="icon_LockedNew"
-                                           Aspect="Fill"/>
-                                        <Grid  Grid.Column="2">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Label Grid.Row="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                            <Label Grid.Row="1" Text="{Binding OderID }"  FontFamily="FAS"/>
-                                        </Grid>
-                                    </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollView>
-
-                <ScrollView Grid.Row="3">
-                    <ListView x:Name="m_DoneListView"
-                       ItemsSource = "{Binding DoneOrdersCollection}" RowHeight="50"
-                       ItemSelected="ListView_OnItemSelected">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell Tapped="Cell_OnTapped">
-                                    <Grid BackgroundColor="{Binding OrderStatusColor}"  Margin="5,5,5,5" PropertyChanged="BindableObject_OnPropertyChanged">
+                <CollectionView Grid.Row="1" x:Name ="m_LockedListView" Margin="5"
+                                ItemsSource = "{Binding LockedCollection}" HeightRequest="20"
+                                SelectionMode="Single">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <views:Expander CollapseAnimationLength="500" AnimationLength="500" Tapped="Expander_OnTapped" Padding="2">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" >
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="SlateGray" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <views:Expander.Header>
+                                    <Grid  BackgroundColor="{Binding OrderStatusColor}"  views:CornerRadiusEffect.CornerRadius="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                        </Grid.RowDefinitions>
                                         <Grid.ColumnDefinitions >
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
-                                        <Image Grid.Column="2"
-                                       Source="icon_DoneNew" 
-                                       Aspect="Fill"/>
-                                        <Grid  Grid.Column="0" Grid.ColumnSpan="2">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions >
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions >
-                                            <Label Grid.Row="0" Grid.Column="0" 
-                                           Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                            <Label Grid.Row="0" Grid.Column="1"  
-                                           Text="{Binding OderID }"  FontFamily="FAS"/>
-                                            <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" 
-                                           Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
-                                        </Grid>
+                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
                                     </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollView>
+                                </views:Expander.Header>
+                                <views:Expander.Content>
+                                    <Grid BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="30"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions >
+                                        <Label Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemDescription}" FontFamily="FAS" />
+                                        <Button Grid.Row="4" Grid.Column="1" 
+                                                    CornerRadius="30" BackgroundColor="DarkOrange"  Padding="-5"
+                                                    Text="{x:Static fontAwesome:FontAwesomeIcons.Fire }" FontSize="Body" FontFamily="FAS"
+                                                    Command="{Binding StartCommand }"/>
+                                    </Grid>
+                                </views:Expander.Content>
+                            </views:Expander>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </Grid>
 
 
-            <Grid x:Name="m_ButtonsAndOrderViewGrid" Grid.Row="1" Grid.Column="3" >
+            <Grid x:Name ="m_GridDone" Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height=".5*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height=".1*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <SearchBar BackgroundColor="DarkGray" Grid.Row="0"></SearchBar>
-                <Grid x:Name="m_OrdersLayout" Grid.Row="1" Grid.RowSpan="3">
-                </Grid>
+                <BoxView Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                         BackgroundColor="DarkCyan"  Margin="-1,0,-4,-3"/>
+                <Label Grid.Row ="0" Grid.Column="0"
+                       Text ="Done"
+                       FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
+                       HorizontalOptions="CenterAndExpand" />
+                <CollectionView Grid.Row="1" x:Name="m_DoneListView" Margin="5"
+                                ItemsSource = "{Binding DoneOrdersCollection}"
+                                SelectionMode="Single">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <views:Expander CollapseAnimationLength="500" AnimationLength="500" Tapped="Expander_OnTapped" Padding="2">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" >
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="SlateGray" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <views:Expander.Header>
+                                    <Grid  BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5" >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions >
+                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
+                                    </Grid>
+                                </views:Expander.Header>
+                                <views:Expander.Content>
+                                    <Grid BackgroundColor="{Binding OrderStatusColor}" views:CornerRadiusEffect.CornerRadius="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="30"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions >
+                                        <Label Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                        <Label Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3"
+                                               Text="{Binding OrderItemDescription}" FontFamily="FAS" />
+                                        <Button Grid.Row="4" Grid.Column="1" 
+                                                CornerRadius="30" BackgroundColor="DarkGray"  Padding="-5"
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Undo }" FontSize="Body" FontFamily="FAS"
+                                                Command="{Binding RestoreCommand }"/>
+                                    </Grid>
+                                </views:Expander.Content>
+                            </views:Expander>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </Grid>
-        </Grid >
+        </Grid>
     </FlexLayout>
 </ContentPage>

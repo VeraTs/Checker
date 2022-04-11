@@ -2,9 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 using CheckerUI.Helpers;
 using CheckerUI.Models;
+using CheckerUI.Views.PopupViews;
 using Microsoft.AspNetCore.SignalR.Client;
+using Xamarin.CommunityToolkit.Extensions;
+using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,6 +22,11 @@ namespace CheckerUI.Views
 
         private readonly BaseLineViewModel baseVM;
         private ListView m_LastListWithItemSelected = null;
+        private Expander m_lastTappedExpander = null;
+        private CollectionView m_LastTappedView = null;
+
+        private int m_CounterToMake = 0;
+        private int m_CounterInProgress = 0;
 
         public LineView(string i_Title)
         {
@@ -24,7 +34,7 @@ namespace CheckerUI.Views
             this.Title = i_Title;
             BackgroundColor = Color.Transparent;
             baseVM = new BaseLineViewModel();
-            baseVM.init(m_OrdersLayout);
+            baseVM.init();
             BindingContext = baseVM;
             m_GetOrdersButton.Command = baseVM.FeelOrdersCommand;
             m_ReturnButton.Command = baseVM.ReturnCommand;
@@ -49,21 +59,64 @@ namespace CheckerUI.Views
         private void ListView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             ListView lv = sender as ListView;
+            
             baseVM.LastSelectedItem = lv.SelectedItem as OrderItemView;
             m_LastListWithItemSelected = lv;
         }
-        private void Cell_OnTapped(object sender, EventArgs e)
+
+        private void Expander_OnTapped(object sender, EventArgs e)
         {
-            ViewCell vc = sender as ViewCell;
-            baseVM.LastTappedCell = vc;
-            baseVM.Button_Clicked(sender, EventArgs.Empty);
-            m_LastListWithItemSelected.SelectedItem = null;
-            
+            var current_expander = sender as Expander;
+            if (m_lastTappedExpander != null && m_lastTappedExpander != current_expander)
+            {
+                m_lastTappedExpander.IsExpanded = false;
+                current_expander.IsExpanded = true;
+            }
+            m_lastTappedExpander = current_expander;
         }
-        private void BindableObject_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+
+
+        private void ToMakeListView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           Grid g = sender as Grid;
-           baseVM.m_LastGridInCell = g;
+            var item = e.CurrentSelection;
+            var prev = e.PreviousSelection;
+            if (item != prev)
+            {
+                
+            }
+        }
+
+        public async Task InvokeNewOrderAni()
+        {
+            await Navigation.ShowPopupAsync(new PopupPageNewOrder());
+        }
+      
+
+        private  void M_NoJobYet_OnClicked(object sender, EventArgs e)
+        {
+            baseVM.refresh();
+        }
+
+
+
+        private async void InProgressListView_OnChildAdded(object sender, ElementEventArgs e)
+        {
+            m_LabelInProgress.IsVisible = false; 
+            m_FireLottie.IsVisible = true; 
+            m_FireLottie.PlayAnimation(); 
+            await Task.Delay(3000); 
+            m_FireLottie.IsVisible = false; 
+            m_LabelInProgress.IsVisible = true;
+        }
+
+        private async void ToMakeListView_OnChildAdded(object sender, ElementEventArgs e)
+        {
+            m_LabelToMake.IsVisible = false;
+            m_NewOrderLottie.IsVisible = true;
+            m_NewOrderLottie.PlayAnimation();
+            await Task.Delay(3000);
+            m_NewOrderLottie.IsVisible = false;
+            m_LabelToMake.IsVisible = true;
         }
     }
 }
