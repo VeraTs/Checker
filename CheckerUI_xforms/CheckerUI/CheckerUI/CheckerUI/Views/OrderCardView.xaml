@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
+             xmlns:helpers="clr-namespace:CheckerUI.Helpers;assembly=CheckerUI"
+             xmlns:views="clr-namespace:CheckerUI.Views;assembly=CheckerUI"
+             x:DataType="viewmodel:OrderViewModel"
+             x:Class="CheckerUI.Views.OrderCardView">
+ 
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+           HasShadow="True" 
+            CornerRadius="20"
+            Padding="0"  
+           BackgroundColor="White" BorderColor="Gray">
+            <StackLayout Orientation="Horizontal">
+                <BoxView Color="{Binding OrderStateColor}" WidthRequest="16"/>
+                <Grid VerticalOptions="CenterAndExpand"  
+                      Padding="0"  Margin="5" 
+                      HorizontalOptions="FillAndExpand"  
+                      BackgroundColor="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".1*"/>
+                        <RowDefinition Height=".1*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height=".8*"/>
+                    </Grid.RowDefinitions>
+                    <Label FontAttributes="Bold"  
+                           Grid.Row="0"  
+                           HorizontalTextAlignment="Start"  
+                           VerticalTextAlignment="Center"  
+                           FontSize="Body"
+                           Text="{Binding TableNumberString}"
+                           LineBreakMode="TailTruncation"/>
+                    <Label Grid.Row="1" 
+                           HorizontalTextAlignment="Start"  
+                           VerticalTextAlignment="Center"  
+                           FontSize="Body"
+                           Text="{Binding RemainingItems}"
+                           LineBreakMode="TailTruncation"/>
+
+                    <BoxView Grid.Row="2" Color="CadetBlue"  
+                             HorizontalOptions="FillAndExpand"  
+                             HeightRequest="2"/>
+                  
+                    <ScrollView Grid.Row="3" Margin="1">
+                        <CollectionView x:Name = "m_ItemsCollection"  ItemsSource="{Binding Items}" SelectionMode="Single" >
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="2" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout>
+                                        <StackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_OnTapped"/>
+                                            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_OnDoubleTapped"/>
+                                        </StackLayout.GestureRecognizers>
+                                        <views:OrderItemCardView  
+                                            Margin="0"
+                                            VerticalOptions="StartAndExpand"
+                                            HorizontalOptions="StartAndExpand"
+                                            Padding="1"/>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup Name="CommonStates">
+                                                <VisualState Name="Normal"/>
+                                                <VisualState Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Grid>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>
+    

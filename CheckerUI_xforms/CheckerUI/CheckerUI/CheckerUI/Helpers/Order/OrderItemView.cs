@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using CheckerUI.Enums;
 using CheckerUI.Helpers.Order;
 using CheckerUI.Models;
 using CheckerUI.ViewModels;
@@ -33,11 +34,69 @@ namespace CheckerUI.Helpers
         {
 
         }
+
+        public OrderItemView(OrderItemModel i_item)
+        {
+            m_orderItem = new OrderItemModel();
+            m_orderItem = i_item;
+            OrderNotifier = i_item.m_ID_Status_Notifier;
+
+            ReadyCommand = new Command(() =>
+            {
+                if (OrderStatus == 0)
+                {
+                    OrderStatus = 1;
+                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
+                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
+                }
+            }); // this command will bind to timer , idNotifier is already a listener
+
+            StopCommand = new Command(() =>
+            {
+                if (OrderStatus != -1)
+                {
+                    OrderStatus = 2;
+                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
+                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
+                }
+            });
+
+            StartCommand = new Command(() =>
+            {
+                if (OrderStatus != -1)
+                {
+                    OrderStatus = 1;
+                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
+                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
+                }
+            });
+            DoneCommand = new Command(() =>
+            {
+                if (IsInProgress)
+                {
+                    OrderStatus = 3;
+                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
+                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
+                    m_OrderRestored = true;
+                }
+                else
+                {
+                    Application.Current.MainPage.DisplayAlert("Order Locked", m_orderItem.m_OrderItemName, "Ok");
+                }
+            });
+            RestoreCommand = new Command(() =>
+            {
+                i_item.m_ID_Status_Notifier.Status = 1;
+                OrderStatus = 1;
+                OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
+                OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
+            });
+        }
         public OrderItemView(string i_Name, OrderIDNotifier idNotifier)
         {
            
             m_orderItem = new OrderItemModel();
-            m_orderItem = CreateItemView( i_Name,  100, "Notes ...", 1, idNotifier);
+            m_orderItem = CreateItemModel( i_Name,  100, "Notes ...", 1, eOrderItemType.First , idNotifier);
             OrderNotifier = idNotifier;
             ReadyCommand = new Command(() =>
             {
@@ -166,10 +225,10 @@ namespace CheckerUI.Helpers
         public bool IsHolding => OrderStatus == 2;
         public bool IsCompleted => OrderStatus == 3;
 
-        internal OrderItemModel CreateItemView(string i_Name, int i_Table, string i_Desc,
-            int i_DeptID, OrderIDNotifier i_Notifier)
+        internal OrderItemModel CreateItemModel(string i_Name, int i_Table, string i_Desc,
+            int i_DeptID, eOrderItemType i_Type ,OrderIDNotifier i_Notifier)
         {
-            return OrderItemBuilder.GenerateOrderItem(i_Name, i_Table, i_Desc, i_DeptID, i_Notifier);
+            return OrderItemBuilder.GenerateOrderItem(i_Name, i_Table, i_Desc, i_DeptID, i_Type,i_Notifier);
         }
     }
 }

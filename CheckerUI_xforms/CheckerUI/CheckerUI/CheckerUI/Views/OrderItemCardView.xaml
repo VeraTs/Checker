@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:CheckerUI.Helpers"
+             x:DataType="helpers:OrderItemView"
+             x:Class="CheckerUI.Views.OrderItemCardView">
+  <ContentView.Content>
+      <Frame HasShadow="True" 
+             BorderColor="Black"
+             CornerRadius="30"
+             IsClippedToBounds="True"
+             BackgroundColor="Transparent" Padding="2">
+            <Grid>
+                      <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="*"/>
+                          <ColumnDefinition Width="*"/>
+                          <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+               
+                <CheckBox Grid.Row="0" Grid.Column="0" 
+                          Color="Black"/>
+                      <Label Grid.Row="0" Grid.Column="1"
+                             FontFamily="FAS"
+                             VerticalTextAlignment="Center" 
+                             HorizontalOptions="Start"
+                             Text="{Binding  OrderItemName}"/>
+                <Label Grid.Column="2"
+                       FontFamily="FAS"
+                       VerticalTextAlignment="Center" 
+                       HorizontalOptions="Start"
+                       Text="{Binding    IsInProgress}"/>
+</Grid>
+          </Frame>
+  </ContentView.Content>
+</ContentView>
+    
+    
+    

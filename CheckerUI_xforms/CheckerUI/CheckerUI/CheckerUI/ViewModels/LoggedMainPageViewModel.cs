@@ -38,10 +38,12 @@ namespace CheckerUI.ViewModels
             });
             ShowStatisticsCommand = new Command(async () =>
             {
-                var statisticsVm = new ShowStatisticsPageViewModel();
-                var statisticsPage = new ShowStatisticsPage();
-                statisticsPage.BindingContext = statisticsVm;
-                await Application.Current.MainPage.Navigation.PushAsync(statisticsPage);
+                //var statisticsVm = new ShowStatisticsPageViewModel();
+                //var statisticsPage = new ShowStatisticsPage();
+                //statisticsPage.BindingContext = statisticsVm;
+                //await Application.Current.MainPage.Navigation.PushAsync(statisticsPage);
+                var ordersView = new OrdersView();
+                await Application.Current.MainPage.Navigation.PushAsync(ordersView);
             });
             ReturnCommand = new Command(async () =>
             {

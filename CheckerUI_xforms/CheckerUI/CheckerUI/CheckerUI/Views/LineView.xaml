@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions >
 
-
+         
             <BoxView Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" BackgroundColor="SlateGray" Margin="-4,0,0,0"></BoxView>
             <Grid x:Name ="m_TopButtonsGrid" Grid.Row="0" Grid.Column="3">
                 <Grid.ColumnDefinitions>
@@ -102,7 +102,6 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
-                                           
                                         </Grid.ColumnDefinitions >
                                         <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
                                         <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>

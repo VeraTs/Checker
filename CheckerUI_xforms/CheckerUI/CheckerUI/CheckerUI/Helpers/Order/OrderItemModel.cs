@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using CheckerUI.Enums;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 
@@ -14,6 +15,7 @@ namespace CheckerUI.Helpers.Order
         public int m_TableNumber { get; set; }
         public DateTime m_StartDate { get; set; }
         public DateTime m_CreatedDate { get; set; }
+        public eOrderItemType m_ItemType { get; set; }
 
         public OrderIDNotifier m_ID_Status_Notifier { get; set; }
         public override string ToString()

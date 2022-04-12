@@ -45,7 +45,7 @@ namespace CheckerUI.ViewModels
       
         private List<OrderItemView> m_DoneOrdersList { get; set; }
         private Grid m_GridOrders { get; set; }
-        private OrderManager m_Manager;
+        private OrdersManager m_Manager;
         public Command FeelOrdersCommand { get; set; }
         public Command ReturnCommand { get; set; }
 
@@ -58,7 +58,7 @@ namespace CheckerUI.ViewModels
             OrderIDNotifier notifier = new OrderIDNotifier(-1, -1);
             var currentOrder = new OrderItemView("Dummy", notifier);
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-            m_Manager  = new OrderManager(m_Orders); // connect to OrderManger orders
+            m_Manager  = new OrdersManager(); // connect to OrderManger orders
 
             ReturnCommand = new Command(async () =>
             {
@@ -96,7 +96,7 @@ namespace CheckerUI.ViewModels
         }
         public void refresh()
         {
-            m_Manager.feel_layout(m_tempCounter++);
+            
         }
         private void OrderStatusNotifierPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
