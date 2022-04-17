@@ -1,122 +1,97 @@
 ﻿using System;
 using System.ComponentModel;
+using CheckerUI.Enums;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
 {
     public class OrderIDNotifier : INotifyPropertyChanged
     {
-        private int m_status;
-        private string m_StatusString;
-        private Color m_StatusColor;
+       
+        private eOrderItemState m_state;
         public event PropertyChangedEventHandler PropertyChanged;
         private DateTime m_CreatedTime;
-        public OrderIDNotifier(int i_ID, int i_Status)
+
+        public OrderIDNotifier()
+        {
+            
+        }
+        public OrderIDNotifier(int i_ID, eOrderItemState i_State)
         {
             OrderID = i_ID;
-            m_status = i_Status;
-            m_StatusColor = new Color();
+            m_state = i_State;
+            StatusColor = new Color();
             OrderStatusToString();
             m_CreatedTime = new DateTime();
             m_CreatedTime = DateTime.Now;
-            TimeLeftString = m_CreatedTime.ToString();
-
         }
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, e);
-        }
-        protected void OnPropertyChanged(string propertyName)
-        {
-
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
+        
         /// <summary>
         /// properties, some signed to event delegate
         /// </summary>
-        public int Status
+        public eOrderItemState Status
         {
-            get => m_status;
+            get => m_state;
             set
             {
-                if (m_status == value) return;
-                m_status = value;
+                if (m_state == value) return;
+                m_state = value;
                 OrderStatusToString();
-                OnPropertyChanged(nameof(Status));
+               
             }
         }
 
-        public string StatusString
-        {
-            get => m_StatusString;
-            set
-            {
-                OrderStatusToString();
-                OnPropertyChanged(nameof(StatusString));
-            }
-        }
+        public string StatusString { get; set; }
+
         public int OrderID { get; set; }
 
-        public Xamarin.Forms.Color StatusColor
-        {
-            get => m_StatusColor;
-            set
-            {
-                m_StatusColor = value;
-                OnPropertyChanged(nameof(StatusColor));
-            }
-        }
+        public Xamarin.Forms.Color StatusColor { get; set; }
 
-        public string TimeLeftString
-        {
-            get => m_CreatedTime.ToString();
-            set
-            {
-                m_CreatedTime = DateTime.Now;
-                OnPropertyChanged(nameof(TimeLeftString));
-            }
-        }
+        public string TimeLeftString => m_CreatedTime.ToString();
 
         public void OrderStatusToString() // expensive , try to swap it
         {
-            string output = "Status : ";
+            string output = "";
             switch (Status)
             {
-                case -1:
+                case eOrderItemState.Waiting:
                 {
-                    output += "Locked";
-                    m_StatusColor = Color.Firebrick;
+                    output += "Waiting";
+                    StatusColor = Color.Firebrick;
                     break;
                 }
-                case 0:
+                case eOrderItemState.Available:
                 {
                     output += "Available";
-                    m_StatusColor = Color.Gold;
+                    StatusColor = Color.Gold;
                     break;
                 }
-                case 1:
+                case eOrderItemState.InPreparation:
                 {
-                    output += "In Progress";
-                    m_StatusColor = Color.DarkOrange;
+                    output += "In Preparation";
+                    StatusColor = Color.DarkOrange;
                     break;
                 }
-                case 2:
+                case eOrderItemState.Ready:
                 {
-                    output += "Holding";
-                    m_StatusColor = Color.Firebrick;
+                    output += "Ready";
+                    StatusColor = Color.Firebrick;
+                    break;
+                }
+                case eOrderItemState.Completed:
+                {
+                    output += "Completed";
+                    StatusColor = Color.Firebrick;
                     break;
                 }
                 default:
                 {
-                    output += "Done";
-                    m_StatusColor = Color.Chartreuse;
+                    output += "Waiting";
+                    StatusColor = Color.Chartreuse;
                     break;
                 }
             }
-            m_StatusString = output;
+            StatusString = output;
         }
     }
 }

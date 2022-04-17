@@ -21863,6 +21863,12 @@ namespace CheckerUI.Droid
 			// aapt resource value: 0x7F07009F
 			public const int tooltip_frame_light = 2131165343;
 			
+			// aapt resource value: 0x7F0700A0
+			public const int whitePaperBackground = 2131165344;
+			
+			// aapt resource value: 0x7F0700A1
+			public const int whiteParperBackground = 2131165345;
+			
 			static Drawable()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

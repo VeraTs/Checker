@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using CheckerUI.Enums;
 using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
 using CheckerUI.Models;
@@ -35,16 +37,16 @@ namespace CheckerUI.ViewModels
     public class BaseLineViewModel : BaseViewModel
     {
         private static int m_counterID = 0;
-        private static int m_tempCounter = 60;
+
         public ObservableCollection<OrderItemView> m_Orders { get; set; }
         private Dictionary<int, OrderItemView> m_OrdersList { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsLocked { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
-      
+
         private List<OrderItemView> m_DoneOrdersList { get; set; }
-        private Grid m_GridOrders { get; set; }
+
         private OrdersManager m_Manager;
         public Command FeelOrdersCommand { get; set; }
         public Command ReturnCommand { get; set; }
@@ -55,11 +57,10 @@ namespace CheckerUI.ViewModels
         {
             allocations();
 
-            OrderIDNotifier notifier = new OrderIDNotifier(-1, -1);
-            var currentOrder = new OrderItemView("Dummy", notifier);
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-            m_Manager  = new OrdersManager(); // connect to OrderManger orders
-
+            m_Manager = new OrdersManager(); // connect to OrderManger orders
+            m_Manager.itemsLineView = m_Orders;
+            m_Manager.UpdateLines();
             ReturnCommand = new Command(async () =>
             {
                 await Application.Current.MainPage.Navigation.PopAsync();
@@ -76,8 +77,7 @@ namespace CheckerUI.ViewModels
             m_ButtonsToMake = new ObservableCollection<OrderItemView>();
             m_ButtonsDone = new ObservableCollection<OrderItemView>();
             m_DoneOrdersList = new List<OrderItemView>();
-         
-            m_GridOrders = new Grid();
+
             FeelOrdersCommand = new Command(refresh);
         }
         private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -85,61 +85,86 @@ namespace CheckerUI.ViewModels
             if (m_counterID < m_Orders.Count) // new order is entered
             {
                 OrderItemView last = m_Orders.Last();
-                m_ButtonsToMake.Add(last);
-                //last.OrderButton.Clicked += Button_Clicked;
-                OrderIDNotifier notifier = last.OrderNotifier;
-                notifier.PropertyChanged += OrderStatusNotifierPropertyChanged;
+                addItemToLinePlace(last);
+               // m_ButtonsInProgress.Add(last);
+                last.OrderStatusChangedNotifier.CollectionChanged += OrderStatusChangedNotifierOnCollectionChanged;
                 m_OrdersList.Add(last.OderID, last);
                 m_counterID++;
-                
+
             }
         }
+
+        private void addItemToLinePlace(OrderItemView i_ToAdd)
+        {
+            switch (i_ToAdd.OrderStatus)
+            {
+                case eOrderItemState.Waiting:
+                    {
+                        m_ButtonsLocked.Add(i_ToAdd);
+                        break;
+                    }
+                case eOrderItemState.Available:
+                    {
+                        m_ButtonsToMake.Add(i_ToAdd);
+                        break;
+                    }
+                case eOrderItemState.InPreparation:
+                    {
+                        m_ButtonsInProgress.Add(i_ToAdd);
+                        break;
+                    }
+                case eOrderItemState.Ready:
+                    {
+                        m_ButtonsDone.Add(i_ToAdd);
+                        break;
+                    }
+
+            }
+        }
+        private void OrderStatusChangedNotifierOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var observer = sender as ObservableCollection<int>;
+
+            var id = observer[0];
+            var order = m_Orders[id];
+
+            switch (order.OrderStatus)
+            {
+                case eOrderItemState.Waiting:
+                    {
+                        caseIsHolding(order);
+                        break;
+                    }
+                case eOrderItemState.Available:
+                    {
+                        caseIsAvailable(order);
+                        break;
+                    }
+                case eOrderItemState.InPreparation:
+                    {
+                        caseIsInProgress(order);
+                        break;
+                    }
+                case eOrderItemState.Ready:
+                    {
+                        caseIsCompleted(order);
+                        break;
+                    }
+                case eOrderItemState.Completed:
+                    {
+                        break;
+                    }
+                default:
+                    {
+                        caseIsRestored(order);
+                        break;
+                    }
+            }
+        }
+
         public void refresh()
         {
-            
-        }
-        private void OrderStatusNotifierPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var m = sender as OrderIDNotifier;
-            var order = getOrderByID(m.OrderID);
-          
-            
 
-            if (order.isRestored)
-            {
-                caseIsRestored(order);
-            }
-            else if (order.IsAvailable)
-            {
-                caseIsAvailable(order);
-            }
-            else if (order.IsHolding)
-            {
-                caseIsHolding(order);
-            }
-            else if (order.IsInProgress)
-            {
-                caseIsInProgress(order);
-
-            }
-            else if (order.IsCompleted)
-            {
-                caseIsCompleted(order);
-            }
-           
-        }
-
-        private OrderItemView getOrderByID(int i_ID) // expensive method !! 
-        {
-            OrderItemView res = null;
-            foreach (var order in m_Orders)
-            {
-                if (order.OderID == i_ID)
-                {
-                    res = order;
-                }
-            }
-            return res;
         }
 
         private void caseIsAvailable(OrderItemView i_Order)
@@ -160,7 +185,7 @@ namespace CheckerUI.ViewModels
         }
         private void caseIsHolding(OrderItemView i_Order)
         {
-            
+
         }
 
         private void caseIsInProgress(OrderItemView i_Order)
@@ -180,45 +205,63 @@ namespace CheckerUI.ViewModels
                 m_ButtonsDone.Add(i_Order);
                 m_DoneOrdersList.Add(i_Order);
                 m_counterID--;
-                
             }
             else
             {
 
             }
         }
-       
 
-        public ObservableCollection<OrderItemView> ButtonsInProgress
+
+        public ObservableCollection<OrderItemView> InProgressItemsCollection
         {
             get => m_ButtonsInProgress;
             set => m_ButtonsInProgress = value;
         }
+        public void ItemToMakeOnDoubleClicked(OrderItemView i_Item)
+        {
+            m_ButtonsToMake.Remove(i_Item);
+            i_Item.OrderStatus = eOrderItemState.InPreparation;
+            i_Item.OrderItemTimeStarted = DateTime.Now;
+            m_ButtonsInProgress.Add(i_Item);
+        }
 
-        public ObservableCollection<OrderItemView> ToMakeOrderIdCollection
+        public void ItemInProgressOnDoubleClick(OrderItemView i_Item)
+        {
+            m_ButtonsInProgress.Remove(i_Item);
+            i_Item.OrderStatus = eOrderItemState.Ready;
+            i_Item.OrderItemTimeDone = DateTime.Now;
+            i_Item.FirstTimeToShowString = i_Item.OrderItemTimeDoneString;
+            m_ButtonsDone.Add(i_Item);
+        }
+
+        public void ItemReadyOnDoubleClick(OrderItemView i_Item)
+        {
+            m_ButtonsDone.Remove(i_Item);
+            i_Item.OrderStatus = eOrderItemState.InPreparation;
+            i_Item.OrderItemTimeDone = DateTime.MinValue;
+            i_Item.FirstTimeToShowString = i_Item.OrderItemTimeCreate;
+            m_ButtonsInProgress.Add(i_Item);
+        }
+        public ObservableCollection<OrderItemView> ToMakeItemsCollection
         {
             get => m_ButtonsToMake;
             set => m_ButtonsToMake = value;
         }
 
-        public ObservableCollection<OrderItemView> DoneOrdersCollection
+        public ObservableCollection<OrderItemView> DoneItemsCollection
         {
             get => m_ButtonsDone;
             set => m_ButtonsDone = value;
         }
-        public ObservableCollection<OrderItemView> LockedCollection
+        public ObservableCollection<OrderItemView> LockedItemsCollection
         {
             get => m_ButtonsLocked;
             set => m_ButtonsLocked = value;
         }
         public OrderItemView LastSelectedItem { get; set; } = new OrderItemView();
 
-        public void StartButton_Clicked(object sender, EventArgs e)
-        {
-            Button b = (Button)sender;
-            Grid g = b.Parent as Grid;
-            g.BackgroundColor = Color.White;
-        }
-
     }
+
+   
 }

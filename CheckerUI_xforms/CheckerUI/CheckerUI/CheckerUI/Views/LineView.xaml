@@ -3,11 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:fontAwesome="clr-namespace:FontAwesome" 
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
-             xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
-             xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
-             xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
              xmlns:views="http://xamarin.com/schemas/2020/toolkit"
-             xmlns:helpers="clr-namespace:CheckerUI.Helpers;assembly=CheckerUI"
              xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
              x:Class="CheckerUI.Views.LineView" NavigationPage.HasNavigationBar="false">
 
@@ -69,8 +65,8 @@
                                             HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand"/>
                 </FlexLayout>
                 <CollectionView x:Name="InProgressListView" Grid.Row="1" Margin="5" 
-                                ItemsSource = "{Binding ButtonsInProgress}"
-                                SelectionMode="Single"
+                                ItemsSource = "{Binding InProgressItemsCollection}"
+                                SelectionMode="None"
                                 ChildAdded="InProgressListView_OnChildAdded">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
@@ -103,8 +99,8 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
-                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="2"  Text="{Binding OderID }"  FontFamily="FAS"/>
                                         <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
                                     </Grid>
                                 </views:Expander.Header>
@@ -123,23 +119,22 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
                                         <Label Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="3"
-                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                               Text="{Binding OrderItemTimeCreate}" FontFamily="FAS" />
                                         <Label Grid.Column="0"  Grid.Row="1" Grid.ColumnSpan="3"
-                                               Text="{Binding OrderItemTimeLeft}" FontFamily="FAS" />
+                                               Text="{Binding OrderItemTimeStarted}" FontFamily="FAS" />
                                         <Label Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3"
                                                Text="{Binding OrderItemDescription}" FontFamily="FAS" />
                                         <Button Grid.Row="4" Grid.Column="0" 
                                                 BackgroundColor="YellowGreen" CornerRadius="30" Padding="-5"
                                                 Text="{x:Static fontAwesome:FontAwesomeIcons.Check }" FontSize="Body"  FontFamily="FAS"
-                                               Command="{Binding DoneCommand }"  />
+                                              />
                                         <Button Grid.Row="4" Grid.Column="1" 
                                                 CornerRadius="30" BackgroundColor="DarkOrange"  Padding="-5"
                                                 Text="{x:Static fontAwesome:FontAwesomeIcons.Fire }" FontSize="Body" FontFamily="FAS"
-                                                Command="{Binding StartCommand }"/>
+                                               />
                                         <Button Grid.Row="4" Grid.Column="2"
                                                 CornerRadius="30"  BackgroundColor="Firebrick"  Padding="-5"
-                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Stop }" FontSize="Body" FontFamily="FAS"
-                                                Command="{Binding StopCommand }"/>
+                                                Text="{x:Static fontAwesome:FontAwesomeIcons.Stop }" FontSize="Body" FontFamily="FAS"/>
                                     </Grid>
                                 </views:Expander.Content>
                             </views:Expander>
@@ -167,8 +162,8 @@
                 </FlexLayout>
             
                 <CollectionView Grid.Row="1" x:Name ="ToMakeListView" Margin="5" 
-                                ItemsSource = "{Binding ToMakeOrderIdCollection}" HeightRequest="20" 
-                                SelectionMode="Single"
+                                ItemsSource = "{Binding ToMakeItemsCollection}" HeightRequest="20" 
+                                SelectionMode="None"
                                  ChildAdded="ToMakeListView_OnChildAdded">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10" SnapPointsAlignment="End"/>
@@ -203,8 +198,8 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
-                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="2"  Text="{Binding OderID }"  FontFamily="FAS"/>
                                         <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
                                     </Grid>
                                 </views:Expander.Header>
@@ -262,8 +257,8 @@
                        FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
                        HorizontalOptions="CenterAndExpand"/>
                 <CollectionView Grid.Row="1" x:Name ="m_LockedListView" Margin="5"
-                                ItemsSource = "{Binding LockedCollection}" HeightRequest="20"
-                                SelectionMode="Single">
+                                ItemsSource = "{Binding LockedItemsCollection}" HeightRequest="20"
+                                SelectionMode="None">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
                     </CollectionView.ItemsLayout>
@@ -295,8 +290,8 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions >
-                                        <Label Grid.Row="0"  Grid.Column="0" Text="{Binding OrderItemName}" FontFamily="FAS" />
-                                        <Label Grid.Row="0" Grid.Column="1"  Text="{Binding OderID }"  FontFamily="FAS"/>
+                                        <Label Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding OrderItemName}" FontFamily="FAS" />
+                                        <Label Grid.Row="0" Grid.Column="2"  Text="{Binding OderID }"  FontFamily="FAS"/>
                                         <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Text="{Binding  OrderStatusString}" FontFamily="FAS"/>
                                     </Grid>
                                 </views:Expander.Header>
@@ -345,7 +340,7 @@
                        FontAttributes ="Bold"  FontSize="Body"  FontFamily ="FAS"
                        HorizontalOptions="CenterAndExpand" />
                 <CollectionView Grid.Row="1" x:Name="m_DoneListView" Margin="5"
-                                ItemsSource = "{Binding DoneOrdersCollection}"
+                                ItemsSource = "{Binding DoneItemsCollection}"
                                 SelectionMode="Single">
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>

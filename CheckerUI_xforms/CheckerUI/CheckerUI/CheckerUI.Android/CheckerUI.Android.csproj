@@ -79,6 +79,7 @@
     <AndroidAsset Include="Assets\coldCooking_Lottie.json" />
     <AndroidAsset Include="Assets\HotCooking_Lottie.json" />
     <AndroidAsset Include="Assets\pizzaCooking_Lottie.json" />
+    <AndroidAsset Include="Assets\excellent_Lottie.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -173,6 +174,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\chefBackground.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\whiteParperBackground.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\whitePaperBackground.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
+             x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsInProgressCardView" 
+             x:DataType="viewModels:BaseLineViewModel">
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+               HasShadow="True" 
+               CornerRadius="0"
+               Padding="0" 
+               BackgroundColor="Transparent" BorderColor="Gray">
+            <StackLayout Orientation="Horizontal" BackgroundColor="Transparent">
+                <BoxView BackgroundColor="LightGray"  WidthRequest="16"/>
+                <Grid VerticalOptions="CenterAndExpand"  
+                      Padding="0"  Margin="1" 
+                      HorizontalOptions="FillAndExpand"  
+                      BackgroundColor="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".2*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <BoxView Grid.Row="0" BackgroundColor="LightGray" Margin="-8,0,0,-5"/>
+                    <Label Grid.Row ="0" 
+                           Text ="In Progress"
+                           FontAttributes ="Bold"
+                           FontSize="Title"
+                           FontFamily ="FAS"
+                            HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="CenterAndExpand"/>
+                    <BoxView Grid.Row="1" Color="DarkGray" 
+                             Margin="-7,-5,-1,0"
+                             HeightRequest="1"
+                             HorizontalOptions="FillAndExpand"  />
+                    <ScrollView Grid.Row="2" Margin="0,0,0,2" IsClippedToBounds="True"
+                                Orientation="Horizontal" >
+                        <CollectionView Grid.Row="1" x:Name ="m_InProgressCollection" Margin="5" 
+                                        ItemsSource = "{Binding  InProgressItemsCollection}" 
+                                        SelectionMode="Single" ItemsUpdatingScrollMode="KeepItemsInView" RemainingItemsThreshold="0"
+                                         HorizontalScrollBarVisibility="Always">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal"  ItemSpacing="10"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout >
+                                        <StackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_OnTapped"/>
+                                            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_OnDoubleTapped"/>
+                                        </StackLayout.GestureRecognizers>
+                                        <kitchenLineCardsViews:KitchenOrderItemInProgressCardView  
+                                        Margin="2"
+                                        VerticalOptions="Start"
+                                        HorizontalOptions="Start"
+                                        IsClippedToBounds="True"
+                                        Padding="0"/>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup Name="CommonStates">
+                                                <VisualState Name="Normal"/>
+                                                <VisualState Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Grid>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

@@ -2,36 +2,32 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:CheckerUI.Helpers"
-             x:DataType="helpers:OrderItemView"
-             x:Class="CheckerUI.Views.OrderItemCardView">
-  <ContentView.Content>
-      <Frame HasShadow="True" 
+             xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
+             x:DataType="order:OrderItemView"
+             x:Class="CheckerUI.Views.OrderItemCardView"  WidthRequest="200" HeightRequest="35">
+    <ContentView.Content>
+        <Frame HasShadow="True" 
              BorderColor="Black"
-             CornerRadius="30"
+             CornerRadius="20"
              IsClippedToBounds="True"
-             BackgroundColor="Transparent" Padding="2">
-            <Grid>
-                      <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="*"/>
-                          <ColumnDefinition Width="*"/>
-                          <ColumnDefinition Width="*"/>
+             BackgroundColor="Transparent" Padding="0" >
+            <Grid Margin="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".5*"/>
+                    <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width=".5*"/>
                 </Grid.ColumnDefinitions>
-               
-                <CheckBox Grid.Row="0" Grid.Column="0" 
-                          Color="Black"/>
-                      <Label Grid.Row="0" Grid.Column="1"
-                             FontFamily="FAS"
-                             VerticalTextAlignment="Center" 
-                             HorizontalOptions="Start"
-                             Text="{Binding  OrderItemName}"/>
-                <Label Grid.Column="2"
+
+                <Label Grid.Column="1"
+                       Text="{Binding  OrderItemName}"
                        FontFamily="FAS"
-                       VerticalTextAlignment="Center" 
                        HorizontalOptions="Start"
-                       Text="{Binding    IsInProgress}"/>
-</Grid>
-          </Frame>
-  </ContentView.Content>
+                       VerticalOptions="Center"
+                       MaxLines="1"/>
+            </Grid>
+        </Frame>
+
+    </ContentView.Content>
 </ContentView>
     
     

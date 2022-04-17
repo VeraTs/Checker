@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using CheckerUI.Enums;
-using CheckerUI.Helpers.Order;
-using CheckerUI.Models;
+﻿using CheckerUI.Enums;
 using CheckerUI.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
-using FontAwesome;
 
 //Here we produce the display of a single order item in its line, the grid consists of three rows (currently)
 //In the first row, the name of the dish and an ID card
@@ -15,20 +14,16 @@ using FontAwesome;
 
 
 // To Do:  Status should be changed to Enum
-namespace CheckerUI.Helpers
+namespace CheckerUI.Helpers.Order
 {
     public class OrderItemView : BaseViewModel
     {
         //Properties
         private readonly OrderItemModel m_orderItem;
-
-        private bool m_OrderRestored = false;
+        
         // Commands
-        public Command StopCommand { get; }
-        public Command StartCommand { get; set; }
-        public Command DoneCommand { get; }
-        public Command ReadyCommand { get; }
-        public Command RestoreCommand { get; }
+       
+        private readonly Dictionary<eOrderItemState,Color> m_StateColors = new Dictionary<eOrderItemState,Color>();
 
         public OrderItemView()
         {
@@ -37,198 +32,103 @@ namespace CheckerUI.Helpers
 
         public OrderItemView(OrderItemModel i_item)
         {
+            feelColorsState();
             m_orderItem = new OrderItemModel();
             m_orderItem = i_item;
-            OrderNotifier = i_item.m_ID_Status_Notifier;
+            OrderStatus = i_item.m_State;
+            OderID = i_item.m_OrdrID;
+            OrderItemName = i_item.m_OrderItemName;
+            OrderItemDescription = i_item.m_Description;
+            FirstTimeToShowString = OrderItemTimeCreate;
 
-            ReadyCommand = new Command(() =>
-            {
-                if (OrderStatus == 0)
-                {
-                    OrderStatus = 1;
-                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
-                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
-                }
-            }); // this command will bind to timer , idNotifier is already a listener
-
-            StopCommand = new Command(() =>
-            {
-                if (OrderStatus != -1)
-                {
-                    OrderStatus = 2;
-                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
-                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
-                }
-            });
-
-            StartCommand = new Command(() =>
-            {
-                if (OrderStatus != -1)
-                {
-                    OrderStatus = 1;
-                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
-                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
-                }
-            });
-            DoneCommand = new Command(() =>
-            {
-                if (IsInProgress)
-                {
-                    OrderStatus = 3;
-                    OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
-                    OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
-                    m_OrderRestored = true;
-                }
-                else
-                {
-                    Application.Current.MainPage.DisplayAlert("Order Locked", m_orderItem.m_OrderItemName, "Ok");
-                }
-            });
-            RestoreCommand = new Command(() =>
-            {
-                i_item.m_ID_Status_Notifier.Status = 1;
-                OrderStatus = 1;
-                OrderStatusColor = i_item.m_ID_Status_Notifier.StatusColor;
-                OrderStatusString = i_item.m_ID_Status_Notifier.StatusString;
-            });
         }
-        public OrderItemView(string i_Name, OrderIDNotifier idNotifier)
+
+        private void feelColorsState()
         {
-           
-            m_orderItem = new OrderItemModel();
-            m_orderItem = CreateItemModel( i_Name,  100, "Notes ...", 1, eOrderItemType.First , idNotifier);
-            OrderNotifier = idNotifier;
-            ReadyCommand = new Command(() =>
-            {
-                if (OrderStatus == 0)
-                {
-                    OrderStatus = 1;
-                    OrderStatusColor = idNotifier.StatusColor;
-                    OrderStatusString = idNotifier.StatusString;
-                }
-            }); // this command will bind to timer , idNotifier is already a listener
-
-            StopCommand = new Command(() =>
-            {
-                if(OrderStatus != -1)
-                {
-                    OrderStatus = 2;
-                    OrderStatusString = idNotifier.StatusString;
-                    OrderStatusColor = idNotifier.StatusColor;
-                }
-            });
-
-            StartCommand = new Command(() =>
-            {
-                if (OrderStatus != -1)
-                {
-                    OrderStatus = 1;
-                    OrderStatusColor = idNotifier.StatusColor;
-                    OrderStatusString = idNotifier.StatusString;
-                }
-            });
-            DoneCommand = new Command(() =>
-            {
-                if (IsInProgress)
-                {
-                    OrderStatus = 3;
-                    OrderStatusColor = idNotifier.StatusColor;
-                    OrderStatusString = idNotifier.StatusString;
-                    m_OrderRestored = true;
-                }
-                else
-                {
-                    Application.Current.MainPage.DisplayAlert("Order Locked", m_orderItem.m_OrderItemName, "Ok");
-                }
-            });
-            RestoreCommand = new Command(() =>
-            {
-                idNotifier.Status = 1;
-                OrderStatus = 1;
-                OrderStatusColor = idNotifier.StatusColor;
-                OrderStatusString = idNotifier.StatusString;
-            });
+           m_StateColors.Add(eOrderItemState.Waiting, Color.Firebrick);
+           m_StateColors.Add(eOrderItemState.Available, Color.Gold);
+           m_StateColors.Add(eOrderItemState.InPreparation, Color.DarkOrange);
+           m_StateColors.Add(eOrderItemState.Ready, Color.DarkGreen);
+           m_StateColors.Add(eOrderItemState.Completed, Color.YellowGreen);
         }
-
         public int OderID
         {
-            get => m_orderItem.m_ID_Status_Notifier.OrderID;
-            set => m_orderItem.m_ID_Status_Notifier.OrderID = value;
+            get => m_orderItem.m_OrdrID;
+            set => m_orderItem.m_OrdrID = value;
         }
 
-        public int OrderStatus
+        public eOrderItemState OrderStatus
         {
-            get => m_orderItem.m_ID_Status_Notifier.Status;
-            set => m_orderItem.m_ID_Status_Notifier.Status = value;
-        }
-
-        public bool isRestored
-        {
-            get => m_OrderRestored;
-            set => m_OrderRestored = value;
-        }
-        public string OrderStatusString
-        {
-            get => m_orderItem.m_ID_Status_Notifier.StatusString;
+            get => m_orderItem.m_State;
             set
             {
-                m_orderItem.m_ID_Status_Notifier.StatusString = value;
-                OnPropertyChanged(nameof(OrderStatusString));
+                m_orderItem.m_State = value;
+                OrderStatusString = value.ToString();
+                OrderStatusColor = m_StateColors[OrderStatus];
+                OnPropertyChanged(nameof(OrderStatus));
+            } 
+        }
+
+    
+        public bool isRestored { get; set; } = false;
+
+        public string OrderStatusString { get; set; }
+
+       
+
+        public DateTime OrderItemTimeStarted
+        {
+            get => m_orderItem.m_StartDate;
+            set
+            {
+                m_orderItem.m_StartDate = value;
+                OnPropertyChanged(nameof(OrderItemTimeStarted));
             }
         }
 
-        public string OrderItemTimeLeft
+        public string FirstTimeToShowString { get; set; }
+
+        public string OrderItemTimeCreate => "Created: " + m_orderItem.m_CreatedDate.ToString("hh:mm tt");
+        public string OrderItemTimeStartedString => "Started: "+m_orderItem.m_StartDate.ToString(" hh: mm tt");
+
+        public string OrderItemTimeDoneString => "Done: " + m_orderItem.m_DoneDate.ToString("hh:mm tt");
+        
+
+        public DateTime OrderItemTimeDone
         {
-            get => m_orderItem.m_ID_Status_Notifier.TimeLeftString;
+            get => m_orderItem.m_DoneDate;
             set
             {
-                m_orderItem.m_ID_Status_Notifier.TimeLeftString = value;
-                OnPropertyChanged(nameof(OrderItemTimeLeft));
+                m_orderItem.m_DoneDate = value;
+                OnPropertyChanged(nameof(OrderItemTimeStarted));
             }
         }
+
+
         public string OrderItemName
         {
             get => m_orderItem.m_OrderItemName;
             private set => m_orderItem.m_OrderItemName = value;
         }
-      
 
-        public OrderIDNotifier OrderNotifier
-        {
-            get => m_orderItem.m_ID_Status_Notifier;
-            set => m_orderItem.m_ID_Status_Notifier = value;
-        }
-
-        public Color OrderStatusColor
-        {
-            get => m_orderItem.m_ID_Status_Notifier.StatusColor;
-            set
-            {
-                m_orderItem.m_ID_Status_Notifier.StatusColor = value;
-                OnPropertyChanged(nameof(OrderStatusColor));
-            }
-        }
-
+        public Color OrderStatusColor { get; set; } = new Color();
         public string OrderItemDescription
         {
             get => m_orderItem.m_Description;
-            set
-            {
-                m_orderItem.m_Description = value;
-                OnPropertyChanged(nameof(OrderItemDescription));
-            }
+            set => m_orderItem.m_Description = value;
         }
+        public eOrderItemType OrderItemType => m_orderItem.m_ItemType;
         //replace with enum !
-        public bool IsLocked => OrderStatus < 0;
-        public bool IsAvailable => OrderStatus == 0;
-        public bool IsInProgress => OrderStatus == 1;
-        public bool IsHolding => OrderStatus == 2;
-        public bool IsCompleted => OrderStatus == 3;
 
-        internal OrderItemModel CreateItemModel(string i_Name, int i_Table, string i_Desc,
-            int i_DeptID, eOrderItemType i_Type ,OrderIDNotifier i_Notifier)
+        public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
+
+        internal OrderItemModel CreateItemModel(int i_OrderID,string i_Name, int i_Table, string i_Desc,
+            int i_DeptID, eOrderItemType i_Type, eOrderItemState i_State)
         {
-            return OrderItemBuilder.GenerateOrderItem(i_Name, i_Table, i_Desc, i_DeptID, i_Type,i_Notifier);
+            return OrderItemBuilder.GenerateOrderItem(i_OrderID,i_Name, i_Table, i_Desc, i_DeptID, i_Type, i_State);
         }
+
+        
+
     }
 }

@@ -8,9 +8,8 @@
         <order:OrdersManager/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-       
-            <StackLayout Orientation="Horizontal" Grid.Row="1"
-                         VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        <StackLayout Orientation="Horizontal" Grid.Row="1"
+                     VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
                 <CollectionView ItemsSource="{Binding  OrdersViews}" ItemsUpdatingScrollMode="KeepItemsInView"
                                 ItemsLayout="HorizontalList"   HorizontalScrollBarVisibility="Always">
                     <CollectionView.ItemTemplate>

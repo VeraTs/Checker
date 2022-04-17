@@ -58,8 +58,9 @@ namespace CheckerUI.ViewModels
             {
                 case "Hot Line":
                 {
-                    var baseLinePage = new LineView("Hot Line");
-                    await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
+                   // var baseLinePage = new LineView("Hot Line");
+                   var s = new NewLineView();
+                    await Application.Current.MainPage.Navigation.PushAsync(s);
                     break;
                 }
                 case "Cold Line":
