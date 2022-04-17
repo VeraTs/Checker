@@ -44,10 +44,10 @@
                                  Margin="-7,0,-1,0"
                                  HorizontalOptions="FillAndExpand"  
                                  HeightRequest="2"/>
-                        <ScrollView Grid.Row="3" Margin="0,0,0,5" IsClippedToBounds="True">
+                        <StackLayout Grid.Row="3" Margin="0,0,0,5" IsClippedToBounds="True">
                             <CollectionView x:Name = "m_ItemsCollection" 
                                             ItemsSource="{Binding Items}" Margin="1"
-                                            SelectionMode="None">
+                                            SelectionMode="None"  HorizontalScrollBarVisibility="Always" ItemsUpdatingScrollMode="KeepItemsInView">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="2"/>
                                 </CollectionView.ItemsLayout>
@@ -59,7 +59,7 @@
                                                 <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_OnDoubleTapped"/>
                                             </StackLayout.GestureRecognizers>
                                             <views:OrderItemCardView  
-                                            Margin="0"
+                                            Margin="1"
                                             VerticalOptions="StartAndExpand"
                                             HorizontalOptions="StartAndExpand"
                                             Padding="0"/>
@@ -77,7 +77,7 @@
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
-                        </ScrollView>
+                        </StackLayout>
                     </Grid>
             </StackLayout>
         </Frame>

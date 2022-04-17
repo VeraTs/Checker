@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
+using Lottie.Forms;
 using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -25,8 +26,6 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             InitializeComponent();
             m_ToMakeView = m_ToMakeListView;
         }
-
-        
 
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
@@ -64,6 +63,18 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
             ViewModel.ItemToMakeOnDoubleClicked(item);
+        }
+
+        private async void M_ToMakeListView_OnChildAdded(object sender, ElementEventArgs e)
+        {
+            
+            m_StackForAni.IsVisible = true;
+            m_NewItemLottie.IsVisible = true;
+            m_NewItemLottie.PlayAnimation();
+            await Task.Delay(3000);
+            m_NewItemLottie.IsVisible = false;
+            m_StackForAni.IsVisible = false;
+
         }
     }
 }

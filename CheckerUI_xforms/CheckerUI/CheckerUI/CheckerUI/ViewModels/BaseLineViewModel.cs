@@ -29,6 +29,15 @@ using Xamarin.Forms;
 // to do : adding / removing / updating
 // any one of the lists should be a critical sections 
 
+// update :
+//Following the changes made:
+
+//Now the whole UI is completely separated from the logic
+//The entire main window is displayed in four parts of the stack layout
+//Each part consists of a card that displays items. Each item is a card that displays an order item
+//When clicked, the item is highlighted
+//With a double click the item moves to the next window
+//Updated according to the hours
 
 //// </summary>
 
@@ -37,7 +46,6 @@ namespace CheckerUI.ViewModels
     public class BaseLineViewModel : BaseViewModel
     {
         private static int m_counterID = 0;
-
         public ObservableCollection<OrderItemView> m_Orders { get; set; }
         private Dictionary<int, OrderItemView> m_OrdersList { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
@@ -45,12 +53,8 @@ namespace CheckerUI.ViewModels
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
 
-        private List<OrderItemView> m_DoneOrdersList { get; set; }
-
         private OrdersManager m_Manager;
-        public Command FeelOrdersCommand { get; set; }
         public Command ReturnCommand { get; set; }
-
 
 
         public void init()
@@ -60,12 +64,11 @@ namespace CheckerUI.ViewModels
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
             m_Manager = new OrdersManager(); // connect to OrderManger orders
             m_Manager.itemsLineView = m_Orders;
-            m_Manager.UpdateLines();
+            m_Manager.UpdateAllLinesByOrders();
             ReturnCommand = new Command(async () =>
             {
                 await Application.Current.MainPage.Navigation.PopAsync();
             });
-            //   for(int i = 0;i<3;i++) feel_layout(i);
         }
 
         private void allocations()
@@ -76,9 +79,6 @@ namespace CheckerUI.ViewModels
             m_ButtonsLocked = new ObservableCollection<OrderItemView>();
             m_ButtonsToMake = new ObservableCollection<OrderItemView>();
             m_ButtonsDone = new ObservableCollection<OrderItemView>();
-            m_DoneOrdersList = new List<OrderItemView>();
-
-            FeelOrdersCommand = new Command(refresh);
         }
         private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -86,11 +86,9 @@ namespace CheckerUI.ViewModels
             {
                 OrderItemView last = m_Orders.Last();
                 addItemToLinePlace(last);
-               // m_ButtonsInProgress.Add(last);
                 last.OrderStatusChangedNotifier.CollectionChanged += OrderStatusChangedNotifierOnCollectionChanged;
                 m_OrdersList.Add(last.OderID, last);
                 m_counterID++;
-
             }
         }
 
@@ -118,7 +116,6 @@ namespace CheckerUI.ViewModels
                         m_ButtonsDone.Add(i_ToAdd);
                         break;
                     }
-
             }
         }
         private void OrderStatusChangedNotifierOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -162,11 +159,6 @@ namespace CheckerUI.ViewModels
             }
         }
 
-        public void refresh()
-        {
-
-        }
-
         private void caseIsAvailable(OrderItemView i_Order)
         {
             if (m_ButtonsLocked.Contains(i_Order))
@@ -181,7 +173,7 @@ namespace CheckerUI.ViewModels
             i_Order.isRestored = false;
             m_ButtonsInProgress.Add(i_Order);
             m_ButtonsDone.Remove(i_Order);
-            m_DoneOrdersList.Remove(i_Order);
+
         }
         private void caseIsHolding(OrderItemView i_Order)
         {
@@ -203,7 +195,6 @@ namespace CheckerUI.ViewModels
             {
                 m_ButtonsInProgress.Remove(i_Order);
                 m_ButtonsDone.Add(i_Order);
-                m_DoneOrdersList.Add(i_Order);
                 m_counterID--;
             }
             else
@@ -211,7 +202,6 @@ namespace CheckerUI.ViewModels
 
             }
         }
-
 
         public ObservableCollection<OrderItemView> InProgressItemsCollection
         {
@@ -233,6 +223,13 @@ namespace CheckerUI.ViewModels
             i_Item.OrderItemTimeDone = DateTime.Now;
             i_Item.FirstTimeToShowString = i_Item.OrderItemTimeDoneString;
             m_ButtonsDone.Add(i_Item);
+        }
+        public async void ItemLockedOnDoubleClicked(OrderItemView i_Item)
+        {
+            m_ButtonsLocked.Remove(i_Item);
+            i_Item.OrderStatus = eOrderItemState.Available;
+           
+            m_ButtonsToMake.Add(i_Item);
         }
 
         public void ItemReadyOnDoubleClick(OrderItemView i_Item)
@@ -262,6 +259,4 @@ namespace CheckerUI.ViewModels
         public OrderItemView LastSelectedItem { get; set; } = new OrderItemView();
 
     }
-
-   
 }

@@ -36,12 +36,20 @@ namespace CheckerUI.Helpers.Order
             //m_ItemsViewManager = new OrderItemViewManager(m_OrderItemModelList);
         }
 
-        public void UpdateLines()
+        public void UpdateLines(ObservableCollection<OrderItemView> i_OrderItems)
         {
-            var items = m_OrdersViews[0].Items;
-            foreach (var item in items)
+         
+            foreach (var item in i_OrderItems)
             {
                 itemsLineView.Add(item);
+            }
+        }
+
+        public void UpdateAllLinesByOrders()
+        {
+            foreach (var order in m_OrdersViews)
+            {
+                UpdateLines(order.Items);
             }
         }
         public async void CreateSignal()
@@ -107,7 +115,7 @@ namespace CheckerUI.Helpers.Order
             {
                 var orderItem =
                     OrderItemBuilder.GenerateOrderItem(m_ItemsGenerated, names[i], i_TableNumber,
-                    "Notes : " + Environment.NewLine + "No Cheese, Medium " + Environment.NewLine + "etc",
+                    "Notes : " + Environment.NewLine + "No Cheese " + Environment.NewLine + "Medium " + Environment.NewLine + "etc",
                     deptId[i], eOrderItemType.First, itemStates[i % 3]);
 
                 m_ItemsGenerated++;

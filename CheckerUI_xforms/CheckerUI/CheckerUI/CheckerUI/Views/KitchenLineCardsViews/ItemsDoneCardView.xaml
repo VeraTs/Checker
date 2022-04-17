@@ -12,18 +12,17 @@
                Padding="0" 
                BackgroundColor="Transparent" BorderColor="Gray">
             <StackLayout Orientation="Horizontal" BackgroundColor="Transparent">
-                <BoxView BackgroundColor="SeaGreen"  WidthRequest="10" CornerRadius="20"/>
+                <BoxView BackgroundColor="SeaGreen"  WidthRequest="10" CornerRadius="0"/>
                 <Grid VerticalOptions="CenterAndExpand"  
                       Padding="0"  Margin="0" 
                       HorizontalOptions="Fill"  
                       BackgroundColor="Transparent" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height=".2*"/>
-
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <BoxView Grid.Row="0" Color="SeaGreen" 
-                             Margin="-6,0,-6,0"
+                             Margin="-8,0,-6,0"
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"/>
                     <Label Grid.Row ="0"
@@ -39,10 +38,11 @@
                              VerticalOptions="End" HeightRequest="2" 
                              Margin="-5,0,-5,0"
                              CornerRadius="20"/>
-                    <ScrollView Grid.Row="1" Margin="0,0,0,2" IsClippedToBounds="True">
+                    <StackLayout Grid.Row="1" Margin="0,0,0,2" IsClippedToBounds="True">
                         <CollectionView  x:Name ="m_DoneListView" Margin="5" 
                                         ItemsSource = "{Binding   DoneItemsCollection}" 
-                                        SelectionMode="Single">
+                                        SelectionMode="Single" 
+                                        HorizontalScrollBarVisibility="Always" ItemsUpdatingScrollMode="KeepItemsInView">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
                             </CollectionView.ItemsLayout>
@@ -73,9 +73,9 @@
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                    </ScrollView>
+                    </StackLayout>
                 </Grid>
-                <BoxView BackgroundColor="SeaGreen" WidthRequest="10"/>
+                <BoxView BackgroundColor="SeaGreen" WidthRequest="10" />
             </StackLayout>
         </Frame>
     </ContentView.Content>

@@ -48,6 +48,11 @@ namespace CheckerUI.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// /TO DO : can be done in o(1) but need to be able to know with line is the when showed
+        /// </summary>
+     
         public async Task DeptButton_OnClicked(object sender, EventArgs e)
         {
             var button = (Button)sender;
@@ -58,21 +63,20 @@ namespace CheckerUI.ViewModels
             {
                 case "Hot Line":
                 {
-                   // var baseLinePage = new LineView("Hot Line");
-                   var s = new NewLineView();
+                    var s = new NewLineView();
                     await Application.Current.MainPage.Navigation.PushAsync(s);
                     break;
                 }
                 case "Cold Line":
                 {
-                    var baseLinePage = new LineView("Cold Line");
-                    await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
+                    var s = new NewLineView();
+                    await Application.Current.MainPage.Navigation.PushAsync(s);
                     break;
                 }
                 case "Oven Line":
                 {
-                    var baseLinePage = new LineView("Oven Line");
-                    await Application.Current.MainPage.Navigation.PushAsync(baseLinePage);
+                    var s = new NewLineView();
+                    await Application.Current.MainPage.Navigation.PushAsync(s);
                     break;
                 }
             }

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
+             xmlns:fontAwesome="clr-namespace:FontAwesome;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsInProgressCardView" 
              x:DataType="viewModels:BaseLineViewModel">
     <ContentView.Content>
@@ -12,7 +13,7 @@
                Padding="0" 
                BackgroundColor="Transparent" BorderColor="Gray">
             <StackLayout Orientation="Horizontal" BackgroundColor="Transparent">
-                <BoxView BackgroundColor="LightGray"  WidthRequest="16"/>
+                <BoxView BackgroundColor="LightGoldenrodYellow"  WidthRequest="16"/>
                 <Grid VerticalOptions="CenterAndExpand"  
                       Padding="0"  Margin="1" 
                       HorizontalOptions="FillAndExpand"  
@@ -22,7 +23,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <BoxView Grid.Row="0" BackgroundColor="LightGray" Margin="-8,0,0,-5"/>
+                    <BoxView Grid.Row="0" BackgroundColor="LightGoldenrodYellow" Margin="-8,0,-8,-5"/>
                     <Label Grid.Row ="0" 
                            Text ="In Progress"
                            FontAttributes ="Bold"
@@ -30,16 +31,26 @@
                            FontFamily ="FAS"
                             HorizontalOptions="CenterAndExpand"
                            VerticalOptions="CenterAndExpand"/>
+                    <Button Grid.Row="0"
+                            HorizontalOptions="Start"
+                            VerticalOptions="StartAndExpand"
+                            FontFamily="FAS"
+                            Text="{x:StaticResource IconX}"
+                            FontSize="Title"
+                            Command="{Binding ReturnCommand}"/>
                     <BoxView Grid.Row="1" Color="DarkGray" 
-                             Margin="-7,-5,-1,0"
+                             Margin="-8,-1,-8,0"
                              HeightRequest="1"
                              HorizontalOptions="FillAndExpand"  />
-                    <ScrollView Grid.Row="2" Margin="0,0,0,2" IsClippedToBounds="True"
+                    <StackLayout Grid.Row="2"
+                                Margin="0,0,0,2"
+                                IsClippedToBounds="True"
                                 Orientation="Horizontal" >
-                        <CollectionView Grid.Row="1" x:Name ="m_InProgressCollection" Margin="5" 
+                        <CollectionView  x:Name ="m_InProgressCollection" 
+                                         Margin="5" 
                                         ItemsSource = "{Binding  InProgressItemsCollection}" 
-                                        SelectionMode="Single" ItemsUpdatingScrollMode="KeepItemsInView" RemainingItemsThreshold="0"
-                                         HorizontalScrollBarVisibility="Always">
+                                        SelectionMode="Single" 
+                                         HorizontalScrollBarVisibility="Always" ItemsUpdatingScrollMode="KeepItemsInView">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Horizontal"  ItemSpacing="10"/>
                             </CollectionView.ItemsLayout>
@@ -70,8 +81,9 @@
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
-                    </ScrollView>
+                    </StackLayout>
                 </Grid>
+                <BoxView BackgroundColor="LightGoldenrodYellow" WidthRequest="16" Margin="1,0,0,1"/>
             </StackLayout>
         </Frame>
     </ContentView.Content>
