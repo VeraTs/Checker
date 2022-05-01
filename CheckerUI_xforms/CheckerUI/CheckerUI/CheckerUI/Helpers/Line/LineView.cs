@@ -1,70 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using CheckerUI.Enums;
-using CheckerUI.Helpers.DishesFolder;
 using CheckerUI.Models;
 using CheckerUI.ViewModels;
-using Lottie.Forms;
 using Xamarin.Forms;
 
-namespace CheckerUI.Helpers.Deparment
+namespace CheckerUI.Helpers.Line
 {
-    public class DeptView : BaseViewModel
+    public class LineView : BaseViewModel
     {
-        private DeptModel model;
+        private LineModel model;
         private List<Dish_item> m_DishItems = new List<Dish_item>();
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
         
-        public DeptView(DeptModel i_model)
+        public LineView(LineModel i_model)
         {
             m_BackgroundState = new Color();
-            model = DeptBuilder.GenerateDept(i_model.m_DeptName, i_model.m_DeptID, i_model.m_MaximumParallelism, i_model.m_DishesList, i_model.m_DeptState);
+            model = LineBuilder.GenerateLine(i_model.m_LineName, i_model.m_LineID, i_model.m_MaximumParallelism, i_model.m_DishesList, i_model.m_LineState);
             setColorState();
         }
 
         private void setColorState()
         {
-            switch (model.m_DeptState)
+            switch (model.m_LineState)
             {
-                case eDeptState.chill:
+                case eLineState.chill:
                 {
                     LabelsColor = Color.DimGray;
-                    DeptStateColor = Color.BlanchedAlmond;
+                    LineStateColor = Color.BlanchedAlmond;
                     break;
                 }
-                case eDeptState.busy:
+                case eLineState.busy:
                 {
                     LabelsColor = Color.DarkCyan; 
-                    DeptStateColor = Color.YellowGreen;
+                    LineStateColor = Color.YellowGreen;
                     break;
                 }
-                case eDeptState.overload:
+                case eLineState.overload:
                 {
-                    DeptStateColor = Color.White;
-                    DeptStateColor = Color.Firebrick;
+                    LineStateColor = Color.White;
+                    LineStateColor = Color.Firebrick;
                     break;
                 }
             }
         }
-        public string DeptName
+        public string LineName
         {
-            get => model.m_DeptName;
+            get => model.m_LineName;
             set
             {
-                model.m_DeptName = value;
-                OnPropertyChanged(nameof(DeptName));
+                model.m_LineName = value;
+                OnPropertyChanged(nameof(LineName));
             } 
         }
 
-        public int DeptID
+        public int LineID
         {
-            get => model.m_DeptID;
+            get => model.m_LineID;
             set
             {
-                model.m_DeptID = value;
-                OnPropertyChanged(nameof(DeptID));
+                model.m_LineID = value;
+                OnPropertyChanged(nameof(LineID));
             } 
         }
 
@@ -78,23 +74,23 @@ namespace CheckerUI.Helpers.Deparment
             }
         }
 
-        public eDeptState DeptStateString
+        public eLineState LineStateString
         {
-            get => model.m_DeptState;
+            get => model.m_LineState;
             set
             {
-                model.m_DeptState = value;
-                OnPropertyChanged(nameof(DeptStateString));
+                model.m_LineState = value;
+                OnPropertyChanged(nameof(LineStateString));
             }
         }
 
-        public Color DeptStateColor
+        public Color LineStateColor
         {
             get => m_BackgroundState;
             private set
             {
                 m_BackgroundState = value; 
-                OnPropertyChanged(nameof(DeptStateColor));
+                OnPropertyChanged(nameof(LineStateColor));
 
             }
         }

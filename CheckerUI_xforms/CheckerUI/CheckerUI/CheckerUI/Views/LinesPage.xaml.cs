@@ -10,19 +10,19 @@ using Xamarin.Forms.Xaml;
 namespace CheckerUI.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DeptsPage : ContentPage
+    public partial class LinesPage : ContentPage
     {
-        private readonly DeptsViewModel vm;
-        public DeptsPage()
+        private readonly LinesViewModel vm;
+        public LinesPage()
         {
             InitializeComponent();
-            vm = new DeptsViewModel();
+            vm = new LinesViewModel();
             BindingContext = vm;
             
         }
-        private async void DeptButton_OnClicked(object sender, EventArgs e)
+        private async void LineButton_OnClicked(object sender, EventArgs e)
         {
-            await vm.DeptButton_OnClicked(sender, e);
+            await vm.LineButton_OnClicked(sender, e);
         }
     }
 }

@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:forms="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
-             x:Class="CheckerUI.Views.DeptsPage" BackgroundImageSource="Checker_Logo" Title="Choose a Line">
+             x:Class="CheckerUI.Views.LinesPage" BackgroundImageSource="Checker_Logo" Title="Choose a Line">
     <ContentPage.BindingContext>
-        <viewModels:DeptsViewModel/>
+        <viewModels:LinesViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
 
         <StackLayout>
-            <CarouselView  ItemsSource="{Binding DepartmentsList}"
+            <CarouselView  ItemsSource="{Binding LinesList}"
                            PeekAreaInsets="200"
                            IsScrollAnimated="True"   IndicatorView="indicatorView">
                 <CarouselView.ItemTemplate>
@@ -61,16 +61,16 @@
 
                                     </Grid.ColumnDefinitions >
                                     <BoxView Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
-                                             BackgroundColor ="{Binding DeptStateColor}"
+                                             BackgroundColor ="{Binding LineStateColor}"
                                              CornerRadius="10" ></BoxView>
-                                    <Button Grid.Column="1" Grid.Row="1" Text="{Binding DeptName}"
+                                        <Button Grid.Column="1" Grid.Row="1" Text="{Binding LineName}"
                                            HorizontalOptions="Center"
                                            FontSize="Title"
                                            FontFamily="FAS"
                                            BackgroundColor="Transparent"
                                             BorderColor="DarkGray"
-                                           TextColor="{Binding LabelsColor }" Clicked="DeptButton_OnClicked"/>
-                                    <Label Grid.Column="1" Grid.Row="2" Text="{Binding  DeptStateString}"
+                                           TextColor="{Binding LabelsColor }" Clicked="LineButton_OnClicked"/>
+                                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding  LineStateString}"
                                            FontAttributes="Italic"
                                            HorizontalOptions="Center"
                                            FontFamily="FAS"

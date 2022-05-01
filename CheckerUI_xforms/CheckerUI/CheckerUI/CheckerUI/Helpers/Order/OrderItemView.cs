@@ -123,9 +123,9 @@ namespace CheckerUI.Helpers.Order
         public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
 
         internal OrderItemModel CreateItemModel(int i_OrderID,string i_Name, int i_Table, string i_Desc,
-            int i_DeptID, eOrderItemType i_Type, eOrderItemState i_State)
+            int i_LineID, eOrderItemType i_Type, eOrderItemState i_State)
         {
-            return OrderItemBuilder.GenerateOrderItem(i_OrderID,i_Name, i_Table, i_Desc, i_DeptID, i_Type, i_State);
+            return OrderItemBuilder.GenerateOrderItem(i_OrderID,i_Name, i_Table, i_Desc, i_LineID, i_Type, i_State);
         }
 
         

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CheckerUI.Enums
 {
-    public enum eDeptState
+    public enum eLineState
     {
         chill,
         busy,

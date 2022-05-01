@@ -14,7 +14,7 @@ namespace CheckerUI.ViewModels
         {
             MyKitchenCommand = new Command(async () =>
             {
-                DeptsPage page = new DeptsPage();
+                LinesPage page = new LinesPage();
                 await Application.Current.MainPage.Navigation.PushAsync(page);
             });
             UpdateKitchenCommand = new Command(async () =>

@@ -11,7 +11,7 @@ namespace CheckerUI.Helpers.Order
         public int m_OrdrID { get; set; }
         public string m_OrderItemName { get; set; }
         public string m_Description { get; set; }
-        public int m_DeptID { get; set; }
+        public int m_LineID { get; set; }
         public int m_TableNumber { get; set; }
         public DateTime m_StartDate { get; set; }
         public DateTime m_CreatedDate { get; set; }
