@@ -16,7 +16,7 @@ namespace CheckerServer.Controllers
 
         protected override void updateItem(RestMenu existingItem, RestMenu updatedItem)
         {
-            if (string.IsNullOrEmpty(updatedItem.Name))
+            if (!string.IsNullOrEmpty(updatedItem.Name))
             {
                 existingItem.Name = updatedItem.Name;
             }

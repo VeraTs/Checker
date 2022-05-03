@@ -21,7 +21,7 @@ namespace CheckerServer.Controllers
                 existingItem.LineId = updatedItem.LineId;
             }
 
-            if (string.IsNullOrEmpty(updatedItem.Name))
+            if (!string.IsNullOrEmpty(updatedItem.Name))
             {
                 existingItem.Name = updatedItem.Name;
             }

@@ -16,11 +16,15 @@ namespace CheckerServer.Controllers
 
         protected override void updateItem(OrderItem existingItem, OrderItem updatedItem)
         {
-            // this is to be uncommented later
-            /*if (updatedItem.ServingAreaZone != -1)
+            if (updatedItem.ServingAreaZone != -1)
             {
                 existingItem.ServingAreaZone = updatedItem.ServingAreaZone;
-            }*/
+            }
+
+            if (!string.IsNullOrEmpty(updatedItem.Changes))
+            {
+                existingItem.Changes = updatedItem.Changes;
+            }
 
             existingItem.LineStatus = updatedItem.LineStatus;
 

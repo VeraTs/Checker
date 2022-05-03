@@ -11,14 +11,13 @@ namespace CheckerDTOs
     public class OrderItem : BaseDBItem
     {
         public Dish Dish { get; set; }        
-        public ServingArea ServingArea { get; set; }
         
         [ForeignKey("Dish")]
         public int DishId { get; set; }
         [ForeignKey("Order")]
         public int OrderId { get; set; }
-        [ForeignKey("ServingArea")]
-        public int ServingAreaId { get; set; }
+        [Required]
+        public int ServingAreaZone { get; set; }
 
 
         public string Changes { get; set; }

@@ -28,7 +28,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<IEnumerable<Order>>> get()
         {
             var res = await r_Set
-                .Include("Items.Dishes")
+                .Include("Items.Dish")
                 .ToListAsync();
 
             return res;
@@ -37,7 +37,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<Order>> getSpecific(int id)
         {
             var res = await r_Set
-                .Include("Items.Dishes")
+                .Include("Items.Dish")
                 .FirstOrDefaultAsync(d => d.ID == id);
 
             return res;

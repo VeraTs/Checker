@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CheckerServer.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,6 +26,7 @@ namespace CheckerServer.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    RestaurantId = table.Column<int>(type: "int", nullable: false),
                     Table = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     OrderType = table.Column<int>(type: "int", nullable: false)
@@ -48,20 +49,6 @@ namespace CheckerServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Restaurants", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServingAreas",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ZoneNum = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServingAreas", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,26 +92,46 @@ namespace CheckerServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Lines",
+                name: "ServingAreas",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RestaurantId = table.Column<int>(type: "int", nullable: false),
+                    ZoneNum = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServingAreas", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ServingAreas_Restaurants_RestaurantId",
+                        column: x => x.RestaurantId,
+                        principalTable: "Restaurants",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Lines",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ServingAreaId = table.Column<int>(type: "int", nullable: false),
                     Limit = table.Column<int>(type: "int", nullable: false),
-                    State = table.Column<int>(type: "int", nullable: false)
+                    State = table.Column<int>(type: "int", nullable: false),
+                    RestaurantID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Lines", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Lines_Restaurants_RestaurantId",
-                        column: x => x.RestaurantId,
+                        name: "FK_Lines_Restaurants_RestaurantID",
+                        column: x => x.RestaurantID,
                         principalTable: "Restaurants",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                     table.ForeignKey(
                         name: "FK_Lines_ServingAreas_ServingAreaId",
                         column: x => x.ServingAreaId,
@@ -141,9 +148,9 @@ namespace CheckerServer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LineId = table.Column<int>(type: "int", nullable: false),
+                    RestMenuId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    RestMenuID = table.Column<int>(type: "int", nullable: true)
+                    Type = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -155,10 +162,11 @@ namespace CheckerServer.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Dishes_RestMenus_RestMenuID",
-                        column: x => x.RestMenuID,
+                        name: "FK_Dishes_RestMenus_RestMenuId",
+                        column: x => x.RestMenuId,
                         principalTable: "RestMenus",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,7 +198,7 @@ namespace CheckerServer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DishId = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ServingAreaId = table.Column<int>(type: "int", nullable: false),
+                    ServingAreaZone = table.Column<int>(type: "int", nullable: false),
                     Changes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     LineStatus = table.Column<int>(type: "int", nullable: false)
@@ -210,12 +218,6 @@ namespace CheckerServer.Migrations
                         principalTable: "Orders",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_ServingAreas_ServingAreaId",
-                        column: x => x.ServingAreaId,
-                        principalTable: "ServingAreas",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
@@ -224,9 +226,9 @@ namespace CheckerServer.Migrations
                 column: "LineId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dishes_RestMenuID",
+                name: "IX_Dishes_RestMenuId",
                 table: "Dishes",
-                column: "RestMenuID");
+                column: "RestMenuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DishStatistics_DishId",
@@ -239,9 +241,9 @@ namespace CheckerServer.Migrations
                 column: "MeasurementType");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Lines_RestaurantId",
+                name: "IX_Lines_RestaurantID",
                 table: "Lines",
-                column: "RestaurantId");
+                column: "RestaurantID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lines_ServingAreaId",
@@ -259,13 +261,13 @@ namespace CheckerServer.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_ServingAreaId",
-                table: "OrderItems",
-                column: "ServingAreaId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RestMenus_RestaurantId",
                 table: "RestMenus",
+                column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServingAreas_RestaurantId",
+                table: "ServingAreas",
                 column: "RestaurantId");
         }
 

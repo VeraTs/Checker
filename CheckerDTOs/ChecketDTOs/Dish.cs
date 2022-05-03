@@ -12,11 +12,10 @@ namespace CheckerDTOs
     {
         [Required]
         public string Name { get; set; }
-        public Line Line { get; set; }
         [ForeignKey("Line")]
         public int LineId { get; set; }
         [ForeignKey("RestMenu")]
-        public int MenuId { get; set; }
+        public int RestMenuId { get; set; }
 
         public string Description { get; set; }
         public DishType Type { get; set; }

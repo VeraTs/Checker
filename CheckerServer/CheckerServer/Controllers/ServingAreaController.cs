@@ -26,5 +26,23 @@ namespace CheckerServer.Controllers
                 existingItem.ZoneNum = updatedItem.ZoneNum;
             }
         }
+
+        override internal async Task<ActionResult<IEnumerable<ServingArea>>> get()
+        {
+            var res = await r_Set
+                .Include(i=>i.Lines)
+                .ToListAsync();
+
+            return res;
+        }
+
+        override internal async Task<ActionResult<ServingArea>> getSpecific(int id)
+        {
+            var res = await r_Set
+                .Include(i => i.Lines)
+                .FirstOrDefaultAsync(d => d.ID == id);
+
+            return res;
+        }
     }
 }

@@ -24,6 +24,9 @@ namespace CheckerDTOs
         
         // Line = Hot Line, Oven, Cold line, etc.
         public List<Line> Lines { get; set; } = new List<Line>();
+
+        // Serving areas
+        public List<ServingArea> ServingAreas { get; set; } = new List<ServingArea>();
         
     }
 }
