@@ -10,7 +10,7 @@ namespace CheckerUI.Helpers.Order
 {
     public class OrdersManager : BaseViewModel
     {
-        //  private List<OrderModel> m_OrdersList = new List<OrderModel>();
+       
         private ObservableCollection<OrderViewModel> m_OrdersViews = new ObservableCollection<OrderViewModel>();
         private readonly Dictionary<int, OrderViewModel> m_Orders = new Dictionary<int, OrderViewModel>();
         private int m_Length = 0;
@@ -134,7 +134,6 @@ namespace CheckerUI.Helpers.Order
                 OnPropertyChanged(nameof(OrdersViews));
             }
         }
-
         public ObservableCollection<OrderItemView> itemsLineView
         {
             get => m_OrderItemsLineView;

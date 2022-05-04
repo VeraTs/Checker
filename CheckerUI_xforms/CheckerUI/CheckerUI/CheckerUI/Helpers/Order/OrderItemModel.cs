@@ -1,14 +1,11 @@
 ﻿using System;
 using CheckerUI.Enums;
-using CheckerUI.ViewModels;
-
 
 namespace CheckerUI.Helpers.Order
 {
-    // an order model combined with a listener on status (ID,Status)
     public class OrderItemModel
     {
-        public int m_OrdrID { get; set; }
+        public int m_OrderID { get; set; }
         public string m_OrderItemName { get; set; }
         public string m_Description { get; set; }
         public int m_LineID { get; set; }

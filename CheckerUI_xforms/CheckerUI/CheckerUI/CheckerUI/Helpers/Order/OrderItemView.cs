@@ -3,17 +3,8 @@ using CheckerUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 
-//Here we produce the display of a single order item in its line, the grid consists of three rows (currently)
-//In the first row, the name of the dish and an ID card
-//In the second row, the status of the dish varies depending on the button being pressed
-//And in the third row three buttons are linked to the command respectively
-//An order item knows to update those responsible for a change in its status
-
-
-// To Do:  Status should be changed to Enum
 namespace CheckerUI.Helpers.Order
 {
     public class OrderItemView : BaseViewModel
@@ -23,7 +14,7 @@ namespace CheckerUI.Helpers.Order
         
         // Commands
        
-        private readonly Dictionary<eOrderItemState,Color> m_StateColors = new Dictionary<eOrderItemState,Color>();
+        private static readonly Dictionary<eOrderItemState,Color> m_StateColors = feelColorsState();
 
         public OrderItemView()
         {
@@ -32,29 +23,31 @@ namespace CheckerUI.Helpers.Order
 
         public OrderItemView(OrderItemModel i_item)
         {
-            feelColorsState();
             m_orderItem = new OrderItemModel();
             m_orderItem = i_item;
             OrderStatus = i_item.m_State;
-            OderID = i_item.m_OrdrID;
+            OderID = i_item.m_OrderID;
             OrderItemName = i_item.m_OrderItemName;
             OrderItemDescription = i_item.m_Description;
             FirstTimeToShowString = OrderItemTimeCreate;
-
         }
 
-        private void feelColorsState()
+        private static Dictionary<eOrderItemState, Color> feelColorsState()
         {
-           m_StateColors.Add(eOrderItemState.Waiting, Color.Firebrick);
-           m_StateColors.Add(eOrderItemState.Available, Color.Gold);
-           m_StateColors.Add(eOrderItemState.InPreparation, Color.DarkOrange);
-           m_StateColors.Add(eOrderItemState.Ready, Color.DarkGreen);
-           m_StateColors.Add(eOrderItemState.Completed, Color.YellowGreen);
+            var array = new Dictionary<eOrderItemState, Color>
+            {
+                {eOrderItemState.Waiting, Color.Firebrick},
+                {eOrderItemState.Available, Color.Gold},
+                {eOrderItemState.InPreparation, Color.DarkOrange},
+                {eOrderItemState.Ready, Color.DarkGreen},
+                {eOrderItemState.Completed, Color.YellowGreen}
+            };
+            return array;
         }
         public int OderID
         {
-            get => m_orderItem.m_OrdrID;
-            set => m_orderItem.m_OrdrID = value;
+            get => m_orderItem.m_OrderID;
+            set => m_orderItem.m_OrderID = value;
         }
 
         public eOrderItemState OrderStatus
@@ -68,13 +61,9 @@ namespace CheckerUI.Helpers.Order
                 OnPropertyChanged(nameof(OrderStatus));
             } 
         }
-
-    
         public bool isRestored { get; set; } = false;
 
         public string OrderStatusString { get; set; }
-
-       
 
         public DateTime OrderItemTimeStarted
         {
@@ -92,7 +81,6 @@ namespace CheckerUI.Helpers.Order
         public string OrderItemTimeStartedString => "Started: "+m_orderItem.m_StartDate.ToString(" hh: mm tt");
 
         public string OrderItemTimeDoneString => "Done: " + m_orderItem.m_DoneDate.ToString("hh:mm tt");
-        
 
         public DateTime OrderItemTimeDone
         {
@@ -103,8 +91,6 @@ namespace CheckerUI.Helpers.Order
                 OnPropertyChanged(nameof(OrderItemTimeStarted));
             }
         }
-
-
         public string OrderItemName
         {
             get => m_orderItem.m_OrderItemName;
@@ -118,7 +104,6 @@ namespace CheckerUI.Helpers.Order
             set => m_orderItem.m_Description = value;
         }
         public eOrderItemType OrderItemType => m_orderItem.m_ItemType;
-        //replace with enum !
 
         public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
 
@@ -127,8 +112,5 @@ namespace CheckerUI.Helpers.Order
         {
             return OrderItemBuilder.GenerateOrderItem(i_OrderID,i_Name, i_Table, i_Desc, i_LineID, i_Type, i_State);
         }
-
-        
-
     }
 }

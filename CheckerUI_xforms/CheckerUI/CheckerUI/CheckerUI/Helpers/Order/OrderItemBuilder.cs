@@ -1,6 +1,5 @@
 ﻿using System;
 using CheckerUI.Enums;
-using CheckerUI.ViewModels;
 
 namespace CheckerUI.Helpers.Order
 {
@@ -9,10 +8,9 @@ namespace CheckerUI.Helpers.Order
         public static OrderItemModel GenerateOrderItem(int i_OrderID,string i_OrderItemName,int i_Table ,string i_Desc,
             int i_LineID,eOrderItemType i_Type, eOrderItemState i_State)
         {
-
-            OrderItemModel m_Order = new OrderItemModel()
+            var m_Order = new OrderItemModel()
             {
-                m_OrdrID = i_OrderID,
+                m_OrderID = i_OrderID,
                 m_OrderItemName = i_OrderItemName,
                 m_TableNumber = i_Table,
                 m_LineID = i_LineID,
