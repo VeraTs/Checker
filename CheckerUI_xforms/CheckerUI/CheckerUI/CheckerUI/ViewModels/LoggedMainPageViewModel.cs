@@ -1,10 +1,14 @@
-﻿using CheckerUI.Views;
+﻿using CheckerUI.Helpers.DishesFolder;
+using CheckerUI.Views;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
 {
-    public class LoggedMainPageViewModel 
+    public class LoggedMainPageViewModel
     {
+        private DishesManager m_manager;
+
+
         public Command ReturnCommand { get; }
         public Command MyKitchenCommand { get; }
         public Command UpdateKitchenCommand { get; }
@@ -12,6 +16,8 @@ namespace CheckerUI.ViewModels
         public Command ShowStatisticsCommand { get; }
         public LoggedMainPageViewModel()
         {
+            m_manager = new DishesManager();
+
             MyKitchenCommand = new Command(async () =>
             {
                 LinesPage page = new LinesPage();
@@ -19,10 +25,9 @@ namespace CheckerUI.ViewModels
             });
             UpdateKitchenCommand = new Command(async () =>
             {
-                var updateVm = new UpdateKitchenViewModel();
-                var updatePage = new UpdateKitchenPage();
-                updatePage.BindingContext = updateVm;
-                await Application.Current.MainPage.Navigation.PushAsync(updatePage);
+                var options = m_manager.DishesNamesList();
+                var searchDishView = new AutoSearchBarView(options);
+                await Application.Current.MainPage.Navigation.PushAsync(searchDishView);
             });
             MangeKitchenCommand = new Command(async () =>
             {
@@ -33,10 +38,6 @@ namespace CheckerUI.ViewModels
             });
             ShowStatisticsCommand = new Command(async () =>
             {
-                //var statisticsVm = new ShowStatisticsPageViewModel();
-                //var statisticsPage = new ShowStatisticsPage();
-                //statisticsPage.BindingContext = statisticsVm;
-                //await Application.Current.MainPage.Navigation.PushAsync(statisticsPage);
                 var ordersView = new OrdersView();
                 await Application.Current.MainPage.Navigation.PushAsync(ordersView);
             });
