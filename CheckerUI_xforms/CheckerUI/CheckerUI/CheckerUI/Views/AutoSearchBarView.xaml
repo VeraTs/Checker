@@ -4,10 +4,10 @@
              x:Class="CheckerUI.Views.AutoSearchBarView"
              xmlns:local="clr-namespace:CheckerUI.Helpers.CustomControls;assembly=CheckerUI">
     <ContentPage.Content>
-       
+        <StackLayout Orientation="Horizontal" Padding="10" HeightRequest="75" WidthRequest="50">
             <Frame HeightRequest="1000"  BackgroundColor="Bisque" Margin="10">
                 <local:AutocompleteSearchBar x:Name="m_AutoSearchBar" IsClippedToBounds="True"/>
             </Frame>
-       
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
