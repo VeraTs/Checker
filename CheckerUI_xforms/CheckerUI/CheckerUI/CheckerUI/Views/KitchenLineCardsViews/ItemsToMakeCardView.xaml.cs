@@ -30,14 +30,12 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            //m_ToMakeListView.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
            
-
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
 
-            r_ItemCardHelper.TapGestureRecognizer_OnTapped(frame, expander);
+            r_ItemCardHelper.OnSingleTap(frame, expander);
         }
 
         private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)

@@ -32,7 +32,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
 
-            r_ItemCardHelper.TapGestureRecognizer_OnTapped(frame, expander);
+            r_ItemCardHelper.OnSingleTap(frame, expander);
 
         }
 

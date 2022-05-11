@@ -19,6 +19,8 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private Frame m_LastFrameTapped;
         public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
 
+        private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();  
+
         public ItemsLockedCardView()
         {
             InitializeComponent();
@@ -32,23 +34,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
 
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
-            if (m_LastTappedExpander != null && m_LastFrameTapped != null)
-            {
-                m_LastFrameTapped.BackgroundColor = Color.White;
-                m_LastTappedExpander.IsExpanded = false;
-            }
-
-            if (m_LastTappedExpander != expander)
-            {
-                m_LastFrameTapped = frame;
-                m_LastFrameTapped.BackgroundColor = Color.BurlyWood;
-                m_LastTappedExpander = expander;
-                m_LastTappedExpander.IsExpanded = true;
-            }
-            else
-            {
-                m_LastTappedExpander = null;
-            }
+            r_ItemCardHelper.OnSingleTap(frame, expander);
         }
         private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {

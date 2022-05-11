@@ -13,7 +13,7 @@ namespace CheckerUI.Helpers
         private Expander m_LastTappedExpander;
         private Frame m_LastTappedFrame;
 
-        public void TapGestureRecognizer_OnTapped(Frame frame, Expander expander)
+        public void OnSingleTap(Frame frame, Expander expander)
         {
             if (m_LastTappedExpander != null && m_LastTappedFrame != null)
             {
