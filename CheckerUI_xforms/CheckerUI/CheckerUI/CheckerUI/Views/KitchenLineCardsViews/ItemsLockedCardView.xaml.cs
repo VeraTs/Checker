@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Xamarin.CommunityToolkit.UI.Views;
@@ -26,7 +27,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_LockedCollection.SelectedItem = stackLayout.BindingContext;
+           // m_LockedCollection.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
 
             var frame = card.Children[0] as Frame;
@@ -52,7 +53,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_LockedCollection.SelectedItem = stackLayout.BindingContext;
+            //m_LockedCollection.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
             bool answer = await Application.Current.MainPage.DisplayAlert("Order Locked", "Are You Sure ?", "Yes", "No");

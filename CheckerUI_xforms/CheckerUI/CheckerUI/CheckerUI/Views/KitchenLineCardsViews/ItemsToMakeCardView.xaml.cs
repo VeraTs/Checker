@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Lottie.Forms;
@@ -16,8 +17,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     public partial class ItemsToMakeCardView : ContentView
     {
         public CollectionView m_ToMakeView = new CollectionView();
-        private Expander m_LastTappedExpander;
-        private Frame m_LastFrameTapped;
+        private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
 
         public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
 
@@ -30,36 +30,20 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_ToMakeListView.SelectedItem = stackLayout.BindingContext;
+            //m_ToMakeListView.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
            
 
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
-            if (m_LastTappedExpander != null && m_LastFrameTapped != null)
-            {
-                m_LastFrameTapped.BackgroundColor = Color.White;
-                m_LastTappedExpander.IsExpanded = false;
-            }
 
-            if (m_LastTappedExpander != expander)
-            {
-                m_LastFrameTapped = frame;
-                m_LastFrameTapped.BackgroundColor = Color.BurlyWood;
-                m_LastTappedExpander = expander;
-                m_LastTappedExpander.IsExpanded = true;
-            }
-            else
-            {
-                m_LastTappedExpander = null;
-            }
-           
+            r_ItemCardHelper.TapGestureRecognizer_OnTapped(frame, expander);
         }
 
         private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_ToMakeListView.SelectedItem = stackLayout.BindingContext;
+            //m_ToMakeListView.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
             ViewModel.ItemToMakeOnDoubleClicked(item);

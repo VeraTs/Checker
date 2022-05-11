@@ -43,7 +43,7 @@
                     <StackLayout Grid.Row="1"
                                  Margin="0,0,0,2"
                                  IsClippedToBounds="True">
-                        <CollectionView  x:Name ="m_LockedCollection" Margin="5" 
+                        <CollectionView Margin="5" 
                                         ItemsSource = "{Binding  LockedItemsCollection}" 
                                         SelectionMode="Single"
                                         HorizontalScrollBarVisibility="Always" ItemsUpdatingScrollMode="KeepItemsInView">
