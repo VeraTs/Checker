@@ -8,7 +8,7 @@ namespace CheckerUI.Helpers.Line
 {
     public class LineView : BaseViewModel
     {
-        private readonly LineModel m_model;
+        private readonly LineModel model;
         private List<Dish_item> m_DishItems = new List<Dish_item>();
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
@@ -16,13 +16,13 @@ namespace CheckerUI.Helpers.Line
         public LineView(LineModel i_model)
         {
             m_BackgroundState = new Color();
-            m_model = LineBuilder.GenerateLine(i_model.m_LineName, i_model.m_LineID, i_model.m_MaximumParallelism, i_model.m_DishesList, i_model.m_LineState);
+            model = LineBuilder.GenerateLine(i_model.m_LineName, i_model.m_LineID, i_model.m_MaximumParallelism, i_model.m_DishesList, i_model.m_LineState);
             setColorState();
         }
 
         private void setColorState()
         {
-            switch (m_model.m_LineState)
+            switch (model.m_LineState)
             {
                 case eLineState.chill:
                 {
@@ -46,40 +46,40 @@ namespace CheckerUI.Helpers.Line
         }
         public string LineName
         {
-            get => m_model.m_LineName;
+            get => model.m_LineName;
             set
             {
-                m_model.m_LineName = value;
+                model.m_LineName = value;
                 OnPropertyChanged(nameof(LineName));
             } 
         }
 
         public int LineID
         {
-            get => m_model.m_LineID;
+            get => model.m_LineID;
             set
             {
-                m_model.m_LineID = value;
+                model.m_LineID = value;
                 OnPropertyChanged(nameof(LineID));
             } 
         }
 
         public string MaximumParallelism
         {
-            get => m_model.m_MaximumParallelism.ToString();
+            get => model.m_MaximumParallelism.ToString();
             set
             {
-                m_model.m_MaximumParallelism = int.Parse(value);
+                model.m_MaximumParallelism = int.Parse(value);
                 OnPropertyChanged(nameof(MaximumParallelism));
             }
         }
 
         public eLineState LineStateString
         {
-            get => m_model.m_LineState;
+            get => model.m_LineState;
             set
             {
-                m_model.m_LineState = value;
+                model.m_LineState = value;
                 OnPropertyChanged(nameof(LineStateString));
             }
         }

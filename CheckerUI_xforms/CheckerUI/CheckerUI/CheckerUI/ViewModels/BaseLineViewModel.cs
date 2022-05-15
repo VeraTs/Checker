@@ -2,16 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using CheckerUI.Enums;
-using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
-using CheckerUI.Models;
-using CheckerUI.Views;
-using Lottie.Forms;
 using Xamarin.Forms;
 //// <summary>
 // Basic line, if we want to add features to it we will do it by inheritance
@@ -62,8 +55,10 @@ namespace CheckerUI.ViewModels
             allocations();
 
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-            m_Manager = new OrdersManager(); // connect to OrderManger orders
-            m_Manager.itemsLineView = m_Orders;
+            m_Manager = new OrdersManager
+            {
+                itemsLineView = m_Orders
+            }; // connect to OrderManger orders
             m_Manager.UpdateAllLinesByOrders();
             ReturnCommand = new Command(async () =>
             {

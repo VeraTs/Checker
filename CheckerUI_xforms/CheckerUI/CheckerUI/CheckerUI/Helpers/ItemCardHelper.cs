@@ -1,9 +1,4 @@
-﻿using CheckerUI.ViewModels;
-using CheckerUI.Views.KitchenLineCardsViews;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xamarin.CommunityToolkit.UI.Views;
+﻿using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 
 namespace CheckerUI.Helpers

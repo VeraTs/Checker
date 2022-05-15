@@ -103,7 +103,7 @@ namespace CheckerUI.Helpers.Order
             string[] names = { "Bread", "Salad", "Fish Tartar", "Burger ", "Pizza", "Pasta", "Cake" };
             eOrderItemType[] types =
             {
-                eOrderItemType.First, eOrderItemType.First, eOrderItemType.First, eOrderItemType.Main,
+                eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Main,
                 eOrderItemType.Main, eOrderItemType.Unknown, eOrderItemType.Dessert
             };
             int[] deptId = { 1, 1, 1, 2, 2, 2, 3 };
@@ -116,7 +116,7 @@ namespace CheckerUI.Helpers.Order
                 var orderItem =
                     OrderItemBuilder.GenerateOrderItem(m_ItemsGenerated, names[i], i_TableNumber,
                     "Notes : " + Environment.NewLine + "No Cheese " + Environment.NewLine + "Medium " + Environment.NewLine + "etc",
-                    deptId[i], eOrderItemType.First, itemStates[i % 3]);
+                    deptId[i], eOrderItemType.Starter, itemStates[i % 3]);
 
                 m_ItemsGenerated++;
 
