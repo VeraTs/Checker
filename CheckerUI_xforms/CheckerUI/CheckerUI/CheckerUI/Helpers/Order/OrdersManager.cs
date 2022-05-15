@@ -104,7 +104,7 @@ namespace CheckerUI.Helpers.Order
             eOrderItemType[] types =
             {
                 eOrderItemType.First, eOrderItemType.First, eOrderItemType.First, eOrderItemType.Main,
-                eOrderItemType.Main, eOrderItemType.Unknown, eOrderItemType.Desert
+                eOrderItemType.Main, eOrderItemType.Unknown, eOrderItemType.Dessert
             };
             int[] deptId = { 1, 1, 1, 2, 2, 2, 3 };
             eOrderItemState[] itemStates =
