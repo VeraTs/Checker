@@ -8,6 +8,7 @@ namespace CheckerUI.Views
     public partial class NewLineView : ContentPage
     {
         private BaseLineViewModel m_ViewModel;
+        
         public NewLineView()
         {
             InitializeComponent();

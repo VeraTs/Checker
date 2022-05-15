@@ -10497,22 +10497,22 @@ namespace FontAwesome
         public const string Khanda = "\uf66d";
 
         /// <summary>
-        /// fa-kickstarter unicode value ("\uf3bb").
+        /// fa-kickFirst unicode value ("\uf3bb").
         /// <para/>
         /// This icon supports the following styles: Brands
         /// <para/>
-        /// See https://fontawesome.com/icons/kickstarter
+        /// See https://fontawesome.com/icons/kickFirst
         /// </summary>
-        public const string Kickstarter = "\uf3bb";
+        public const string KickFirst = "\uf3bb";
 
         /// <summary>
-        /// fa-kickstarter-k unicode value ("\uf3bc").
+        /// fa-kickFirst-k unicode value ("\uf3bc").
         /// <para/>
         /// This icon supports the following styles: Brands
         /// <para/>
-        /// See https://fontawesome.com/icons/kickstarter-k
+        /// See https://fontawesome.com/icons/kickFirst-k
         /// </summary>
-        public const string KickstarterK = "\uf3bc";
+        public const string KickFirstK = "\uf3bc";
 
         /// <summary>
         /// fa-kidneys unicode value ("\uf5fb").

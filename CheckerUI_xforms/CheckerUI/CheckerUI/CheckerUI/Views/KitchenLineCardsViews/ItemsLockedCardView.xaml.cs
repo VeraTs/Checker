@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Xamarin.CommunityToolkit.UI.Views;
@@ -16,7 +18,10 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     {
         private Expander m_LastTappedExpander;
         private Frame m_LastFrameTapped;
+        
         public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
+
+        private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();  
 
         public ItemsLockedCardView()
         {
@@ -26,33 +31,17 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_LockedCollection.SelectedItem = stackLayout.BindingContext;
+           // m_LockedCollection.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
 
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
-            if (m_LastTappedExpander != null && m_LastFrameTapped != null)
-            {
-                m_LastFrameTapped.BackgroundColor = Color.White;
-                m_LastTappedExpander.IsExpanded = false;
-            }
-
-            if (m_LastTappedExpander != expander)
-            {
-                m_LastFrameTapped = frame;
-                m_LastFrameTapped.BackgroundColor = Color.BurlyWood;
-                m_LastTappedExpander = expander;
-                m_LastTappedExpander.IsExpanded = true;
-            }
-            else
-            {
-                m_LastTappedExpander = null;
-            }
+            r_ItemCardHelper.OnSingleTap(frame, expander);
         }
         private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_LockedCollection.SelectedItem = stackLayout.BindingContext;
+            //m_LockedCollection.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
             bool answer = await Application.Current.MainPage.DisplayAlert("Order Locked", "Are You Sure ?", "Yes", "No");

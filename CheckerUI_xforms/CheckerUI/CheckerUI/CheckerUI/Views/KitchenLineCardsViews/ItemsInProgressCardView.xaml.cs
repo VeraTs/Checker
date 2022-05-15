@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Xamarin.CommunityToolkit.UI.Views;
@@ -14,36 +15,24 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemsInProgressCardView : ContentView
     {
+        private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
+
         public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
         public ItemsInProgressCardView()
         {
             InitializeComponent();
         }
         
-        private Frame m_LastFrameTapped;
+      //   private Frame m_LastFrameTapped;
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            m_InProgressCollection.SelectedItem = stackLayout.BindingContext;
+            //m_InProgressCollection.SelectedItem = stackLayout.BindingContext;
             var card = stackLayout.LogicalChildren[0] as KitchenOrderItemInProgressCardView;
-
-
             var frame = card.Children[0] as Frame;
-          
-            if ( m_LastFrameTapped != null)
-            {
-                m_LastFrameTapped.BackgroundColor = Color.White;
-            }
+            var expander = frame.Children[0] as Expander;
 
-            if (m_LastFrameTapped != frame)
-            {
-                m_LastFrameTapped = frame;
-                m_LastFrameTapped.BackgroundColor = Color.BurlyWood;
-            }
-            else
-            {
-                m_LastFrameTapped = null;
-            }
+            r_ItemCardHelper.OnSingleTap(frame, expander);
 
         }
 
