@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
+             x:DataType="viewmodels:DishViewModel"
+             x:Class="CheckerWaitersApp.Views.CreateOrderView.DishCardView">
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+               HasShadow="True"
+               Padding="0" 
+               CornerRadius="10"
+               HeightRequest="30"
+               WidthRequest="100"
+               Margin="1"
+               BackgroundColor="Transparent" BorderColor="Gray">
+            <StackLayout
+                Orientation="Vertical"
+                Margin="0,0,0,0"
+                IsClippedToBounds="True">
+
+                <Label 
+                    Text="{Binding  DishName}"
+                    FontFamily="FAS"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    MaxLines="1"/>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>
