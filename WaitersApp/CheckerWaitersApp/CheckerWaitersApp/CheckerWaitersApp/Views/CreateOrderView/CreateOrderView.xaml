@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:createOrderView="clr-namespace:CheckerWaitersApp.Views.CreateOrderView;assembly=CheckerWaitersApp"
+             x:Class="CheckerWaitersApp.Views.CreateOrderView.CreateOrderView">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.6*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <createOrderView:DishesCardView x:Name="DishesCardView" Grid.Column="0"/>
+                <createOrderView:NewOrderCardView x:Name="OrderToCreateCardView" Grid.Column="1"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
