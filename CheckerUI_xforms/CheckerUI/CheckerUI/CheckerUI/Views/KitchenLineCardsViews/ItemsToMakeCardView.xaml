@@ -36,18 +36,7 @@
                            FontFamily ="FAS"
                            HorizontalOptions="CenterAndExpand"
                            VerticalOptions="FillAndExpand"/>
-                    <StackLayout Grid.Row="0" IsVisible="false" BackgroundColor="Transparent"
-                                 x:Name="m_StackForAni">
-                        <lottie:AnimationView x:Name="m_NewItemLottie"
-                                              AnimationSource = "AssetOrBundle"
-                                              Animation = "reddot_Lottie.json"
-                                              AutoPlay = "False"
-                                              IsVisible="False"
-                                              BackgroundColor="Transparent"
-                                              HorizontalOptions="Start"
-                                              VerticalOptions ="Start"
-                                              RepeatCount = "1"></lottie:AnimationView>
-                    </StackLayout>
+                
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="End" HeightRequest="2"
@@ -56,12 +45,11 @@
                     <StackLayout Grid.Row="1"
                                 Margin="0,0,0,2"
                                 IsClippedToBounds="True">
-                     
-                            <CollectionView x:Name ="m_ToMakeListView" 
-                                            Margin="5" 
-                                            ItemsSource = "{Binding ToMakeItemsCollection}" 
-                                            SelectionMode="Single" ChildAdded="M_ToMakeListView_OnChildAdded"
-                                            HorizontalScrollBarVisibility="Always" ItemsUpdatingScrollMode="KeepItemsInView">
+                        <CollectionView x:Name ="m_ToMakeListView" 
+                                        Margin="5" 
+                                        ItemsSource = "{Binding ToMakeItemsCollection}" 
+                                        SelectionMode="Single" 
+                                        HorizontalScrollBarVisibility="Always" ItemsUpdatingScrollMode="KeepItemsInView">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
                             </CollectionView.ItemsLayout>

@@ -30,7 +30,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
+            var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
            
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
@@ -41,22 +41,9 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            //m_ToMakeListView.SelectedItem = stackLayout.BindingContext;
-            KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
+            var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
             ViewModel.ItemToMakeOnDoubleClicked(item);
-        }
-
-        private async void M_ToMakeListView_OnChildAdded(object sender, ElementEventArgs e)
-        {
-            
-            m_StackForAni.IsVisible = true;
-            m_NewItemLottie.IsVisible = true;
-            m_NewItemLottie.PlayAnimation();
-            await Task.Delay(3000);
-            m_NewItemLottie.IsVisible = false;
-            m_StackForAni.IsVisible = false;
-
         }
     }
 }
