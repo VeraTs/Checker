@@ -13,6 +13,7 @@ namespace CheckerDTOs
         UnDefined,
         Starter,
         Main,
-        Dessert
+        Dessert,
+        Drink
     }
 }
