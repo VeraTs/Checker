@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     {
         private Expander m_LastTappedExpander;
         private Frame m_LastFrameTapped;
+        
         public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
 
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();  

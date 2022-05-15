@@ -9,6 +9,6 @@ namespace CheckerUI.Enums
         Unknown,
         First,
         Main,
-        Last,
+        Desert,
     }
 }
