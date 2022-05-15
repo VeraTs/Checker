@@ -25,8 +25,10 @@ namespace CheckerUI.ViewModels
                 {
                     var user = await loadUserDetails();
                     var loggedVm = new LoggedMainPageViewModel();
-                    var loggedPage = new LoggedMainPage();
-                    loggedPage.BindingContext = loggedVm;
+                    var loggedPage = new LoggedMainPage
+                    {
+                        BindingContext = loggedVm
+                    };
                     await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
                 }
                 else
@@ -38,8 +40,10 @@ namespace CheckerUI.ViewModels
             SignUpCommand = new Command(async () =>
             {
                 var registrationVm = new RegistrationPageViewModel();
-                var regPage = new RegistrationPage();
-                regPage.BindingContext = registrationVm;
+                var regPage = new RegistrationPage
+                {
+                    BindingContext = registrationVm
+                };
                 await Application.Current.MainPage.Navigation.PushAsync(regPage);
             });
 

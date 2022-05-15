@@ -16,9 +16,6 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemsLockedCardView : ContentView
     {
-        private Expander m_LastTappedExpander;
-        private Frame m_LastFrameTapped;
-        
         public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
 
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();  
@@ -31,9 +28,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-           // m_LockedCollection.SelectedItem = stackLayout.BindingContext;
-            KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
-
+            var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var frame = card.Children[0] as Frame;
             var expander = frame.Children[0] as Expander;
             r_ItemCardHelper.OnSingleTap(frame, expander);
@@ -41,8 +36,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
-            //m_LockedCollection.SelectedItem = stackLayout.BindingContext;
-            KitchenOrderItemCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
+            var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
             bool answer = await Application.Current.MainPage.DisplayAlert("Order Locked", "Are You Sure ?", "Yes", "No");
             if (answer)

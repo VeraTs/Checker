@@ -46,7 +46,7 @@
                                 Margin="0,0,0,2"
                                 IsClippedToBounds="True"
                                 Orientation="Horizontal" >
-                        <CollectionView  x:Name ="m_InProgressCollection" 
+                        <CollectionView  x:Name ="InProgressCollection" 
                                          Margin="5" 
                                         ItemsSource = "{Binding  InProgressItemsCollection}" 
                                         SelectionMode="Single" 

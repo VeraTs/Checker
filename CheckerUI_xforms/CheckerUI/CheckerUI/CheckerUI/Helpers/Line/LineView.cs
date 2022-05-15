@@ -8,7 +8,7 @@ namespace CheckerUI.Helpers.Line
 {
     public class LineView : BaseViewModel
     {
-        private LineModel model;
+        private readonly LineModel model;
         private List<Dish_item> m_DishItems = new List<Dish_item>();
         private Color m_BackgroundState;
         private Color m_LabelsColorState;

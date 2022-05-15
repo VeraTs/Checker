@@ -19,7 +19,7 @@ namespace CheckerUI.Views.PopupViews
 
         }
 
-        private void M_NewOrderLottie_OnOnFinishedAnimation(object sender, EventArgs e)
+        private void newOrderLottie_OnOnFinishedAnimation(object sender, EventArgs e)
         {
             this.Dismiss(null);
         }

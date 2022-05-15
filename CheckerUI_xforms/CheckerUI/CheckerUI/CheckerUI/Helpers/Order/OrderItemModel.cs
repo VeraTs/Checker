@@ -1,7 +1,5 @@
 ﻿using System;
 using CheckerUI.Enums;
-using CheckerUI.ViewModels;
-
 
 namespace CheckerUI.Helpers.Order
 {

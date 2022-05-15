@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CheckerUI.Enums
+﻿namespace CheckerUI.Enums
 {
     public enum eOrderItemType
     {
         Unknown,
-        First,
+        Starter,
         Main,
         Dessert,
     }

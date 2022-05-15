@@ -1,11 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
-using CheckerUI.Helpers;
 using CheckerUI.Helpers.Order;
-using Lottie.Forms;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

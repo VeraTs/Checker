@@ -36,7 +36,6 @@
                            FontFamily ="FAS"
                            HorizontalOptions="CenterAndExpand"
                            VerticalOptions="FillAndExpand"/>
-                
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="End" HeightRequest="2"
@@ -45,7 +44,7 @@
                     <StackLayout Grid.Row="1"
                                 Margin="0,0,0,2"
                                 IsClippedToBounds="True">
-                        <CollectionView x:Name ="m_ToMakeListView" 
+                        <CollectionView x:Name ="ToMakeListView" 
                                         Margin="5" 
                                         ItemsSource = "{Binding ToMakeItemsCollection}" 
                                         SelectionMode="Single" 

@@ -10,7 +10,7 @@
                                  Animation="Lottie_order_received.json" 
                                  AutoPlay="True"
                                  BackgroundColor="Transparent"
-                                 OnFinishedAnimation="M_NewOrderLottie_OnOnFinishedAnimation"/>
+                                 OnFinishedAnimation="newOrderLottie_OnOnFinishedAnimation"/>
             <Label Text="New Order !" HorizontalTextAlignment="Center"/>
 </StackLayout>
 </views:Popup>

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-namespace CheckerUI.Models
-{ //right now not in use
+﻿namespace CheckerUI.Models
+{
     public class Dish_item
     {
         public int m_DishID { get; set; }

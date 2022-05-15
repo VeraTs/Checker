@@ -3,7 +3,6 @@ using CheckerUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 
 //Here we produce the display of a single order item in its line, the grid consists of three rows (currently)
