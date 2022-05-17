@@ -5,28 +5,17 @@ namespace CheckerUI.ViewModels
 {
     public class LoggedMainPageViewModel 
     {
-        public Command SignCommand { get; }
         public Command ReturnCommand { get; }
-
         public Command MyKitchenCommand { get; }
         public Command UpdateKitchenCommand { get; }
         public Command MangeKitchenCommand { get; }
         public Command ShowStatisticsCommand { get; }
         public LoggedMainPageViewModel()
         {
-            SignCommand = new Command(() =>
-            {
-                // check if user already exists
-                // save user details
-                //login user
-                //navigate main page
-            });
             MyKitchenCommand = new Command(async () =>
             {
-                var kitchenVm = new KitchenPageViewModel();
-                var kitchenPage = new KitchenPage();
-                kitchenPage.BindingContext = kitchenVm;
-                await Application.Current.MainPage.Navigation.PushAsync(kitchenPage);
+                LinesPage page = new LinesPage();
+                await Application.Current.MainPage.Navigation.PushAsync(page);
             });
             UpdateKitchenCommand = new Command(async () =>
             {
@@ -44,10 +33,12 @@ namespace CheckerUI.ViewModels
             });
             ShowStatisticsCommand = new Command(async () =>
             {
-                var statisticsVm = new ShowStatisticsPageViewModel();
-                var statisticsPage = new ShowStatisticsPage();
-                statisticsPage.BindingContext = statisticsVm;
-                await Application.Current.MainPage.Navigation.PushAsync(statisticsPage);
+                //var statisticsVm = new ShowStatisticsPageViewModel();
+                //var statisticsPage = new ShowStatisticsPage();
+                //statisticsPage.BindingContext = statisticsVm;
+                //await Application.Current.MainPage.Navigation.PushAsync(statisticsPage);
+                var ordersView = new OrdersView();
+                await Application.Current.MainPage.Navigation.PushAsync(ordersView);
             });
             ReturnCommand = new Command(async () =>
             {

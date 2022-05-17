@@ -1,248 +1,133 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using CheckerUI.Helpers.Order;
-using CheckerUI.Models;
+﻿using CheckerUI.Enums;
 using CheckerUI.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
-using FontAwesome;
-using Prism.Behaviors;
 
-namespace CheckerUI.Helpers
+//Here we produce the display of a single order item in its line, the grid consists of three rows (currently)
+//In the first row, the name of the dish and an ID card
+//In the second row, the status of the dish varies depending on the button being pressed
+//And in the third row three buttons are linked to the command respectively
+//An order item knows to update those responsible for a change in its status
+
+
+// To Do:  Status should be changed to Enum
+namespace CheckerUI.Helpers.Order
 {
     public class OrderItemView : BaseViewModel
     {
-        private Grid m_Grid { get; set; }
-        public OrderButtonModel m_Button { get; set; }
-
-        private readonly List<Label> m_Labels;
-
-        private readonly Button m_DoneButton;
-        private readonly Button m_StartButton;
-        private readonly Button m_StopButton;
-        public Command StopCommand { get; }
-        public Command StartCommand { get; }
-        public Command DoneCommand { get; }
-        public Command ReadyCommand { get; }
-
+        //Properties
         private readonly OrderItemModel m_orderItem;
-        private string m_OrderStatusText;
-
-        public OrderItemView(string i_Name, OrderButtonModel i_Button, BaseLineViewModel.OrderIDNotifier idNotifier)
-        {
-            m_Button = new OrderButtonModel();
-            m_Button = i_Button;
-            m_orderItem = new OrderItemModel();
-            m_orderItem = CreateItemView(idNotifier.OrderID, i_Name, idNotifier.Status, 100, "some notes", 1);
-            CreateGrid();
-            ReadyCommand = new Command(() =>
-            {
-                if (OrderStatus == 0)
-                {
-                    m_Labels[1].Text = "Available";
-                    idNotifier.Status = 2;
-                    m_OrderStatusText = OrderStatusToString();
-                }
-            }); // this command will bind to timer , idNotifier is already a listener
-
-            StopCommand = new Command(() =>
-            {
-                if(OrderStatus != -1)
-                {
-                m_Labels[1].Text = " Stopped ";
-                OrderStatus = 2;
-                idNotifier.Status = 2;
-                m_OrderStatusText = OrderStatusToString();
-                }
-            });
-
-            StartCommand = new Command(() =>
-            {
-                if (OrderStatus != -1)
-                {
-                    m_Labels[1].Text = " In progress ";
-                    OrderStatus = 1;
-                    idNotifier.Status = 1;
-                    m_OrderStatusText = OrderStatusToString();
-                }
-                else
-                {
-                    // need to think about that case
-                }
-            });
-            DoneCommand = new Command(() =>
-            {
-                if (IsInProgress)
-                {
-                    m_Labels[1].Text = "Done";
-                    m_Grid.IsVisible = false;
-                    OrderStatus = 3;
-                    idNotifier.Status = 3;
-                    m_OrderStatusText = OrderStatusToString();
-                    m_Grid.Children.Remove(m_DoneButton);
-                    m_Grid.Children.Remove(m_StartButton);
-                    m_Grid.Children.Remove(m_StopButton);
-                }
-                else
-                {
-                    Application.Current.MainPage.DisplayAlert("Order Locked", m_orderItem.m_OrderItemName, "Ok");
-                }
-            });
-
-            OrderStatus = idNotifier.Status;
-            m_OrderStatusText = this.OrderStatusToString();
-            m_Labels = new List<Label>();
-            m_Labels.Add(new Label
-            {
-                Text = m_orderItem.ToString(),
-                FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
-            });
-            m_Labels.Add(new Label
-            {
-                Text = m_OrderStatusText, FontFamily = "FAS", BindingContext = m_OrderStatusText,
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
-            });
-            m_Labels.Add(new Label
-            {
-                Text = "Table : " + m_orderItem.m_TableNumber, FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
-            });
-            m_Labels.Add(new Label
-            {
-                Text = "Description :" + m_orderItem.m_Description, FontFamily = "FAS",
-                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
-            });
-            m_DoneButton = new Button
-            {
-                Text = FontAwesomeIcons.Check,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Transparent,
-                FontFamily = "FAS",
-                Command = DoneCommand
-            };
-
-            m_StartButton = new Button
-            {
-                Text = FontAwesomeIcons.Play,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Transparent,
-                FontFamily = "FAS",
-                Command = StartCommand
-            };
-            
-            m_StopButton = new Button
-            {
-                Text = FontAwesomeIcons.Stop,
-                HorizontalOptions = LayoutOptions.StartAndExpand, VerticalOptions = LayoutOptions.StartAndExpand,
-                BackgroundColor = Color.Transparent,
-                FontFamily = "FAS",
-                Command = StopCommand
-            };
-            GenerateGrid();
-        }
         
-        public void GenerateGrid()
+        // Commands
+       
+        private readonly Dictionary<eOrderItemState,Color> m_StateColors = new Dictionary<eOrderItemState,Color>();
+
+        public OrderItemView()
         {
-            int i = 0;
-            foreach (var label in m_Labels)
-            {
-                m_Grid.Children.Add(label, 0, 3, i, i+1);
-                i++;
-            }
-            m_Grid.Children.Add(m_DoneButton, 0, 1, 4, 5);
-            m_Grid.Children.Add(m_StartButton, 1, 2, 4, 5);
-            m_Grid.Children.Add(m_StopButton, 2, 3, 4, 5);
+
         }
 
-        private void CreateGrid()
+        public OrderItemView(OrderItemModel i_item)
         {
-            m_Grid = new Grid
-            {
-                Margin = new Thickness(0, 5, 0, 5),
-                IsVisible = false,
-                RowDefinitions =
-                {
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)},
-                    new RowDefinition {Height = new GridLength(2, GridUnitType.Star)}
+            feelColorsState();
+            m_orderItem = new OrderItemModel();
+            m_orderItem = i_item;
+            OrderStatus = i_item.m_State;
+            OderID = i_item.m_OrdrID;
+            OrderItemName = i_item.m_OrderItemName;
+            OrderItemDescription = i_item.m_Description;
+            FirstTimeToShowString = OrderItemTimeCreate;
 
-                },
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)},
-                    new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)},
-                    new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)}
-                },
-                BackgroundColor = Color.CadetBlue
-            };
-        }
-        public Grid OderGrid
-        {
-            get => m_Grid;
-            private set => m_Grid = value;
         }
 
+        private void feelColorsState()
+        {
+           m_StateColors.Add(eOrderItemState.Waiting, Color.Firebrick);
+           m_StateColors.Add(eOrderItemState.Available, Color.Gold);
+           m_StateColors.Add(eOrderItemState.InPreparation, Color.DarkOrange);
+           m_StateColors.Add(eOrderItemState.Ready, Color.DarkGreen);
+           m_StateColors.Add(eOrderItemState.Completed, Color.YellowGreen);
+        }
         public int OderID
         {
-            get => m_orderItem.m_OrderItemID;
-            set => m_orderItem.m_OrderItemID = value;
+            get => m_orderItem.m_OrdrID;
+            set => m_orderItem.m_OrdrID = value;
         }
 
-        public int OrderStatus
+        public eOrderItemState OrderStatus
         {
-            get => m_orderItem.m_Status;
-            set => m_orderItem.m_Status = value;
-        }
-
-        public string OrderStatusToString()
-        {
-            string output = "Status";
-            switch (m_orderItem.m_Status)
+            get => m_orderItem.m_State;
+            set
             {
-                case -1:
-                {
-                    output += "Locked";
-                    break;
-                }
-                case 0:
-                {
-                    output += "Available";
-                    break;
-                }
-                case 1:
-                {
-                    output += "In Progress";
-                    break;
-                }
-                default:
-                {
-                    output += "Done";
-                    break;
-                }
-            }
-
-            return output;
+                m_orderItem.m_State = value;
+                OrderStatusString = value.ToString();
+                OrderStatusColor = m_StateColors[OrderStatus];
+                OnPropertyChanged(nameof(OrderStatus));
+            } 
         }
 
-        //replace with enum !
-        public bool IsLocked => OrderStatus < 0;
-        public bool IsAvailable => OrderStatus == 0;
-        public bool IsInProgress => OrderStatus == 1;
-        public bool IsHolding => OrderStatus == 2;
-        public bool IsCompleted => OrderStatus == 3;
+    
+        public bool isRestored { get; set; } = false;
 
-        internal OrderItemModel CreateItemView(int i_ID, string i_Name, int i_Status, int i_Table, string i_Desc,
-            int i_DeptID)
+        public string OrderStatusString { get; set; }
+
+       
+
+        public DateTime OrderItemTimeStarted
         {
-            return OrderItemBuilder.GenerateOrderItem(i_ID, i_Name, i_Status, i_Table, i_Desc, i_DeptID);
+            get => m_orderItem.m_StartDate;
+            set
+            {
+                m_orderItem.m_StartDate = value;
+                OnPropertyChanged(nameof(OrderItemTimeStarted));
+            }
         }
-    }
 
+        public string FirstTimeToShowString { get; set; }
+
+        public string OrderItemTimeCreate => "Created: " + m_orderItem.m_CreatedDate.ToString("hh:mm tt");
+        public string OrderItemTimeStartedString => "Started: "+m_orderItem.m_StartDate.ToString(" hh: mm tt");
+
+        public string OrderItemTimeDoneString => "Done: " + m_orderItem.m_DoneDate.ToString("hh:mm tt");
+        
+
+        public DateTime OrderItemTimeDone
+        {
+            get => m_orderItem.m_DoneDate;
+            set
+            {
+                m_orderItem.m_DoneDate = value;
+                OnPropertyChanged(nameof(OrderItemTimeStarted));
+            }
+        }
+
+
+        public string OrderItemName
+        {
+            get => m_orderItem.m_OrderItemName;
+            private set => m_orderItem.m_OrderItemName = value;
+        }
+
+        public Color OrderStatusColor { get; set; } = new Color();
+        public string OrderItemDescription
+        {
+            get => m_orderItem.m_Description;
+            set => m_orderItem.m_Description = value;
+        }
+        public eOrderItemType OrderItemType => m_orderItem.m_ItemType;
+        //replace with enum !
+
+        public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
+
+        internal OrderItemModel CreateItemModel(int i_OrderID,string i_Name, int i_Table, string i_Desc,
+            int i_LineID, eOrderItemType i_Type, eOrderItemState i_State)
+        {
+            return OrderItemBuilder.GenerateOrderItem(i_OrderID,i_Name, i_Table, i_Desc, i_LineID, i_Type, i_State);
+        }
+
+        
+
+    }
 }

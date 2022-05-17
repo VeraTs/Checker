@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CheckerUI.ViewModels;
+﻿using CheckerUI.ViewModels;
 using Xamarin.Forms;
 
 namespace CheckerUI.Views
@@ -12,7 +8,7 @@ namespace CheckerUI.Views
         public UpdateKitchenPage()
         {
             BindingContext = new UpdateKitchenViewModel();
-            BackgroundColor = Color.PowderBlue;
+            BackgroundImageSource = "Checker_Logo";
             this.Title = " Update Kitchen Menu";
 
             Button returnButton = new Button()

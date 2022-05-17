@@ -25,9 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Forms" Version="8.1.97" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Com.Airbnb.Xamarin.Forms.Lottie" Version="4.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.1" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2401" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.1" />
+    <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.3.0.759" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,8 +40,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\LineView.xaml.cs">
-      <DependentUpon>LineView.xaml</DependentUpon>
+    <Compile Update="Views\LinesPage.xaml.cs">
+      <DependentUpon>LinesPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -46,13 +50,43 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\DishSearchView.xaml">
+    <EmbeddedResource Update="Views\LinesPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\LineView.xaml">
+    <EmbeddedResource Update="Views\KitchenLineCardsViews\ItemsDoneCardView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\SignUpPage.xaml">
+    <EmbeddedResource Update="Views\KitchenLineCardsViews\ItemsInProgressCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\KitchenLineCardsViews\ItemsLockedCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\KitchenLineCardsViews\ItemsToMakeCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\KitchenLineCardsViews\KitchenOrderItemCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\KitchenLineCardsViews\KitchenOrderItemInProgressCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\NewLineView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\OrderCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\OrderItemCardView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\OrdersView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\PopupViews\PopupPageNewOrder.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\RegistrationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

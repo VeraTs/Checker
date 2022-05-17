@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CheckerUI.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace CheckerUI.Views
+namespace CheckerUI.Views.KitchenLineCardsViews
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DishSearchView : ContentPage
+    public partial class KitchenOrderItemCardView : ContentView
     {
-        public DishSearchView()
+        public KitchenOrderItemCardView()
         {
             InitializeComponent();
         }

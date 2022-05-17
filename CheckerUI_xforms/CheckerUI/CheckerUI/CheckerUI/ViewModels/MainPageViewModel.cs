@@ -1,5 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using CheckerUI.Views;
 using Xamarin.Forms;
 
@@ -8,47 +8,79 @@ namespace CheckerUI.ViewModels
     public class MainPageViewModel: TriggerAction<ImageButton>,INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        private string m_UserName;
+        private string m_Password;
+        private bool m_hidePassword = true;
         public Command EnterCommand { get; }
         public Command SignUpCommand { get; }
-        
         public Command ExitCommand { get; }
-        public ObservableCollection<string> AllNotes { get; set; } =  new ObservableCollection<string>();
-        string _mUserName;
-        private string _mPassword;
-
         public string ShowIcon { get; set; }
         public string HideIcon { get; set; }
 
-        bool _hidePassword = true;
+        public MainPageViewModel()
+        {
+            EnterCommand = new Command(async () =>
+            {
+                if (checkUserDetails())
+                {
+                    var user = await loadUserDetails();
+                    var loggedVm = new LoggedMainPageViewModel();
+                    var loggedPage = new LoggedMainPage
+                    {
+                        BindingContext = loggedVm
+                    };
+                    await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Wrong Details", "User name or Password incorrect", "Ok");
+                }
+            });
+
+            SignUpCommand = new Command(async () =>
+            {
+                var registrationVm = new RegistrationPageViewModel();
+                var regPage = new RegistrationPage
+                {
+                    BindingContext = registrationVm
+                };
+                await Application.Current.MainPage.Navigation.PushAsync(regPage);
+            });
+
+            ExitCommand = new Command(() =>
+            {
+                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
+            });
+        }
+
         public string UserName
         {
-            get => _mUserName;
+            get => m_UserName;
             set
             {
-                _mUserName = value;
+                m_UserName = value;
                 var args = new PropertyChangedEventArgs(nameof(UserName));
                 PropertyChanged?.Invoke(this,args);
             }
         }
         public bool HidePassword
         {
+            get => m_hidePassword;
             set
             {
-                if (_hidePassword != value)
+                if (m_hidePassword != value)
                 {
-                    _hidePassword = value;
-
+                    m_hidePassword = value;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HidePassword)));
                 }
             }
-            get => _hidePassword;
         }
         public string Password
         {
-            get => _mPassword;
+            get => m_Password;
             set
             {
-                _mPassword = value;
+                m_Password = value;
                 var args = new PropertyChangedEventArgs(nameof(Password));
                 PropertyChanged?.Invoke(this, args);
             }
@@ -58,35 +90,20 @@ namespace CheckerUI.ViewModels
             sender.Source = HidePassword ? ShowIcon : HideIcon;
             HidePassword = !HidePassword;
         }
-        public MainPageViewModel()
+      
+        private bool checkUserDetails()
         {
-            EnterCommand = new Command(async () =>
-            {
-                AllNotes.Add(UserName);
-                AllNotes.Add(Password);
-                UserName = string.Empty;
-                Password = string.Empty;
-                //Check if to last notes are good user name and password if so next page?
-                // else -Bad
-
-                var loggedVm = new LoggedMainPageViewModel();
-                var loggedPage = new LoggedMainPage();
-                loggedPage.BindingContext = loggedVm;
-                await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
-            });
-            SignUpCommand = new Command(async () =>
-            {
-                var signVm = new SignUpPageViewModel();
-                var signPage = new SignUpPage();
-                signPage.BindingContext = signVm;
-                await Application.Current.MainPage.Navigation.PushAsync(signPage);
-                // await Application.Current.MainPage.Navigation.PushModalAsync(new NavigationPage(signPage));
-            });
-            ExitCommand = new Command(() =>
-            {
-                System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();
-            });
+           // return (UserName == "admin" && Password == "admin");
+           return true;
         }
-         
+        private async Task<RegistrationPageViewModel> loadUserDetails()
+        {
+            RegistrationPageViewModel user = new RegistrationPageViewModel
+            {
+                UserName = UserName,
+                Password = Password
+            };
+            return await Task.FromResult(user);
+        }
     }
 }
