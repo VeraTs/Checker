@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+
 
 namespace CheckerDTOs
 {
     public class Restaurant : BaseDBItem
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
         private string Email { get; set; }
-        [Required]
         private string Password { get; set; }
 
         // fluff
@@ -27,6 +23,5 @@ namespace CheckerDTOs
 
         // Serving areas
         public List<ServingArea> ServingAreas { get; set; } = new List<ServingArea>();
-        
     }
 }

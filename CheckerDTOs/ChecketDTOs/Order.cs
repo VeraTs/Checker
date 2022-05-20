@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
 
 namespace CheckerDTOs
 {
     public class Order : BaseDBItem
     {
-        [ForeignKey("Restaurant")]
         public int RestaurantId { get; set; }
         public int Table { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Ordered;
