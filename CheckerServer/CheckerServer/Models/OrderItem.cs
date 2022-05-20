@@ -18,6 +18,7 @@ namespace CheckerServer.Models
         public string Changes { get; set; }
         public ItemStatus Status { get; set; } = ItemStatus.Ordered;
         public LineItemStatus LineStatus { get; set; } = LineItemStatus.Locked;
+        public bool IsPayedFor { get; set; } = false;
     }
 
     public enum ItemStatus      // the status of the order item overall

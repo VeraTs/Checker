@@ -10,7 +10,6 @@ namespace CheckerServer.Models
         public OrderStatus Status { get; set; } = OrderStatus.Ordered;
         public List<OrderItem> Items { get; set; } = new List<OrderItem>();
         public OrderType OrderType { get; set; } = OrderType.FIFO;
-
     }
 
     public enum OrderStatus
