@@ -1,8 +1,9 @@
 ﻿using CheckerServer.Data;
+using CheckerServer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CheckerServer.utils;
-using CheckerDTOs;
+
 
 namespace CheckerServer.Controllers
 {

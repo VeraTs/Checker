@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using CheckerServer.Data;
-using CheckerDTOs;
+using CheckerServer.Models;
+
 
 namespace CheckerServer.Hubs
 {

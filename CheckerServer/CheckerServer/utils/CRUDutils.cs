@@ -1,4 +1,4 @@
-﻿using CheckerDTOs;
+﻿using CheckerServer.Models;
 
 namespace CheckerServer.utils
 {
