@@ -7,7 +7,7 @@ namespace CheckerWaitersApp.Models
     {
         public int m_OrderID { get; set; }
         public string m_OrderItemName { get; set; }
-        public string m_Note { get; set; }
+        public string m_Description { get; set; }
         public int m_LineID { get; set; }
         public int m_TableNumber { get; set; }
         public DateTime m_StartDate { get; set; }
