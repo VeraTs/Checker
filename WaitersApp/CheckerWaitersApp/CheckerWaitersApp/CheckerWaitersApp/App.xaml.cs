@@ -1,5 +1,6 @@
 ﻿using System;
 using CheckerWaitersApp.Views.CreateOrderView;
+using CheckerWaitersApp.Views.OrdersViews;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -7,6 +8,7 @@ namespace CheckerWaitersApp
 {
     public partial class App : Application
     {
+        
         public App()
         {
             InitializeComponent();

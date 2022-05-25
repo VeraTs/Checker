@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
+using CheckerWaitersApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,6 +12,21 @@ namespace CheckerWaitersApp.Views.CreateOrderView
         public DishCardView()
         {
             InitializeComponent();
+        }
+
+        private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
+        {
+            ItemFrame.BackgroundColor = Color.CadetBlue;
+            await Task.Delay(100);
+            (BindingContext as DishViewModel).IsOrdered = true;
+            ItemFrame.BackgroundColor = Color.Azure;
+        }
+
+        private async void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
+        {
+            ItemFrame.BackgroundColor = Color.CadetBlue;
+            await Task.Delay(100);
+            ItemFrame.BackgroundColor = Color.Azure;
         }
     }
 }

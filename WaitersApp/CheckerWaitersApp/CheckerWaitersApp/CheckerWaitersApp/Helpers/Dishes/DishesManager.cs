@@ -45,6 +45,46 @@ namespace CheckerWaitersApp.Helpers.Dishes
 
             return list;
         }
+
+        public List<eOrderType> AllDishTypesList()
+        {
+            var list = new List<eOrderType>
+            {
+                eOrderType.Unknown,
+                eOrderType.AllTogether,
+                eOrderType.ByLevels
+            };
+            return list;
+        }
+
+        public string OrderTypeToString(eOrderType i_Type)
+        {
+            string output;
+            switch (i_Type)
+            {
+                case eOrderType.Unknown:
+                {
+                    output = "Unknown";
+                    break;
+                }
+                case eOrderType.AllTogether:
+                {
+                    output = "All Together";
+                    break;
+                }
+                case eOrderType.ByLevels:
+                {
+                    output = "By Levels";
+                    break;
+                }
+                default:
+                {
+                    output = "By Levels";
+                    break;
+                }
+            }
+            return output;
+        }
         public ObservableCollection<DishModel> Dishes { get; }
 
     }

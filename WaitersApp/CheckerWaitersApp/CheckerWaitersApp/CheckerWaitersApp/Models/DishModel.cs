@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CheckerWaitersApp.Enums;
+﻿using CheckerWaitersApp.Enums;
 
 namespace CheckerWaitersApp.Models
 {
