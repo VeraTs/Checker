@@ -2,19 +2,50 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:createOrderView="clr-namespace:CheckerWaitersApp.Views.CreateOrderView;assembly=CheckerWaitersApp"
+             xmlns:ordersViews="clr-namespace:CheckerWaitersApp.Views.OrdersViews;assembly=CheckerWaitersApp"
+             xmlns:viewModels="clr-namespace:CheckerWaitersApp.ViewModels;assembly=CheckerWaitersApp"
              x:Class="CheckerWaitersApp.Views.CreateOrderView.CreateOrderView">
+    <ContentPage.BindingContext>
+        <viewModels:CreateOrderViewModel x:Name="viewModel"/>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="0.6*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+        <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
+            <StackLayout IsClippedToBounds="True">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <createOrderView:DishesCardView x:Name="DishesCardView" Grid.Column="0"/>
-                <createOrderView:NewOrderCardView x:Name="OrderToCreateCardView" Grid.Column="1"/>
-            </Grid>
+                    <StackLayout Grid.Column="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <createOrderView:DishesCardView x:Name="DishesCardView" Grid.Column="0"/>
+                            <createOrderView:NewOrderCardView x:Name="OrderToCreateCardView" Grid.Column="1"/>
+                        </Grid>
+                    </StackLayout>
+                    <Grid Grid.Column="1"
+                          IsClippedToBounds="True" 
+                          VerticalOptions="FillAndExpand"  
+                          HorizontalOptions="FillAndExpand">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <ordersViews:OrdersHeaderCardView Grid.Row="0"  IsClippedToBounds="True"/>
+
+                        <ordersViews:AllOrdersCardView Grid.Row="1" IsClippedToBounds="True" 
+                                                           VerticalOptions="FillAndExpand"  
+                                                           HorizontalOptions="FillAndExpand"
+                                                           x:Name="AllOrdersCardView" />
+
+                    </Grid>
+                </Grid>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
