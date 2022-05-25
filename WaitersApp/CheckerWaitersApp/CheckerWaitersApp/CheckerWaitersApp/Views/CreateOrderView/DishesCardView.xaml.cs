@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CheckerWaitersApp.Helpers;
 using CheckerWaitersApp.ViewModels;
+using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,14 +10,15 @@ namespace CheckerWaitersApp.Views.CreateOrderView
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DishesCardView : ContentView
     {
-        private DishesViewModel m_vm = new DishesViewModel();
+        private CreateOrderViewModel m_vm = new CreateOrderViewModel();
+        private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
         private StackLayout m_LastTappedLayout;
         public DishesCardView()
         {
             InitializeComponent();
         }
 
-        public void SetViewModel(DishesViewModel i_ViewModel)
+        public void SetViewModel(CreateOrderViewModel i_ViewModel)
         {
             m_vm = i_ViewModel;
             BindingContext = m_vm;
@@ -48,17 +47,8 @@ namespace CheckerWaitersApp.Views.CreateOrderView
             DishesView.SelectedItem = stackLayout.BindingContext;
             var card = stackLayout.LogicalChildren[0] as DishCardView;
             var model = card.BindingContext as DishViewModel;
-
-
-            var frame = card.Children[0] as Frame;
-            var layout = frame.Children[0] as StackLayout;
-            if (m_LastTappedLayout != null && m_LastTappedLayout != layout)
-            {
-                layout.BackgroundColor = Color.Bisque;
-                m_LastTappedLayout.BackgroundColor = Color.Transparent;
-            }
-
-            m_LastTappedLayout = layout;
+            var expander = card.Children[0] as Expander;
+            r_ItemCardHelper.OnSingleTap(expander);
         }
 
         private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
