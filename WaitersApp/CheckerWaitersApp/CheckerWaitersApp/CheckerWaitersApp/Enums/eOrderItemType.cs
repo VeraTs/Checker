@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CheckerWaitersApp.Enums
+﻿namespace CheckerWaitersApp.Enums
 {
     public enum eOrderItemType
     {
