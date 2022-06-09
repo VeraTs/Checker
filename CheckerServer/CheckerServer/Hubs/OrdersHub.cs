@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using CheckerServer.Data;
 using CheckerServer.Models;
-
+using CheckerServer.utils;
 
 namespace CheckerServer.Hubs
 {
@@ -35,6 +35,40 @@ namespace CheckerServer.Hubs
             if(success > 0)
             {
                 await Clients.All.SendAsync("ReceiveOrder", order);
+            } else
+            {
+                await Clients.Caller.SendAsync("DBError", "Error in adding order");
+            }
+        }
+
+        public async Task AddOrderItem(OrderItem item)  // orderITem should contain the order id propertly.
+        {
+            Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
+            int success = -1;
+            if (order != null)
+            {
+                success = DBSetHelper.AddHelper<OrderItem>(_context, item, _context.OrderItems).Result.Value;
+            }
+
+            if(success <0)
+            {
+                await Clients.Caller.SendAsync("DBError", "No Order with the id " + item.OrderId + " is registered");
+            } else if(success == 0)
+            {
+                await Clients.Caller.SendAsync("DBError", "Could not add Order Item");
+            }else
+            {
+                // successfull addition
+                await Clients.Caller.SendAsync("DBSuccess", "Added Order Item successfuly.");
+                // option A - will probably cause issues with circular references
+                /*order = await _context.Orders.DistinctBy(o => o.ID == order.ID)
+                    .Include("Items")
+                    .FirstOrDefaultAsync();*/
+
+                // option B
+                order.Items.AddRange(_context.OrderItems.Where(oi => oi.OrderId == order.ID));
+
+                await Clients.All.SendAsync("OrderUpdate", order); // send updated DB state to this instance
             }
         }
     }
