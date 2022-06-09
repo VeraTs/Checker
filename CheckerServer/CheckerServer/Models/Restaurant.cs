@@ -14,6 +14,7 @@ namespace CheckerServer.Models
         // fluff
         public string Phone { get; set; }
         public string ContactName { get; set; }
+        public int Balance { get; set; } = 0;
 
         // -------- Details of Physical representation of Restaurant --------
 

@@ -16,13 +16,16 @@ namespace CheckerServer.Hubs
         }
 
         // gets all orders in system
-        public async Task InitialOrders()
+        public async Task GetAllOrders()
         {
             List<Order> orders = await _context.Orders.ToListAsync();
-            foreach(Order order in orders)
+
+            await Clients.Caller.SendAsync("ReceiveOrders", orders);
+            
+            /*foreach(Order order in orders)
             {
                 await Clients.Caller.SendAsync("ReceiveOrder", order);
-            }
+            }*/
         }
 
         public async Task AddOrder(Order order)
