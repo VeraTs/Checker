@@ -18,7 +18,7 @@ namespace CheckerWaitersApp.ViewModels
                 m_OrderID = i_Model.m_OrderID,
                 m_State = eOrderItemState.Waiting,
                 m_OrderItemName = i_Model.m_OrderItemName,
-                m_Description = i_Model.m_Description,
+                m_Note = "Without Onion",
                 m_ItemType = i_Model.m_ItemType,
                 m_LineID = i_Model.m_LineID,
                 m_StartDate = DateTime.MinValue,
@@ -36,7 +36,7 @@ namespace CheckerWaitersApp.ViewModels
                 m_OrderID = i_CountID,
                 m_State = eOrderItemState.Waiting,
                 m_OrderItemName = i_DishModel.m_DishName,
-                m_Description = "None",
+                m_Note = "Without Onion",
                 m_ItemType = i_DishModel.m_DishType,
                 m_LineID = i_DishModel.m_LineID,
                 m_StartDate = DateTime.MinValue,
@@ -48,14 +48,14 @@ namespace CheckerWaitersApp.ViewModels
         private void init()
         {
             StateString = "State :" + OrderItemModel.m_State.ToString();
-            Description = "Description :" + OrderItemModel.m_Description;
+            Note = "Note :" + OrderItemModel.m_Note;
             TypeString = "Type :" + OrderItemModel.m_ItemType;
             CreatedItemString = "Created :" + OrderItemModel.m_CreatedDate.ToShortTimeString();
         }
         public string TypeString { get; private set; }
         public string CreatedItemString { get; private set; }
         public string StateString { get; private set; }
-        public string Description { get;  set; }
+        public string Note { get;  set; }
         public string DishName
         {
             get => OrderItemModel.m_OrderItemName;
@@ -100,7 +100,7 @@ namespace CheckerWaitersApp.ViewModels
             var user_input = await InputBox();
             if (!string.IsNullOrEmpty(user_input))
             {
-                OrderItemModel.m_Description = user_input;
+                OrderItemModel.m_Note = user_input;
             }
         }
 
