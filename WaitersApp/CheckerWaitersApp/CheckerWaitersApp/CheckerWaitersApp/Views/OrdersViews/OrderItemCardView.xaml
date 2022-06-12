@@ -47,7 +47,7 @@
                 <StackLayout Orientation="Horizontal">
                     <BoxView Color="DarkCyan" WidthRequest="10"/>
                     <StackLayout Orientation="Vertical" Margin="10">
-                        <Label Text="{Binding  Description}"
+                        <Label Text="{Binding  Note}"
                                FontFamily="FAS"
                                FontSize="Large"
                                FontAttributes="Bold"
