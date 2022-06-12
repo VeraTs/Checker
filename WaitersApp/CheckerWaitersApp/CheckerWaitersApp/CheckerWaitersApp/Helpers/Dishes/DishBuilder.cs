@@ -5,7 +5,7 @@ namespace CheckerWaitersApp.Helpers.Dishes
 {
     internal static class DishBuilder
     {
-        public static DishModel GenerateDishItem(int i_Id, string i_Name, int i_LineID, string i_TimeReq, string i_TimeReqHigh, int i_outputScreen, string i_Des, eOrderItemType i_Type)
+        public static DishModel GenerateDishItem(int i_Id, string i_Name, int i_LineID, string i_TimeReq, string i_TimeReqHigh, int i_outputScreen, string i_Des, eOrderItemType i_Type, double i_Price)
         {
             var m_Dish = new DishModel()
             {
@@ -16,6 +16,7 @@ namespace CheckerWaitersApp.Helpers.Dishes
                 m_TimeReqHigh = i_TimeReqHigh,
                 m_Output_screen = i_outputScreen,
                 m_Description = i_Des,
+                m_Price = i_Price,
                 m_DishType = i_Type
             };
             return m_Dish;
