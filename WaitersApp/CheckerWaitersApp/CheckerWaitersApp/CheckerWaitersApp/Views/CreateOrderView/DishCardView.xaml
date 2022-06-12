@@ -59,7 +59,7 @@
                                TextColor="Black"
                                MaxLines="1"/>
 
-                        <Label Text="Price :"
+                        <Label Text="{Binding Price}"
                                FontFamily="FAS"
                                FontSize="Large"
                                FontAttributes="Bold"

@@ -1,4 +1,5 @@
-﻿using CheckerWaitersApp.Models;
+﻿using System.Globalization;
+using CheckerWaitersApp.Models;
 
 namespace CheckerWaitersApp.ViewModels
 {
@@ -19,6 +20,7 @@ namespace CheckerWaitersApp.ViewModels
         {
             Model = new DishModel();
             Model = i_dish;
+            Price = "Price :"+ Model.m_Price.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
         }
         public string DishName
         {
@@ -30,7 +32,7 @@ namespace CheckerWaitersApp.ViewModels
             get => Model.m_Description;
             set => Model.m_Description = value;
         }
-
+        public string Price { get; set; }
         public DishModel Model { get; }
     }
 }
