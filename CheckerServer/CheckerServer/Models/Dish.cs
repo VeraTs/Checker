@@ -10,7 +10,7 @@ namespace CheckerServer.Models
         [ForeignKey("Line")]
         public int LineId { get; set; }
         [ForeignKey("RestMenu")]
-        public int RestMenuId { get; set; }
+        public float RestMenuId { get; set; }
         [Required]
         public int Price { get; set; }
         [Required]
