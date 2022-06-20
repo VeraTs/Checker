@@ -1,4 +1,4 @@
-﻿namespace CheckerDTOs
+﻿namespace CheckerServer.Models
 {
     public enum DishType
     {

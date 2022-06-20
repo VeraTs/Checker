@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-
-namespace CheckerDTOs
+namespace CheckerServer.Models
 {
-    public class Restaurant : BaseDBItem
+    public class Restaurant
     {
-        public string Name { get; set; }
-        private string Email { get; set; }
-        private string Password { get; set; }
-
+        public int ID;
         // fluff
         public string Phone { get; set; }
         public string ContactName { get; set; }
+        public int Balance { get; set; } = 0;
 
         // -------- Details of Physical representation of Restaurant --------
 

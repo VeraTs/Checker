@@ -1,4 +1,6 @@
-﻿namespace CheckerDTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CheckerServer.Models
 {
     public class Measurement
     {

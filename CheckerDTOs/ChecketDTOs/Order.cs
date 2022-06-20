@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
-
-namespace CheckerDTOs
+namespace CheckerServer.Models
 {
-    public class Order : BaseDBItem
+    public class Order
     {
+        public int ID;
         public int RestaurantId { get; set; }
         public int Table { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Ordered;
         public List<OrderItem> Items { get; set; } = new List<OrderItem>();
         public OrderType OrderType { get; set; } = OrderType.FIFO;
-        public int TotalPrice { get; set; }
-        public int TotalPayedFor { get; set; }
-
+        public float TotalCost { get; set; }
+        public float RemainsToPay { get; set; }
     }
 
     public enum OrderStatus
