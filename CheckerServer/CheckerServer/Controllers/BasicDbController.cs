@@ -57,13 +57,22 @@ namespace CheckerServer.Controllers
 
         // POST : add new instance
         [HttpPost]
-        public async Task<ActionResult<int>> Add(T item)
+        public async Task<ActionResult<T>> Add(T item)
         {
             if (ModelState.IsValid && item != null)
             {
                 try
                 {
-                    return await DBSetHelper.AddHelper<T>(r_DbContext, item, r_Set);
+                    int res = (await DBSetHelper.AddHelper<T>(r_DbContext, item, r_Set)).Value;
+                    if(res > 0)
+                    {
+                        // return the added item
+                        return item;
+                    }else
+                    {
+                        // return null item
+                        return BadRequest("DB error: cannot insert item");
+                    }
                 }
                 catch (Exception ex)
                 {
