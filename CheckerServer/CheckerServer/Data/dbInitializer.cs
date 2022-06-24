@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using CheckerDTOs;
+using CheckerServer.Models;
 
 namespace CheckerServer.Data
 {

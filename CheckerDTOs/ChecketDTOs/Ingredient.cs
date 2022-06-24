@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CheckerDTOs
+namespace CheckerServer.Models
 {
-    public class Ingredient : BaseDBItem
+    public class Ingredient
     {
-        [Required]
+        public int ID;
         public string Name { get; set; }
         public int InStock { get; set; }
         public Measurement Measurement { get; set; }

@@ -22,7 +22,7 @@ namespace CheckerServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CheckerDTOs.Dish", b =>
+            modelBuilder.Entity("CheckerServer.Models.Dish", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -31,14 +31,27 @@ namespace CheckerServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float>("EstMakeTime")
+                        .HasColumnType("real");
+
                     b.Property<int>("LineId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MakerFit")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MakerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<int>("RestMenuId")
                         .HasColumnType("int");
@@ -55,7 +68,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("Dishes");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.DishStatistic", b =>
+            modelBuilder.Entity("CheckerServer.Models.DishStatistic", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -79,7 +92,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("DishStatistics");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Ingredient", b =>
+            modelBuilder.Entity("CheckerServer.Models.Ingredient", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -91,6 +104,7 @@ namespace CheckerServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("MeasurementType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -104,7 +118,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("Ingredients");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Line", b =>
+            modelBuilder.Entity("CheckerServer.Models.Line", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -137,7 +151,29 @@ namespace CheckerServer.Migrations
                     b.ToTable("Lines");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Measurement", b =>
+            modelBuilder.Entity("CheckerServer.Models.Maker", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<int>("LineId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("LineId");
+
+                    b.ToTable("Maker");
+                });
+
+            modelBuilder.Entity("CheckerServer.Models.Measurement", b =>
                 {
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(450)");
@@ -147,7 +183,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("Measurements");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Order", b =>
+            modelBuilder.Entity("CheckerServer.Models.Order", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -158,6 +194,9 @@ namespace CheckerServer.Migrations
                     b.Property<int>("OrderType")
                         .HasColumnType("int");
 
+                    b.Property<float>("RemainsToPay")
+                        .HasColumnType("real");
+
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
@@ -167,12 +206,15 @@ namespace CheckerServer.Migrations
                     b.Property<int>("Table")
                         .HasColumnType("int");
 
+                    b.Property<float>("TotalCost")
+                        .HasColumnType("real");
+
                     b.HasKey("ID");
 
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.OrderItem", b =>
+            modelBuilder.Entity("CheckerServer.Models.OrderItem", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -181,6 +223,7 @@ namespace CheckerServer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<string>("Changes")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DishId")
@@ -207,7 +250,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Restaurant", b =>
+            modelBuilder.Entity("CheckerServer.Models.Restaurant", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -215,7 +258,11 @@ namespace CheckerServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
+
                     b.Property<string>("ContactName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -223,6 +270,7 @@ namespace CheckerServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -230,7 +278,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("Restaurants");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.RestMenu", b =>
+            modelBuilder.Entity("CheckerServer.Models.RestMenu", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -252,7 +300,7 @@ namespace CheckerServer.Migrations
                     b.ToTable("RestMenus");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.ServingArea", b =>
+            modelBuilder.Entity("CheckerServer.Models.ServingArea", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -277,24 +325,24 @@ namespace CheckerServer.Migrations
                     b.ToTable("ServingAreas");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Dish", b =>
+            modelBuilder.Entity("CheckerServer.Models.Dish", b =>
                 {
-                    b.HasOne("CheckerDTOs.Line", null)
+                    b.HasOne("CheckerServer.Models.Line", null)
                         .WithMany("Dishes")
                         .HasForeignKey("LineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CheckerDTOs.RestMenu", null)
+                    b.HasOne("CheckerServer.Models.RestMenu", null)
                         .WithMany("Dishes")
                         .HasForeignKey("RestMenuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CheckerDTOs.DishStatistic", b =>
+            modelBuilder.Entity("CheckerServer.Models.DishStatistic", b =>
                 {
-                    b.HasOne("CheckerDTOs.Dish", "Dish")
+                    b.HasOne("CheckerServer.Models.Dish", "Dish")
                         .WithMany()
                         .HasForeignKey("DishId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -303,37 +351,48 @@ namespace CheckerServer.Migrations
                     b.Navigation("Dish");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Ingredient", b =>
+            modelBuilder.Entity("CheckerServer.Models.Ingredient", b =>
                 {
-                    b.HasOne("CheckerDTOs.Measurement", "Measurement")
+                    b.HasOne("CheckerServer.Models.Measurement", "Measurement")
                         .WithMany()
-                        .HasForeignKey("MeasurementType");
+                        .HasForeignKey("MeasurementType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Measurement");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Line", b =>
+            modelBuilder.Entity("CheckerServer.Models.Line", b =>
                 {
-                    b.HasOne("CheckerDTOs.Restaurant", null)
+                    b.HasOne("CheckerServer.Models.Restaurant", null)
                         .WithMany("Lines")
                         .HasForeignKey("RestaurantID");
 
-                    b.HasOne("CheckerDTOs.ServingArea", null)
+                    b.HasOne("CheckerServer.Models.ServingArea", null)
                         .WithMany("Lines")
                         .HasForeignKey("ServingAreaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CheckerDTOs.OrderItem", b =>
+            modelBuilder.Entity("CheckerServer.Models.Maker", b =>
                 {
-                    b.HasOne("CheckerDTOs.Dish", "Dish")
+                    b.HasOne("CheckerServer.Models.Line", null)
+                        .WithMany("Makers")
+                        .HasForeignKey("LineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CheckerServer.Models.OrderItem", b =>
+                {
+                    b.HasOne("CheckerServer.Models.Dish", "Dish")
                         .WithMany()
                         .HasForeignKey("DishId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CheckerDTOs.Order", null)
+                    b.HasOne("CheckerServer.Models.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -342,35 +401,37 @@ namespace CheckerServer.Migrations
                     b.Navigation("Dish");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.RestMenu", b =>
+            modelBuilder.Entity("CheckerServer.Models.RestMenu", b =>
                 {
-                    b.HasOne("CheckerDTOs.Restaurant", null)
+                    b.HasOne("CheckerServer.Models.Restaurant", null)
                         .WithMany("Menus")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CheckerDTOs.ServingArea", b =>
+            modelBuilder.Entity("CheckerServer.Models.ServingArea", b =>
                 {
-                    b.HasOne("CheckerDTOs.Restaurant", null)
+                    b.HasOne("CheckerServer.Models.Restaurant", null)
                         .WithMany("ServingAreas")
                         .HasForeignKey("RestaurantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Line", b =>
+            modelBuilder.Entity("CheckerServer.Models.Line", b =>
                 {
                     b.Navigation("Dishes");
+
+                    b.Navigation("Makers");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Order", b =>
+            modelBuilder.Entity("CheckerServer.Models.Order", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.Restaurant", b =>
+            modelBuilder.Entity("CheckerServer.Models.Restaurant", b =>
                 {
                     b.Navigation("Lines");
 
@@ -379,12 +440,12 @@ namespace CheckerServer.Migrations
                     b.Navigation("ServingAreas");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.RestMenu", b =>
+            modelBuilder.Entity("CheckerServer.Models.RestMenu", b =>
                 {
                     b.Navigation("Dishes");
                 });
 
-            modelBuilder.Entity("CheckerDTOs.ServingArea", b =>
+            modelBuilder.Entity("CheckerServer.Models.ServingArea", b =>
                 {
                     b.Navigation("Lines");
                 });

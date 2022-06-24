@@ -8,11 +8,12 @@ namespace XamarinTest2.ViewModels
 {
     internal class SignalRViewModel
     {
-        public String NewToDoDesc { get; set; } = "";
-        public Command AddToDo { get; private set; }
+        //public String NewToDoDesc { get; set; } = "";
+        public Command Init { get; private set; }
         public SignalRViewModel()
         {
-            AddToDo = new Command(async () => {
+            Init = new Command(async () =>
+            {
                 // if for some reason, connection is inactive, activate
                 if (App.HubConn.State == HubConnectionState.Disconnected)
                 {
@@ -27,10 +28,10 @@ namespace XamarinTest2.ViewModels
                 }
 
                 // if connection is active, invoke an event to add new listing
-                if (App.HubConn.State == HubConnectionState.Connected)
+                /*if (App.HubConn.State == HubConnectionState.Connected)
                 {
                     await App.HubConn.InvokeAsync("AddToDo", NewToDoDesc, DateTime.Now);
-                }
+                }*/
             });
         }
     }

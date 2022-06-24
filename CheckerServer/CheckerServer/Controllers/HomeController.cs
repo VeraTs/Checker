@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
+
 namespace CheckerServer.Controllers
 {
     public class HomeController : Controller

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CheckerServer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckerServer.Data
 {
@@ -8,15 +9,15 @@ namespace CheckerServer.Data
             : base(options)
         {}
 
-        public DbSet<CheckerDTOs.Restaurant> Restaurants { get; set; }
-        public DbSet<CheckerDTOs.Dish> Dishes { get; set; }
-        public DbSet<CheckerDTOs.Ingredient> Ingredients { get; set; }
-        public DbSet<CheckerDTOs.Measurement> Measurements { get; set; }
-        public DbSet<CheckerDTOs.Order> Orders { get; set; }
-        public DbSet<CheckerDTOs.OrderItem> OrderItems { get; set; }
-        public DbSet<CheckerDTOs.DishStatistic> DishStatistics { get; set; }
-        public DbSet<CheckerDTOs.RestMenu> RestMenus { get; set; }
-        public DbSet<CheckerDTOs.Line> Lines { get; set; }
-        public DbSet<CheckerDTOs.ServingArea> ServingAreas { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Dish> Dishes { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<Measurement> Measurements { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DishStatistic> DishStatistics { get; set; }
+        public DbSet<RestMenu> RestMenus { get; set; }
+        public DbSet<Line> Lines { get; set; }
+        public DbSet<ServingArea> ServingAreas { get; set; }
     }
 }

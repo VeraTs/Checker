@@ -10,10 +10,15 @@ namespace XamarinTest2.Services
 {
     public class WebDataStore : IDataStore<ToDo>
     {
-        private readonly ToDoHttpClient client;
-        public WebDataStore(string url)
+        private readonly HttpClient client;
+        private HttpClientHandler handler;
+        public WebDataStore(string url, HttpClientHandler handler, bool isDebug)
         {
-            client = new ToDoHttpClient(url);
+            client = isDebug ? new HttpClient(handler) : new HttpClient();
+            client.BaseAddress = new Uri(url);
+            client.Timeout = new TimeSpan(0, 0, 30);
+            
+            this.handler = handler;
         }
         public Task<bool> AddItemAsync(ToDo item)
         {
@@ -45,7 +50,7 @@ namespace XamarinTest2.Services
             {
                 return new List<ToDo>();
             }*/
-            List<ToDo> listy = JsonSerializer.Deserialize<List<ToDo>>(await client.SendRequest());
+            List<ToDo> listy = JsonSerializer.Deserialize<List<ToDo>>(await client.GetStringAsync(""));
             return listy;
         }
 

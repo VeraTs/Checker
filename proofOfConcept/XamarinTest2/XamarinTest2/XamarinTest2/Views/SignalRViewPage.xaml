@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="XamarinTest2.Views.SignalRViewPage"
              xmlns:viewmodels="clr-namespace:XamarinTest2.ViewModels"
-             xmlns:models="clr-namespace:XamarinTest2.Models"
+             xmlns:models="clr-namespace:CheckerDTOs"
              >
 
     <ContentPage.BindingContext>
@@ -14,9 +14,9 @@
 
         <Grid Grid.Row="0" RowDefinitions="auto, auto" ColumnDefinitions="auto, *">
             <Label FontSize="Medium" VerticalTextAlignment="Center" Text="Description: " Grid.Row="0" Grid.Column="0"></Label>
-            <Button Margin="5" Grid.ColumnSpan="2" Command="{Binding AddToDo}" Text="Add ToDo" Grid.Row="1" Grid.Column="0"></Button>
+            <Button Margin="5" Grid.ColumnSpan="2" Command="{Binding Init}" Text="Add ToDo" Grid.Row="1" Grid.Column="0"></Button>
 
-            <Entry x:Name="newToDoinput" Placeholder="new to do" Text="{Binding NewToDoDesc}" Grid.Row="0" Grid.Column="1"></Entry>
+            <Entry x:Name="newToDoinput" Placeholder="new to do" Text="Empty Thing YAY :D" Grid.Row="0" Grid.Column="1"></Entry>
         </Grid>
 
 
@@ -24,7 +24,7 @@
             <!--Built in Cells-->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding description}" Detail="{Binding createdDate}"/>
+                    <TextCell Text="{Binding Table}" Detail="{Binding Items}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
