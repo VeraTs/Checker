@@ -30,10 +30,18 @@ namespace CheckerServer.Hubs
 
         public async Task AddOrder(Order order)
         {
-            _context.Add(order);
+            List<OrderItem> items = order.Items;
+            await _context.Orders.AddAsync(order);
             int success = await _context.SaveChangesAsync();
             if(success > 0)
             {
+                foreach(OrderItem item in items)
+                {
+                    item.OrderId = order.ID;
+                }
+
+                await _context.OrderItems.AddRangeAsync(items);
+                success = await _context.SaveChangesAsync();
                 await Clients.All.SendAsync("ReceiveOrder", order);
             } else
             {
