@@ -41,6 +41,10 @@ namespace CheckerWaitersApp.Views.CreateOrderView
             DishesView.ItemsSource = m_vm.Dishes;
         }
 
+        public void ViewDrinks()
+        {
+            DishesView.ItemsSource = m_vm.Drinks;
+        }
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
@@ -69,6 +73,10 @@ namespace CheckerWaitersApp.Views.CreateOrderView
             ViewMains();
         }
         private void DessertsButton_OnClicked(object sender, EventArgs e)
+        {
+            ViewDesserts();
+        }
+        private void DrinksButton_OnClicked(object sender, EventArgs e)
         {
             ViewDesserts();
         }

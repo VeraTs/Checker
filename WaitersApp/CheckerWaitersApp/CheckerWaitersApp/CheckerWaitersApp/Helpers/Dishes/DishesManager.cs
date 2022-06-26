@@ -2,28 +2,41 @@
 using System.Collections.ObjectModel;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Models;
+using CheckerWaitersApp.Services;
 
 namespace CheckerWaitersApp.Helpers.Dishes
 {
     public class DishesManager
     {
-        public DishesManager()
+        private DishDataStore Store { get; set; }
+        public DishesManager(DishDataStore i_Store)
         {
-            Dishes = new ObservableCollection<DishModel>();
-            generate();
+            Dishes = new ObservableCollection<Dish>();
+            Store = i_Store;
+           GetDishes();
         }
 
+        private async void GetDishes()
+        {
+           await Store.GetItemsAsync();
+           var list = Store.dishes;
+           foreach (var item in list)
+           {
+               Dishes.Add(item);
+           }
+        }
         private void generate()
         {
-            var d1 = DishBuilder.GenerateDishItem(1, "Burger", 1, "10", "13", 0, "With Fires", eOrderItemType.Main,10.0);
-            var d2 = DishBuilder.GenerateDishItem(2, "Pizza", 1, "10", "13", 0, "No info", eOrderItemType.Main,8.99);
-            var d3 = DishBuilder.GenerateDishItem(3, "Fish", 1, "10", "13", 0, "Sea bream fillet", eOrderItemType.Main, 7.5);
-            var d4 = DishBuilder.GenerateDishItem(4, "Salad", 2, "10", "13", 0, "Chopped", eOrderItemType.Starter, 5.5);
-            var d5 = DishBuilder.GenerateDishItem(5, "Leak", 2, "10", "13", 0, "", eOrderItemType.Starter, 4.25);
-            var d6 = DishBuilder.GenerateDishItem(6, "Tartar", 2, "10", "13", 0, "Chopped tuna", eOrderItemType.Starter,5.0);
-            var d7 = DishBuilder.GenerateDishItem(7, "Bread", 3, "10", "13", 0, "With Tahini", eOrderItemType.Starter, 3.25);
-            var d8 = DishBuilder.GenerateDishItem(8, "Pai", 3, "10", "13", 0, "", eOrderItemType.Dessert, 3.0);
-            var d9 = DishBuilder.GenerateDishItem(9, "Cake", 3, "10", "13", 0, "", eOrderItemType.Dessert,3.0);
+            
+            var d1 = DishBuilder.GenerateDishItem(1, "Burger", 1,"With Fires", eDishType.Main, 10, 1);
+            var d2 = DishBuilder.GenerateDishItem(2, "Pizza", 1, "No info", eDishType.Main,8, 1);
+            var d3 = DishBuilder.GenerateDishItem(3, "Fish", 1, "Sea bream fillet", eDishType.Main, 7, 1);
+            var d4 = DishBuilder.GenerateDishItem(4, "Salad", 2, "Chopped", eDishType.Starter, 5,1);
+            var d5 = DishBuilder.GenerateDishItem(5, "Leak", 2, "", eDishType.Starter, 4,1);
+            var d6 = DishBuilder.GenerateDishItem(6, "Tartar", 2,  "Chopped tuna", eDishType.Starter,5,1);
+            var d7 = DishBuilder.GenerateDishItem(7, "Bread", 3,  "With Tahini", eDishType.Starter, 3,1);
+            var d8 = DishBuilder.GenerateDishItem(8, "Pai", 3, "",eDishType.Dessert, 3,1);
+            var d9 = DishBuilder.GenerateDishItem(9, "Cake", 3,  "", eDishType.Dessert,3,1);
             Dishes.Add(d1);
             Dishes.Add(d2);
             Dishes.Add(d3);
@@ -40,7 +53,7 @@ namespace CheckerWaitersApp.Helpers.Dishes
             var list = new List<string>();
             foreach (var dish in Dishes)
             {
-                list.Add(dish.m_DishName);
+                list.Add(dish.name);
             }
 
             return list;
@@ -50,9 +63,9 @@ namespace CheckerWaitersApp.Helpers.Dishes
         {
             var list = new List<eOrderType>
             {
-                eOrderType.Unknown,
+                eOrderType.FIFO,
                 eOrderType.AllTogether,
-                eOrderType.ByLevels
+                eOrderType.Staggered
             };
             return list;
         }
@@ -62,9 +75,9 @@ namespace CheckerWaitersApp.Helpers.Dishes
             string output;
             switch (i_Type)
             {
-                case eOrderType.Unknown:
+                case eOrderType.FIFO:
                 {
-                    output = "Unknown";
+                    output = "FIFO";
                     break;
                 }
                 case eOrderType.AllTogether:
@@ -72,20 +85,20 @@ namespace CheckerWaitersApp.Helpers.Dishes
                     output = "All Together";
                     break;
                 }
-                case eOrderType.ByLevels:
+                case eOrderType.Staggered:
                 {
-                    output = "By Levels";
+                    output = "Staggered";
                     break;
                 }
                 default:
                 {
-                    output = "By Levels";
+                    output = "Staggered";
                     break;
                 }
             }
             return output;
         }
-        public ObservableCollection<DishModel> Dishes { get; }
+        public ObservableCollection<Dish> Dishes { get; }
 
     }
 }

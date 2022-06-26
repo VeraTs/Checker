@@ -5,21 +5,28 @@ using System.Threading.Tasks;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Helpers.Dishes;
 using CheckerWaitersApp.Models;
+using CheckerWaitersApp.Services;
 using Xamarin.Forms;
 
 namespace CheckerWaitersApp.ViewModels
 {
     public class CreateOrderViewModel : BaseViewModel
     {
-        private readonly ObservableCollection<DishModel> m_Dishes;
+        private readonly ObservableCollection<Dish> m_Dishes;
         private DishesManager m_Manager;
         private static int m_CountItemsID = 0;
         private static int m_CountOrdersID = 0;
+        private float m_TotalPrice = 0;
         public OrdersViewModel Orders { get; set; } = new OrdersViewModel();
+
         public CreateOrderViewModel()
         {
-            m_Manager = new DishesManager();
-            m_Dishes = new ObservableCollection<DishModel>();
+            
+        }
+        public CreateOrderViewModel(DishDataStore i_Store)
+        {
+            m_Manager = new DishesManager(i_Store);
+            m_Dishes = new ObservableCollection<Dish>();
             m_Dishes = m_Manager.Dishes;
             DishTypesStrings = new List<string>();
             var typesList = m_Manager.AllDishTypesList();
@@ -29,26 +36,30 @@ namespace CheckerWaitersApp.ViewModels
                 var dishViewModel = new DishViewModel(model);
                 dishViewModel.PropertyChanged += dishViewModel_PropertyChanged;
                 DishesOnView.Add(dishViewModel);
-                Dishes.Add(dishViewModel);
+               Dishes.Add(dishViewModel);
 
-                switch (model.m_DishType)
+                switch (model.type)
                 {
-                    case eOrderItemType.Starter:
+                    case eDishType.Starter:
                         Starters.Add(dishViewModel);
                         break;
-                    case eOrderItemType.Main:
+                    case eDishType.Main:
                         Mains.Add(dishViewModel);
                         break;
-                    case eOrderItemType.Dessert:
+                    case eDishType.Dessert:
                         Desserts.Add(dishViewModel);
                         break;
+                    case eDishType.Drink:
+                        Drinks.Add(dishViewModel);
+                        break;
+                    
                 }
             }
         }
 
         private void dishViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (sender is DishViewModel dishView && dishView.IsOrdered)
+            if (sender is DishViewModel {IsOrdered: true} dishView)
             {
                 AddToOrderCollection(dishView);
             }
@@ -61,17 +72,20 @@ namespace CheckerWaitersApp.ViewModels
         public ObservableCollection<DishViewModel> Starters { get; private set; } = new ObservableCollection<DishViewModel>();
         public ObservableCollection<DishViewModel> Mains { get; private set; } = new ObservableCollection<DishViewModel>();
         public ObservableCollection<DishViewModel> Desserts { get; private set; } = new ObservableCollection<DishViewModel>();
+        public ObservableCollection<DishViewModel> Drinks { get; private set; } = new ObservableCollection<DishViewModel>();
         public ObservableCollection<OrderItemViewModel> ToOrderCollection { get; private set; } = new ObservableCollection<OrderItemViewModel>();
 
-        public ObservableCollection<OrderModel> OrdersCollection { get; private set; } = new ObservableCollection<OrderModel>();
+        public ObservableCollection<Order> OrdersCollection { get; private set; } = new ObservableCollection<Order>();
 
         public void AddToOrderCollection(DishViewModel i_ToAdd)
         {
             var item = new OrderItemViewModel(i_ToAdd.Model, m_CountItemsID++);
+            m_TotalPrice += i_ToAdd.Model.price;
             ToOrderCollection.Add(item);
         }
         public void RemoveFromOrderCollection(OrderItemViewModel i_ToRemove)
         {
+            m_TotalPrice -= i_ToRemove.OrderItemDish.price;
             ToOrderCollection.Remove(i_ToRemove);
         }
 
@@ -84,22 +98,24 @@ namespace CheckerWaitersApp.ViewModels
         // should be async
         public void GenerateOrder()
         {
-            var orderItems = new List<OrderItemModel>();
+            var orderItems = new List<OrderItem>();
             foreach (var item in ToOrderCollection)
             {
-                item.OrderItemModel.m_CreatedDate = DateTime.Now;
-                item.OrderItemModel.m_TableNumber = int.Parse(EntryValue);
+                item.OrderItemModel.createdDate = DateTime.Now;
+                item.OrderItemModel.table = int.Parse(EntryValue);
                 orderItems.Add(item.OrderItemModel);
             }
 
-            var newOrder = new OrderModel()
+            var newOrder = new Order()
             {
-                m_TableNumber = int.Parse(EntryValue),
-                m_OrderID = m_CountOrdersID++,
-                m_OrderState = eOrderState.Pending,
-                m_OrderType = PickedOrderType,
-                m_Items = orderItems,
-                m_CreatedDate = DateTime.Now
+                table = int.Parse(EntryValue),
+                id = m_CountOrdersID++,
+                status = eOrderStatus.Ordered,
+                orderType = PickedOrderType,
+                items = orderItems,
+                createdDate = DateTime.Now,
+                remainsToPay = m_TotalPrice,
+                totalCost = m_TotalPrice
             };
             OrdersCollection.Add(newOrder);
             Orders.AddNewOrder(newOrder);

@@ -36,7 +36,7 @@
                              VerticalOptions="FillAndExpand"/>
 
                     <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
-                           Text ="Menu : "
+                           Text ="Menu "
                            x:Name="m_LabelDishes"
                            FontAttributes ="Bold"
                            FontSize="Header"
@@ -56,18 +56,19 @@
                             Padding="0" 
                             BackgroundColor="Transparent"
                             BorderColor="Gray">
-                        <StackLayout>
+                        <StackLayout BackgroundColor="Azure">
                             <Label Text="Categories"
                                    FontFamily="FAS"
                                    FontSize="Title"
                                    FontAttributes="Bold"
                                    Margin="1"
-                                   HeightRequest="400"/>
+                                   HorizontalOptions="Center"
+                                   HeightRequest="50"/>
                             <Button Text="Starters"
                                     FontFamily="FAS"
                                     FontSize="Medium"
                                     FontAttributes="Bold"
-                                    HeightRequest="150"
+                                    HeightRequest="100"
                                     CornerRadius="5"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="StartersButton_OnClicked"/>
@@ -75,7 +76,7 @@
                                     FontFamily="FAS"
                                     FontSize="Medium"
                                     FontAttributes="Bold"
-                                    HeightRequest="150"
+                                    HeightRequest="100"
                                     CornerRadius="5"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="MainsButton_OnClicked"/>
@@ -83,16 +84,24 @@
                                     FontFamily="FAS"
                                     FontSize="Medium"
                                     FontAttributes="Bold"
-                                    HeightRequest="150"
+                                    HeightRequest="100"
                                     CornerRadius="5"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="DessertsButton_OnClicked"/>
+                            <Button Text="Drinks"
+                                    FontFamily="FAS"
+                                    FontSize="Medium"
+                                    FontAttributes="Bold"
+                                    CornerRadius="5"
+                                    HeightRequest="100"
+                                    BackgroundColor="LightSkyBlue"
+                                    Clicked="DrinksButton_OnClicked"/>
                             <Button Text="All"
                                     FontFamily="FAS"
                                     FontSize="Medium"
                                     FontAttributes="Bold"
                                     CornerRadius="5"
-                                    HeightRequest="150"
+                                    HeightRequest="120"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="AllDishesButton_OnClicked"/>
                         </StackLayout>
@@ -128,7 +137,7 @@
                                         <createOrderView:DishCardView Margin="0"
                                                                       VerticalOptions="StartAndExpand"
                                                                       HorizontalOptions="StartAndExpand"
-                                                                      WidthRequest="400"
+                                                                      WidthRequest="750"
                                                                       IsClippedToBounds="True"
                                                                       Padding="0"/>
                                         <VisualStateManager.VisualStateGroups>

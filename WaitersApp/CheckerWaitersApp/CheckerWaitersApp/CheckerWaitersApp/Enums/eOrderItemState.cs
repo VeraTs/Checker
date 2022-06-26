@@ -1,5 +1,5 @@
 ﻿namespace CheckerWaitersApp.Enums
-{
+{ 
     public enum eOrderItemState
     {
         Waiting,

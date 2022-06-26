@@ -20,20 +20,14 @@
                         <BoxView Color="DarkCyan" WidthRequest="10"/>
 
                         <Grid IsClippedToBounds="True"
-                              Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="1"
-                                   Text="{Binding  DishName}"
+                              Margin="5">
+                            <Label Text="{Binding  DishName}"
                                    FontFamily="FAS"
                                    FontSize="Title"
                                    FontAttributes="Bold"
                                    TextColor="Black"
                                    VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"/>
+                                   HorizontalTextAlignment="Start"/>
                         </Grid>
                     </StackLayout>
                         </Frame>

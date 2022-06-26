@@ -13,14 +13,14 @@
             <StackLayout IsClippedToBounds="True">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
                     <StackLayout Grid.Column="0">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="1.5*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
@@ -34,7 +34,7 @@
                           HorizontalOptions="FillAndExpand">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="5*"/>
                         </Grid.RowDefinitions>
                         <ordersViews:OrdersHeaderCardView Grid.Row="0"  IsClippedToBounds="True"/>
 

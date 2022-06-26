@@ -38,11 +38,11 @@ namespace CheckerWaitersApp.Views.CreateOrderView
                     }
                     default:
                     {
-                        return eOrderType.Unknown;
+                        return eOrderType.FIFO;
                     }
                 }
             }
-            else return eOrderType.Unknown;
+            else return eOrderType.FIFO;
         }
         private void ClearButton_OnClicked(object sender, EventArgs e)
         {

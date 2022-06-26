@@ -11,9 +11,9 @@
                HasShadow="True"
                Padding="0" 
                CornerRadius="10"
-               HeightRequest="70"
+               HeightRequest="120"
                WidthRequest="150"
-               Margin="1"
+               Margin="2"
                BackgroundColor="Azure"  BorderColor="Gray"
                effects:TouchEffect.LongPressCommand="{Binding  LongPressCommand}"
                effects:TouchEffect.LongPressDuration="2000"
@@ -23,7 +23,7 @@
                 <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_OnTapped"></TapGestureRecognizer>
             </Frame.GestureRecognizers>
 
-            <Grid Margin="0,0,0,0"
+            <Grid Margin="5"
                   IsClippedToBounds="True">
                 <Label Text="{Binding  DishName}"
                        FontFamily="FAS"
@@ -31,7 +31,7 @@
                        FontAttributes="Bold"
                        HorizontalOptions="Center"
                        VerticalOptions="Center"
-                       MaxLines="1"/>
+                       Padding="5"/>
             </Grid>
         </Frame>
     </ContentView.Content>

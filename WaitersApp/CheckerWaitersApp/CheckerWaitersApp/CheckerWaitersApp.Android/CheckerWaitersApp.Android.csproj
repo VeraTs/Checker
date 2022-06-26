@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{224A5D4B-F0D0-463F-872E-9B910E670750}</ProjectGuid>
+    <ProjectGuid>{647DBDFF-2E1A-4B92-A2EB-1C708E019A9E}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{c9e5eea5-ca05-42a1-839b-61506e0a37df}</TemplateGuid>
     <OutputType>Library</OutputType>
@@ -88,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CheckerWaitersApp\CheckerWaitersApp.csproj">
-      <Project>{6E366382-3BF0-4968-9A3C-13AAC8069D05}</Project>
+      <Project>{9E4EB293-8ED7-4440-911C-AADD1C06FD5C}</Project>
       <Name>CheckerWaitersApp</Name>
     </ProjectReference>
   </ItemGroup>
