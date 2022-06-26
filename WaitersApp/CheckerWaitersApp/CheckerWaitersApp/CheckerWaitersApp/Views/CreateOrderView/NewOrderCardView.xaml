@@ -31,12 +31,12 @@
                              VerticalOptions="Fill"/>
                    
                     <Label Grid.Row ="0" 
-                           Text ="Order : "
+                           Text ="  Order"
                            x:Name="LabelDishes"
                            FontAttributes ="Bold"
                            FontSize="Header"
                            FontFamily ="FAS"
-                           HorizontalOptions="End"
+                           HorizontalOptions="Center"
                            VerticalOptions="Center"/>
                     <Button Grid.Row="0"
                             Text="Clear"

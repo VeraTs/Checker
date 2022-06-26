@@ -16,23 +16,23 @@ namespace CheckerWaitersApp.ViewModels
             }
         }
         
-        public DishViewModel(DishModel i_dish)
+        public DishViewModel(Dish i_dish)
         {
-            Model = new DishModel();
+            Model = new Dish();
             Model = i_dish;
-            Price = "Price :"+ Model.m_Price.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
+            Price = "Price :"+ Model.price.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
         }
         public string DishName
         {
-            get => Model.m_DishName;
-            private set => Model.m_DishName = value;
+            get => Model.name;
+            private set => Model.name = value;
         }
         public string Description
         {
-            get => Model.m_Description;
-            set => Model.m_Description = value;
+            get => Model.description;
+            set => Model.description = value;
         }
         public string Price { get; set; }
-        public DishModel Model { get; }
+        public Dish Model { get; }
     }
 }

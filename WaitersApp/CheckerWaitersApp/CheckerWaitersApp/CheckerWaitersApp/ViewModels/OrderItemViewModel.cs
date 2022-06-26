@@ -8,49 +8,49 @@ namespace CheckerWaitersApp.ViewModels
 {
     public class OrderItemViewModel : BaseViewModel
     {
-        public OrderItemViewModel(OrderItemModel i_Model)
+        public OrderItemViewModel(OrderItem i_Model)
         {
 
-            OrderItemModel = new OrderItemModel
+            OrderItemModel = new OrderItem
             {
-                m_CreatedDate = DateTime.Now,
-                m_DoneDate = DateTime.MinValue,
-                m_OrderID = i_Model.m_OrderID,
-                m_State = eOrderItemState.Waiting,
-                m_OrderItemName = i_Model.m_OrderItemName,
-                m_Note = "Without Onion",
-                m_ItemType = i_Model.m_ItemType,
-                m_LineID = i_Model.m_LineID,
-                m_StartDate = DateTime.MinValue,
-                m_TableNumber = i_Model.m_TableNumber,
+                dish = i_Model.dish,
+                createdDate = DateTime.Now,
+                doneDate = i_Model.doneDate,
+                orderId = i_Model.id,
+                lineStatus = i_Model.lineStatus,
+                changes = i_Model.changes,
+                startDate = i_Model.startDate,
+                table = i_Model.table,
+                servingAreaZone = i_Model.servingAreaZone,
+                status = i_Model.status
             };
           init();
         }
-        public OrderItemViewModel(DishModel i_DishModel, int i_CountID)
+        public OrderItemViewModel(Dish i_DishModel, int i_CountID)
         {
 
-            OrderItemModel = new OrderItemModel
+            OrderItemModel = new OrderItem
             {
-                m_CreatedDate = DateTime.Now,
-                m_DoneDate = DateTime.MinValue,
-                m_OrderID = i_CountID,
-                m_State = eOrderItemState.Waiting,
-                m_OrderItemName = i_DishModel.m_DishName,
-                m_Note = "Without Onion",
-                m_ItemType = i_DishModel.m_DishType,
-                m_LineID = i_DishModel.m_LineID,
-                m_StartDate = DateTime.MinValue,
-                m_TableNumber = 0,
+                dish = i_DishModel,
+                dishId = i_DishModel.id,
+                startDate = DateTime.MinValue,
+                createdDate = DateTime.Now,
+                doneDate = DateTime.MinValue,
+                orderId = i_CountID,
+                servingAreaZone = 1,
+                lineStatus = eLineItemStatus.Locked,
+                changes = "None",
+                table = 0,
             };
             init();
         }
 
         private void init()
         {
-            StateString = "State :" + OrderItemModel.m_State.ToString();
-            Note = "Note :" + OrderItemModel.m_Note;
-            TypeString = "Type :" + OrderItemModel.m_ItemType;
-            CreatedItemString = "Created :" + OrderItemModel.m_CreatedDate.ToShortTimeString();
+            StateString = "State :" + OrderItemModel.lineStatus.ToString();
+            Note = "Note :" + OrderItemModel.changes;
+            TypeString = "Type :" + OrderItemModel.dish.type;
+            CreatedItemString = "Created :" + OrderItemModel.createdDate.ToShortTimeString();
         }
         public string TypeString { get; private set; }
         public string CreatedItemString { get; private set; }
@@ -58,27 +58,32 @@ namespace CheckerWaitersApp.ViewModels
         public string Note { get;  set; }
         public string DishName
         {
-            get => OrderItemModel.m_OrderItemName;
-            private set => OrderItemModel.m_OrderItemName = value;
+            get => OrderItemModel.dish.name;
+            private set => OrderItemModel.dish.name = value;
         }
        
 
-        public eOrderItemState State
+        public eLineItemStatus State
         {
-            get => OrderItemModel.m_State;
+            get => OrderItemModel.lineStatus;
             set
             { 
-                OrderItemModel.m_State = value;
+                OrderItemModel.lineStatus = value;
                 OnPropertyChanged(nameof(State));
             }
         }
-        public eOrderItemType OrderItemType
+        public eDishType OrderItemType
         {
-            get => OrderItemModel.m_ItemType;
-            set => OrderItemModel.m_ItemType = value;
+            get => OrderItemModel.dish.type;
+            set => OrderItemModel.dish.type = value;
         }
 
-        public OrderItemModel OrderItemModel { get; private set; }
+        public Dish OrderItemDish
+        {
+            get => OrderItemModel.dish;
+            set => OrderItemModel.dish = value;
+        }
+        public OrderItem OrderItemModel { get; private set; }
 
         private Command longPressCommand;
         public Command LongPressCommand
@@ -100,7 +105,7 @@ namespace CheckerWaitersApp.ViewModels
             var user_input = await InputBox();
             if (!string.IsNullOrEmpty(user_input))
             {
-                OrderItemModel.m_Note = user_input;
+                OrderItemModel.changes = user_input;
             }
         }
 

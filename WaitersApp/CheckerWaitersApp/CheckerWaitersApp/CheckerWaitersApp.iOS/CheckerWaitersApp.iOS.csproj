@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2DD89198-13F9-42CC-89AD-4CD6B5FADC69}</ProjectGuid>
+    <ProjectGuid>{765F743D-DFCA-4DF1-BF69-F5AA2C90373E}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{6143fdea-f3c2-4a09-aafa-6e230626515e}</TemplateGuid>
     <OutputType>Exe</OutputType>
@@ -129,7 +129,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\CheckerWaitersApp\CheckerWaitersApp.csproj">
-      <Project>{6E366382-3BF0-4968-9A3C-13AAC8069D05}</Project>
+      <Project>{9E4EB293-8ED7-4440-911C-AADD1C06FD5C}</Project>
       <Name>CheckerWaitersApp</Name>
     </ProjectReference>
   </ItemGroup>
