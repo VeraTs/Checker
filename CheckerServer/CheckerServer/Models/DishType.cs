@@ -1,6 +1,6 @@
 ﻿namespace CheckerServer.Models
 {
-    public enum DishType
+    public enum eDishType
     {
         UnDefined,
         Starter,

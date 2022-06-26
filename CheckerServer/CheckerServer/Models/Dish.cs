@@ -20,6 +20,6 @@ namespace CheckerServer.Models
         public float EstMakeTime { get; set; } = -1; // how much time in minutes it takes to make - an estimate
 
         public string Description { get; set; }
-        public DishType Type { get; set; }
+        public eDishType Type { get; set; }
     }
 }

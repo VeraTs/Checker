@@ -15,11 +15,11 @@ namespace CheckerServer.Models
         public int ServingAreaZone { get; set; }
 
         public string Changes { get; set; }
-        public ItemStatus Status { get; set; } = ItemStatus.Ordered;
-        public LineItemStatus LineStatus { get; set; } = LineItemStatus.Locked;
+        public eItemStatus Status { get; set; } = eItemStatus.Ordered;
+        public eLineItemStatus LineStatus { get; set; } = eLineItemStatus.Locked;
     }
 
-    public enum ItemStatus      // the status of the order item overall
+    public enum eItemStatus      // the status of the order item overall
     {
         Ordered,                // initial state
         AtLine,                 // during entire time it is at preperation line
@@ -28,7 +28,7 @@ namespace CheckerServer.Models
         Returned                // customer returned item for some reason
     }
 
-    public enum LineItemStatus  // status of the order item in the line of preperation 
+    public enum eLineItemStatus  // status of the order item in the line of preperation 
     {
         Locked,
         ToDo,
