@@ -2,8 +2,8 @@
 {
     public enum eOrderType
     {
-        Unknown,
+        FIFO,
         AllTogether,
-        ByLevels
+        Staggered
     }
 }
