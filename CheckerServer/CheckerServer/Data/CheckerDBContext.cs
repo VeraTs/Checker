@@ -19,5 +19,6 @@ namespace CheckerServer.Data
         public DbSet<RestMenu> RestMenus { get; set; }
         public DbSet<Line> Lines { get; set; }
         public DbSet<ServingArea> ServingAreas { get; set; }
+        public DbSet<Maker> Maker { get; set; }
     }
 }

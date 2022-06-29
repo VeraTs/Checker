@@ -9,7 +9,7 @@ namespace CheckerServer.Controllers
     [ApiController]
     public class MakerController : BasicDbController<Maker>
     {
-        public MakerController(CheckerDBContext context, DbSet<Maker> set) : base(context, set)
+        public MakerController(CheckerDBContext context) : base(context, context.Maker)
         {
         }
 
