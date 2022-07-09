@@ -32,9 +32,9 @@ namespace CheckerWaitersApp.Views.CreateOrderView
                     {
                         return eOrderType.AllTogether;
                     }
-                    case 'B':
+                    case 'S':
                     {
-                        return eOrderType.ByLevels;
+                        return eOrderType.Staggered;
                     }
                     default:
                     {
@@ -63,7 +63,7 @@ namespace CheckerWaitersApp.Views.CreateOrderView
             }
             else
             {
-                TypeLabel.Text = "UnKnown";
+                TypeLabel.Text = "FIFO";
             }
         }
 
