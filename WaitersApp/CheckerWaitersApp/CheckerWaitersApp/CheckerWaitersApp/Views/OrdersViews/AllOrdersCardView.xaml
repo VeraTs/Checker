@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ordersViews="clr-namespace:CheckerWaitersApp.Views.OrdersViews;assembly=CheckerWaitersApp" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels" 
+             x:DataType="viewmodels:OrdersViewModel"
+             x:Class="CheckerWaitersApp.Views.OrdersViews.AllOrdersCardView">
+    <ContentView.Content>
+      <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
+          <Grid>
+              <Grid.RowDefinitions>
+                  <RowDefinition Height="*"/>
+                  <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="10*"/>
+                  <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+
+              <Frame Grid.Column="0" Grid.Row="0"  
+                     Grid.RowSpan="2"
+                     Grid.ColumnSpan="1"
+                     IsClippedToBounds="True"
+                     HasShadow="True"
+                     Padding="20" 
+                     CornerRadius="0"   
+                    
+                     Margin="0,-2,0,0"
+                     BackgroundColor="White" 
+                     BorderColor="Black">
+
+                  <CollectionView ItemsSource = "{Binding views}" 
+                                  SelectionMode="None" 
+                                  HorizontalScrollBarVisibility="Always" 
+                                  ItemsUpdatingScrollMode="KeepLastItemInView">
+                      <CollectionView.ItemsLayout>
+                          <LinearItemsLayout Orientation="Horizontal"  ItemSpacing="20"/>
+                      </CollectionView.ItemsLayout>
+                      <CollectionView.ItemTemplate>
+                          <DataTemplate>
+                              <ordersViews:OrderCardView WidthRequest="350"/>
+                          </DataTemplate>
+                      </CollectionView.ItemTemplate>
+                  </CollectionView>
+              </Frame>
+          </Grid>
+      </StackLayout>
+    </ContentView.Content>
+</ContentView>

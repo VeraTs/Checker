@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:effects="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
+             x:DataType="viewmodels:OrderItemViewModel"
+             x:Class="CheckerWaitersApp.Views.CreateOrderView.NewOrderItemCardView">
+    <ContentView.Content>
+        <Frame x:Name="OrderItemFrame"
+               IsClippedToBounds="True"  
+               HasShadow="True"
+               Padding="0" 
+               CornerRadius="10"
+               HeightRequest="120"
+               WidthRequest="150"
+               Margin="2"
+               BackgroundColor="Azure"  BorderColor="Gray"
+               effects:TouchEffect.LongPressCommand="{Binding  LongPressCommand}"
+               effects:TouchEffect.LongPressDuration="2000"
+               effects:TouchEffect.PressedBackgroundColor="CadetBlue"
+               effects:TouchEffect.HoveredBackgroundColor="Azure">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_OnTapped"></TapGestureRecognizer>
+            </Frame.GestureRecognizers>
+
+            <Grid Margin="5"
+                  IsClippedToBounds="True">
+                <Label Text="{Binding  DishName}"
+                       FontFamily="FAS"
+                       FontSize="Large"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Padding="5"/>
+            </Grid>
+        </Frame>
+    </ContentView.Content>
+</ContentView>
