@@ -1,5 +1,6 @@
 ﻿using CheckerServer.Data;
 using CheckerServer.Models;
+using CheckerServer.utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,9 @@ namespace CheckerServer.Controllers
     {
         public OrderController(CheckerDBContext context)
             : base(context, context.Orders) 
-        { }
+        {
+            KitchenUtils kitchen = new KitchenUtils(context);
+        }
 
         protected override void updateItem(Order existingItem, Order updatedItem)
         {
