@@ -6,6 +6,7 @@ using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Helpers.Dishes;
 using CheckerWaitersApp.Models;
 using CheckerWaitersApp.Services;
+using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 
 namespace CheckerWaitersApp.ViewModels
@@ -17,11 +18,16 @@ namespace CheckerWaitersApp.ViewModels
         private static int m_CountItemsID = 0;
         private static int m_CountOrdersID = 0;
         private float m_TotalPrice = 0;
+        private int restId = 1;
         public OrdersViewModel Orders { get; set; } = new OrdersViewModel();
 
         public CreateOrderViewModel()
         {
-            
+            App.HubConn.On<Order>("ReceiveOrder", (order) =>
+            {
+                Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
+
+            });
         }
         public CreateOrderViewModel(DishDataStore i_Store)
         {
@@ -115,10 +121,37 @@ namespace CheckerWaitersApp.ViewModels
                 items = orderItems,
                 createdDate = DateTime.Now,
                 remainsToPay = m_TotalPrice,
-                totalCost = m_TotalPrice
+                totalCost = m_TotalPrice,
+                restaurantId = restId
             };
+            UpdateManagerNewOrder(newOrder);
             OrdersCollection.Add(newOrder);
             Orders.AddNewOrder(newOrder);
+        }
+
+        private async void UpdateManagerNewOrder(Order ToUpdate)
+        {
+            if (App.HubConn.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await App.HubConn.StartAsync();     // start async connection to SignalR Hub at server
+                  
+                }
+                catch (System.Exception ex)
+                { 
+                    await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                }
+            }
+
+            try
+            {
+                await App.HubConn.InvokeAsync("AddOrder", ToUpdate);
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+            }
         }
         public List<string> DishTypesStrings { get; private set; }
 

@@ -34,6 +34,7 @@ namespace CheckerServer.Hubs
         public async Task AddOrder(Order order)
         {
             List<OrderItem> items = order.Items;
+            order.Items = null;
             await _context.Orders.AddAsync(order);
             int success = await _context.SaveChangesAsync();
             if(success > 0)
