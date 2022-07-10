@@ -56,9 +56,10 @@ namespace CheckerWaitersApp
             };
 
             Store = new DishDataStore();
-            string url = BaseAddress + "/Dishes";
+           
+            string ordersHubUrl = BaseAddress + "/OrdersHub";
             HubConn = new HubConnectionBuilder()
-                .WithUrl(url, options =>
+                .WithUrl(ordersHubUrl, options =>
                 {
                     if (isDebug)
                     {
@@ -72,7 +73,10 @@ namespace CheckerWaitersApp
                 })
                 .WithAutomaticReconnect()
                 .Build();
-          
+            HubConn.On<String>("DBError", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
+            });
 
 
             MainPage = new CreateOrderView(Store);
