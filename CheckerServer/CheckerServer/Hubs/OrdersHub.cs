@@ -42,10 +42,19 @@ namespace CheckerServer.Hubs
                 foreach(OrderItem item in items)
                 {
                     item.OrderId = order.ID;
+                    item.Dish = null;
                 }
 
-                await _context.OrderItems.AddRangeAsync(items);
-                success = await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.OrderItems.AddRangeAsync(items);
+                    success = await _context.SaveChangesAsync();
+                }
+                catch(Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+
                 await Clients.All.SendAsync("ReceiveOrder", order);
             } else
             {
@@ -177,7 +186,7 @@ namespace CheckerServer.Hubs
 
             // step 2.1
             // restId to Lines
-            Dictionary<int, List<Line>> updatedLines = r_KitchenUtils.GetUpdatedLines();
+            Dictionary<int, List<LineDTO>> updatedLines = r_KitchenUtils.GetUpdatedLines();
 
             // step 2.2
             foreach (int restId in updatedLines.Keys)

@@ -124,7 +124,7 @@ namespace CheckerWaitersApp.ViewModels
                 totalCost = m_TotalPrice,
                 restaurantId = restId
             };
-            UpdateManagerNewOrder(newOrder);
+            UpdateManagerNewOrder(newOrder); // update after succsess
             OrdersCollection.Add(newOrder);
             Orders.AddNewOrder(newOrder);
         }

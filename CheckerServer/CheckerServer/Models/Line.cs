@@ -21,9 +21,7 @@ namespace CheckerServer.Models
 
         public List<Maker> Makers { get; set; } = new List<Maker>();    // makers that live in this line
 
-        public virtual List<OrderItem> LockedItems { get; set; } = new List<OrderItem>();
-        public virtual List<OrderItem> ToDoItems { get; set; } = new List<OrderItem>();
-        public virtual List<OrderItem> DoingItems { get; set; } = new List<OrderItem>();
+
     }
 
     public enum eLineState

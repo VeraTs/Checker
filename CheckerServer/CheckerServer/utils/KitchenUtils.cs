@@ -10,7 +10,7 @@ namespace CheckerServer.utils
         private readonly Dictionary<int, List<OrderQueue>> r_RestaurantOrderQueuesList= new Dictionary<int, List<OrderQueue>>();
 
         // lineID -> Line with ORDERED LISTS!~!!! so this needs to be kept updated!
-        private Dictionary<int, Line> r_Lines = new Dictionary<int, Line>();
+        private Dictionary<int, LineDTO> r_Lines = new Dictionary<int, LineDTO>();
 
         private readonly CheckerDBContext r_Context;
 
@@ -27,7 +27,7 @@ namespace CheckerServer.utils
 
             foreach(Line line in lines)
             {
-                r_Lines.Add(line.ID, line);
+                r_Lines.Add(line.ID, new LineDTO(){line = line});
             }
 
             LoadAllOrders();
@@ -42,7 +42,7 @@ namespace CheckerServer.utils
 
             foreach(Line line in lines)
             {
-                r_Lines.Add(line.ID, line);
+                r_Lines.Add(line.ID, new LineDTO() { line = line });
             }
         }
 
@@ -114,10 +114,10 @@ namespace CheckerServer.utils
             
         }
 
-        internal Dictionary<int, List<Line>> GetUpdatedLines()
+        internal Dictionary<int, List<LineDTO>> GetUpdatedLines()
         {
             // restId to Line list
-            Dictionary<int, List<Line>> updatedLines = new Dictionary<int, List<Line>>();
+            Dictionary<int, List<LineDTO>> updatedLines = new Dictionary<int, List<LineDTO>>();
             List<OrderItem> availableItems = new List<OrderItem>();
             foreach (int restId in r_RestaurantOrderQueuesList.Keys)
             {
@@ -141,7 +141,7 @@ namespace CheckerServer.utils
                     }
                     else
                     {
-                        r_Lines.Add(item.Dish.LineId, line);
+                        r_Lines.Add(item.Dish.LineId, new LineDTO() { line = line });
                     }
                 }
 
@@ -157,12 +157,12 @@ namespace CheckerServer.utils
             {
                 foreach(int thing in r_Lines.Keys)
                 {
-                    if (!updatedLines.ContainsKey(r_Lines[thing].ServingArea.RestaurantId))
+                    if (!updatedLines.ContainsKey(r_Lines[thing].line.ServingArea.RestaurantId))
                     {
-                        updatedLines.Add(r_Lines[thing].ServingArea.RestaurantId, new List<Line>());
+                        updatedLines.Add(r_Lines[thing].line.ServingArea.RestaurantId, new List<LineDTO>());
                     }
 
-                    updatedLines[r_Lines[thing].ServingArea.RestaurantId].Add(r_Lines[thing]);  // this is always the first time the line is added to the list, since lines are uniquely indexed
+                    updatedLines[r_Lines[thing].line.ServingArea.RestaurantId].Add(r_Lines[thing]);  // this is always the first time the line is added to the list, since lines are uniquely indexed
                 }
             }
 
@@ -434,9 +434,9 @@ namespace CheckerServer.utils
         internal IEnumerable<OrderItem> GetAvailableItems()
         {
             List<OrderItem> availableItems = null;
-            if(starters.Count > 0)      { availableItems = getFromStack(starters);}
-            else if(mains.Count > 0)    { availableItems = getFromStack(mains); }
-            else if (desserts.Count > 0 )  { availableItems = getFromStack(desserts); }
+            if(starters != null && starters.Count > 0)      { availableItems = getFromStack(starters);}
+            else if(mains != null && mains.Count > 0)    { availableItems = getFromStack(mains); }
+            else if (desserts != null &&  desserts.Count > 0 )  { availableItems = getFromStack(desserts); }
 
             return availableItems;
         }
