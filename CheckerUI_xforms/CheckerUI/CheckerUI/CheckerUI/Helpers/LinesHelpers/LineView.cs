@@ -4,39 +4,39 @@ using CheckerUI.Models;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 
-namespace CheckerUI.Helpers.Line
+namespace CheckerUI.Helpers.LinesHelpers
 {
     public class LineView : BaseViewModel
     {
-        private readonly LineModel model;
-        private List<Dish_item> m_DishItems = new List<Dish_item>();
+        private readonly Line model;
+        private List<Dish> m_DishItems = new List<Dish>();
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
         
-        public LineView(LineModel i_model)
+        public LineView(Line i_model)
         {
             m_BackgroundState = new Color();
-            model = LineBuilder.GenerateLine(i_model.m_LineName, i_model.m_LineID, i_model.m_MaximumParallelism, i_model.m_DishesList, i_model.m_LineState);
+            model = LineBuilder.GenerateLine(i_model.Name, i_model.id, i_model.Limit, null, i_model.State);
             setColorState();
         }
 
         private void setColorState()
         {
-            switch (model.m_LineState)
+            switch (model.State)
             {
-                case eLineState.chill:
+                case eLineState.Open:
                 {
                     LabelsColor = Color.DimGray;
                     LineStateColor = Color.BlanchedAlmond;
                     break;
                 }
-                case eLineState.busy:
+                case eLineState.Busy:
                 {
                     LabelsColor = Color.DarkCyan; 
                     LineStateColor = Color.YellowGreen;
                     break;
                 }
-                case eLineState.overload:
+                case eLineState.Closed:
                 {
                     LineStateColor = Color.White;
                     LineStateColor = Color.Firebrick;
@@ -46,40 +46,40 @@ namespace CheckerUI.Helpers.Line
         }
         public string LineName
         {
-            get => model.m_LineName;
+            get => model.Name;
             set
             {
-                model.m_LineName = value;
+                model.Name = value;
                 OnPropertyChanged(nameof(LineName));
             } 
         }
 
         public int LineID
         {
-            get => model.m_LineID;
+            get => model.id;
             set
             {
-                model.m_LineID = value;
+                model.id = value;
                 OnPropertyChanged(nameof(LineID));
             } 
         }
 
         public string MaximumParallelism
         {
-            get => model.m_MaximumParallelism.ToString();
+            get => model.Limit.ToString();
             set
             {
-                model.m_MaximumParallelism = int.Parse(value);
+                model.Limit = int.Parse(value);
                 OnPropertyChanged(nameof(MaximumParallelism));
             }
         }
 
         public eLineState LineStateString
         {
-            get => model.m_LineState;
+            get => model.State;
             set
             {
-                model.m_LineState = value;
+                model.State = value;
                 OnPropertyChanged(nameof(LineStateString));
             }
         }

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodel="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
+             xmlns:viewmodel="clr-namespace:CheckerUI.Helpers.OrdersHelpers;assembly=CheckerUI"
              xmlns:views="clr-namespace:CheckerUI.Views;assembly=CheckerUI"
              x:DataType="viewmodel:OrderViewModel"
              x:Class="CheckerUI.Views.OrderCardView"

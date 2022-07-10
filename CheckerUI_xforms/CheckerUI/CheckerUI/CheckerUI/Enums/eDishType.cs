@@ -4,10 +4,12 @@ using System.Text;
 
 namespace CheckerUI.Enums
 {
-    public enum eLineState
+    public enum eDishType
     {
-        Closed,
-        Open,
-        Busy
+        UnDefined,
+        Starter,
+        Main,
+        Dessert,
+        Drink
     }
 }
