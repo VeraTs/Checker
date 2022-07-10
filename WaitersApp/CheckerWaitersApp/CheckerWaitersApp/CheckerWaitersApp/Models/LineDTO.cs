@@ -1,4 +1,5 @@
-﻿namespace CheckerServer.Models
+﻿using System.Collections.Generic;
+namespace CheckerWaitersApp.Models
 {
     public class LineDTO
     {
