@@ -15,7 +15,6 @@ namespace CheckerServer.Hubs
         {
             _context = context;
             r_KitchenUtils = new KitchenUtils(context);
-            manageKitchen();
         }
 
         // gets all orders in system

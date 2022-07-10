@@ -2,7 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CheckerUI.Helpers;
-using CheckerUI.Helpers.Line;
+using CheckerUI.Helpers.LinesHelpers;
+using CheckerUI.Models;
 using CheckerUI.Views;
 using Xamarin.Forms;
 
@@ -10,12 +11,12 @@ namespace CheckerUI.ViewModels
 {
     public class LinesViewModel : BaseViewModel
     {
-        private readonly ObservableCollection<LineModel> m_models;
+        private readonly ObservableCollection<Line> m_models;
         private ObservableCollection<LineView> m_LinesList = new ObservableCollection<LineView>();
         private Lines m_Lines;
         public LinesViewModel()
         {
-            m_models = new ObservableCollection<LineModel>();
+            m_models = new ObservableCollection<Line>();
             GenerateLines();
             
         }

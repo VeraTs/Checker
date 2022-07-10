@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using CheckerUI.Enums;
-using CheckerUI.Helpers.Order;
+using CheckerUI.Helpers.OrdersHelpers;
 using Xamarin.Forms;
 //// <summary>
 // Basic line, if we want to add features to it we will do it by inheritance
@@ -91,22 +91,22 @@ namespace CheckerUI.ViewModels
         {
             switch (i_ToAdd.OrderStatus)
             {
-                case eOrderItemState.Waiting:
+                case eLineItemStatus.Locked:
                     {
                         m_ButtonsLocked.Add(i_ToAdd);
                         break;
                     }
-                case eOrderItemState.Available:
+                case eLineItemStatus.ToDo:
                     {
                         m_ButtonsToMake.Add(i_ToAdd);
                         break;
                     }
-                case eOrderItemState.InPreparation:
+                case eLineItemStatus.Doing:
                     {
                         m_ButtonsInProgress.Add(i_ToAdd);
                         break;
                     }
-                case eOrderItemState.Ready:
+                case eLineItemStatus.Done:
                     {
                         m_ButtonsDone.Add(i_ToAdd);
                         break;
@@ -122,30 +122,27 @@ namespace CheckerUI.ViewModels
 
             switch (order.OrderStatus)
             {
-                case eOrderItemState.Waiting:
+                case eLineItemStatus.Locked:
                     {
                         caseIsHolding(order);
                         break;
                     }
-                case eOrderItemState.Available:
+                case eLineItemStatus.ToDo:
                     {
                         caseIsAvailable(order);
                         break;
                     }
-                case eOrderItemState.InPreparation:
+                case eLineItemStatus.Doing:
                     {
                         caseIsInProgress(order);
                         break;
                     }
-                case eOrderItemState.Ready:
+                case eLineItemStatus.Done:
                     {
                         caseIsCompleted(order);
                         break;
                     }
-                case eOrderItemState.Completed:
-                    {
-                        break;
-                    }
+
                 default:
                     {
                         caseIsRestored(order);
@@ -206,7 +203,7 @@ namespace CheckerUI.ViewModels
         public void ItemToMakeOnDoubleClicked(OrderItemView i_Item)
         {
             m_ButtonsToMake.Remove(i_Item);
-            i_Item.OrderStatus = eOrderItemState.InPreparation;
+            i_Item.OrderStatus = eLineItemStatus.Doing;
             i_Item.OrderItemTimeStarted = DateTime.Now;
             m_ButtonsInProgress.Add(i_Item);
         }
@@ -214,7 +211,7 @@ namespace CheckerUI.ViewModels
         public void ItemInProgressOnDoubleClick(OrderItemView i_Item)
         {
             m_ButtonsInProgress.Remove(i_Item);
-            i_Item.OrderStatus = eOrderItemState.Ready;
+            i_Item.OrderStatus = eLineItemStatus.Done;
             i_Item.OrderItemTimeDone = DateTime.Now;
             i_Item.FirstTimeToShowString = i_Item.OrderItemTimeDoneString;
             m_ButtonsDone.Add(i_Item);
@@ -222,7 +219,7 @@ namespace CheckerUI.ViewModels
         public async void ItemLockedOnDoubleClicked(OrderItemView i_Item)
         {
             m_ButtonsLocked.Remove(i_Item);
-            i_Item.OrderStatus = eOrderItemState.Available;
+            i_Item.OrderStatus = eLineItemStatus.ToDo;
            
             m_ButtonsToMake.Add(i_Item);
         }
@@ -230,7 +227,7 @@ namespace CheckerUI.ViewModels
         public void ItemReadyOnDoubleClick(OrderItemView i_Item)
         {
             m_ButtonsDone.Remove(i_Item);
-            i_Item.OrderStatus = eOrderItemState.InPreparation;
+            i_Item.OrderStatus = eLineItemStatus.Doing;
             i_Item.OrderItemTimeDone = DateTime.MinValue;
             i_Item.FirstTimeToShowString = i_Item.OrderItemTimeCreate;
             m_ButtonsInProgress.Add(i_Item);

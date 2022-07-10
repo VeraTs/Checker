@@ -2,7 +2,7 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="http://xamarin.com/schemas/2020/toolkit"
-             xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
+             xmlns:order="clr-namespace:CheckerUI.Helpers.OrdersHelpers;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.KitchenOrderItemCardView"
              x:DataType="order:OrderItemView">
     <ContentView.Content>

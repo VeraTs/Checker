@@ -2,26 +2,26 @@
 using System.Drawing;
 using CheckerUI.Enums;
 using CheckerUI.ViewModels;
-
-namespace CheckerUI.Helpers.Order
+using CheckerUI.Models;
+namespace CheckerUI.Helpers.OrdersHelpers
 {
     public class OrderViewModel : BaseViewModel
     {
-        private readonly OrderModel m_Order;
+        private readonly Models.Order m_Order;
         private string m_RemainItemsString;
 
-        public OrderViewModel(OrderModel i_model)
+        public OrderViewModel(Models.Order i_model)
         {
             m_Order = i_model;
-            foreach (var itemModel in i_model.m_Items)
+            foreach (var itemModel in i_model.items)
             {
                 var itemView = new OrderItemView(itemModel);
                 Items.Add(itemView);
             }
 
-            OrderID = i_model.m_OrderID;
-            OrderType = i_model.m_OrderType;
-            TableNumber = i_model.m_TableNumber;
+            OrderID = i_model.id;
+            OrderType = i_model.orderType;
+            TableNumber = i_model.table;
 
             RemainingItems = Items.Count.ToString();
             OrderStateColor = new Color();
@@ -48,17 +48,17 @@ namespace CheckerUI.Helpers.Order
         {
             switch (State)
             {
-                case eOrderState.Pending:
+                case eOrderStatus.Ordered:
                     {
                         OrderStateColor = Color.Brown;
                         break;
                     }
-                case eOrderState.Started:
+                case eOrderStatus.Started:
                     {
                         OrderStateColor = Color.DarkOrange;
                         break;
                     }
-                case eOrderState.Done:
+                case eOrderStatus.Done:
                     {
                         OrderStateColor = Color.YellowGreen;
                         break;
@@ -68,14 +68,14 @@ namespace CheckerUI.Helpers.Order
 
         public int OrderID
         {
-            get => m_Order.m_OrderID;
-            set => m_Order.m_OrderID = value;
+            get => m_Order.id;
+            set => m_Order.id = value;
         }
 
         public int TableNumber
         {
-            get => m_Order.m_TableNumber;
-            set => m_Order.m_TableNumber = value;
+            get => m_Order.table;
+            set => m_Order.table = value;
         }
 
         public string RemainingItems
@@ -88,20 +88,20 @@ namespace CheckerUI.Helpers.Order
             }
         }
 
-        public string TableNumberString => "Table : " + m_Order.m_TableNumber.ToString();
+        public string TableNumberString => "Table : " + m_Order.table.ToString();
 
         public ObservableCollection<OrderItemView> Items { get; set; } = new ObservableCollection<OrderItemView>();
 
-        public eOrderState State
+        public eOrderStatus State
         {
-            get => m_Order.m_OrderState;
-            set => m_Order.m_OrderState = value;
+            get => m_Order.status;
+            set => m_Order.status = value;
         }
 
         public eOrderType OrderType
         {
-            get => m_Order.m_OrderType;
-            set => m_Order.m_OrderType = value;
+            get => m_Order.orderType;
+            set => m_Order.orderType = value;
         }
 
         public ObservableCollection<int> AllItemsCheckedOrderID { get; set; } = new ObservableCollection<int>();

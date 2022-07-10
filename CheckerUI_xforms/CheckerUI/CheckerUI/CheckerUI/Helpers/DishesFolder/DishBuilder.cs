@@ -1,20 +1,21 @@
-﻿using CheckerUI.Models;
+﻿using CheckerUI.Enums;
+using CheckerUI.Models;
 
 namespace CheckerUI.Helpers.DishesFolder
 {
     internal static class DishBuilder
     {
-        public static Dish_item GenerateDishItem(int i_Id, string i_Name, int i_LineID, string i_TimeReq, string i_TimeReqHigh, int i_outputScreen, string i_Des)
+        public static Dish GenerateDishItem(int i_Id, string i_Name, int i_LineID, float i_TimeReq, float i_TimeReqHigh, int i_outputScreen, string i_Des)
         {
-            var m_Dish = new Dish_item()
+            var m_Dish = new Models.Dish()
             {
-                m_DishID = i_Id,
-                m_DishName = i_Name,
-                m_LineID = i_LineID,
-                m_TimeReq = i_TimeReq,
-                m_TimeReqHigh = i_TimeReqHigh,
-                m_Output_screen = i_outputScreen,
-                m_Description = i_Des
+                id = i_Id,
+                name = i_Name,
+                lineId = i_LineID,
+                estMakeTime = i_TimeReqHigh,
+                description = i_Des,
+                makerId = 0,
+                makerFit = 6, type = eDishType.Starter, price = 13, restMenuId = 1
             };
             return m_Dish;
         }

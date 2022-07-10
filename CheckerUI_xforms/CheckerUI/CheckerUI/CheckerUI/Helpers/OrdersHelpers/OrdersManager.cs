@@ -5,8 +5,8 @@ using System.Collections.Specialized;
 using CheckerUI.Enums;
 using CheckerUI.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
-
-namespace CheckerUI.Helpers.Order
+using CheckerUI.Models;
+namespace CheckerUI.Helpers.OrdersHelpers
 {
     public class OrdersManager : BaseViewModel
     {
@@ -27,7 +27,7 @@ namespace CheckerUI.Helpers.Order
             //    ToDo todo = new ToDo() { createdDate = date, description = desc };
             //    m_ToDoList.Add(todo);
             //});
-            generateOrders(15);
+           
             //  updateLines();
             //foreach (var item in m_OrdersList[0].m_Items)
             //{
@@ -68,17 +68,17 @@ namespace CheckerUI.Helpers.Order
             }
         }
 
-        private void generateOrders(int i_Size)
-        {
-            for (int i = 0; i < i_Size; i++)
-            {
-                OrderModel model = generateOrderModel();
-                OrderViewModel viewModel = new OrderViewModel(model);
-                viewModel.AllItemsCheckedOrderID.CollectionChanged += AllItemsCheckedOnCollectionChanged;
-                m_Orders.Add(model.m_OrderID, viewModel);
-                m_OrdersViews.Add(viewModel);
-            }
-        }
+        //private void generateOrders(int i_Size)
+        //{
+        //    for (int i = 0; i < i_Size; i++)
+        //    {
+        //        Order model = generateOrderModel();
+        //        OrderViewModel viewModel = new OrderViewModel(model);
+        //        viewModel.AllItemsCheckedOrderID.CollectionChanged += AllItemsCheckedOnCollectionChanged;
+        //        m_Orders.Add(model.id, viewModel);
+        //        m_OrdersViews.Add(viewModel);
+        //    }
+        //}
 
         private void AllItemsCheckedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -88,42 +88,43 @@ namespace CheckerUI.Helpers.Order
             m_OrdersViews.Remove(viewToRemove);
         }
 
-        private OrderModel generateOrderModel()
-        {
-            eOrderState[] allStates = { eOrderState.Pending, eOrderState.Started, eOrderState.Done };
-            var items = generateOrderItemModels(m_Length + 100);
-            var orderModel = OrderBuilder.GenerateOrder(m_Length, m_Length + 100
-                , allStates[m_Length % 3], items);
-            m_Length++;
-            return orderModel;
-        }
-        private List<OrderItemModel> generateOrderItemModels(int i_TableNumber)
-        {
-            var items = new List<OrderItemModel>();
-            string[] names = { "Bread", "Salad", "Fish Tartar", "Burger ", "Pizza", "Pasta", "Cake" };
-            eOrderItemType[] types =
-            {
-                eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Main,
-                eOrderItemType.Main, eOrderItemType.Unknown, eOrderItemType.Dessert
-            };
-            int[] deptId = { 1, 1, 1, 2, 2, 2, 3 };
-            eOrderItemState[] itemStates =
-            {
-                eOrderItemState.Waiting, eOrderItemState.Available, eOrderItemState.InPreparation, eOrderItemState.Ready
-            };
-            for (int i = 0; i < types.Length; i++)
-            {
-                var orderItem =
-                    OrderItemBuilder.GenerateOrderItem(m_ItemsGenerated, names[i], i_TableNumber,
-                    "Notes : " + Environment.NewLine + "No Cheese " + Environment.NewLine + "Medium " + Environment.NewLine + "etc",
-                    deptId[i], eOrderItemType.Starter, itemStates[i % 3]);
+        //private Order generateOrderModel()
+        //{
+        //    eOrderStatus[] allStates = { eOrderStatus.Ordered, eOrderStatus.Started, eOrderStatus.Done };
 
-                m_ItemsGenerated++;
+        //    var items = generateOrderItemModels();
+        //    var orderModel = OrderBuilder.GenerateOrder(m_Length, m_Length + 100
+        //        , allStates[m_Length % 3], items);
+        //    m_Length++;
+        //    return orderModel;
+        //}
+        //private List<OrderItemModel> generateOrderItemModels(int i_TableNumber)
+        //{
+        //    var items = new List<OrderItemModel>();
+        //    string[] names = { "Bread", "Salad", "Fish Tartar", "Burger ", "Pizza", "Pasta", "Cake" };
+        //    eOrderItemType[] types =
+        //    {
+        //        eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Main,
+        //        eOrderItemType.Main, eOrderItemType.Unknown, eOrderItemType.Dessert
+        //    };
+        //    int[] deptId = { 1, 1, 1, 2, 2, 2, 3 };
+        //    eOrderItemState[] itemStates =
+        //    {
+        //        eOrderItemState.Waiting, eOrderItemState.Available, eOrderItemState.InPreparation, eOrderItemState.Ready
+        //    };
+        //    for (int i = 0; i < types.Length; i++)
+        //    {
+        //        var orderItem =
+        //            OrderItemBuilder.GenerateOrderItem(m_ItemsGenerated, names[i], i_TableNumber,
+        //            "Notes : " + Environment.NewLine + "No Cheese " + Environment.NewLine + "Medium " + Environment.NewLine + "etc",
+        //            deptId[i], eOrderItemType.Starter, itemStates[i % 3]);
 
-                items.Add(orderItem);
-            }
-            return items;
-        }
+        //        m_ItemsGenerated++;
+
+        //        items.Add(orderItem);
+        //    }
+        //    return items;
+        //}
 
         public ObservableCollection<OrderViewModel> OrdersViews
         {
