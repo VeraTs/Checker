@@ -5,7 +5,6 @@
              x:Class="CheckerUI.Views.KitchenLineCardsViews.KitchenOrderItemInProgressCardView"
              x:DataType="order:OrderItemView">
     <ContentView.Content>
-
         <Frame IsClippedToBounds="True"  
                HasShadow="True"
                Padding="0" 

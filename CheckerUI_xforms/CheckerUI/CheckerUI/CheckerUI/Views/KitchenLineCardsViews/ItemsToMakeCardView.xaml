@@ -2,9 +2,7 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
-             xmlns:views="clr-namespace:CheckerUI.Views;assembly=CheckerUI"
              xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
-             xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsToMakeCardView"
              x:DataType="viewModels:LineViewModel">
     <ContentView.Content>

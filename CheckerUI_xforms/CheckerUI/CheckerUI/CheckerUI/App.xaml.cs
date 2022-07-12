@@ -14,7 +14,10 @@ namespace CheckerUI
 {
     public partial class App : Application
     {
+
+        public static  OrdersDataStore ordersStore { get; private set; }
         public static LinesDataStore linesStore { get; private set; }
+        public static OrderItemDataStore oItemsStore { get; private set; }
         public static DishDataStore Store { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
@@ -57,7 +60,8 @@ namespace CheckerUI
 
             Store = new DishDataStore();
             linesStore = new LinesDataStore();
-           
+            oItemsStore = new OrderItemDataStore();
+            ordersStore = new OrdersDataStore();
             string kitchenHubUrl = BaseAddress + "/KitchenHub";
             HubConn = new HubConnectionBuilder()
                 .WithUrl(kitchenHubUrl, options =>
@@ -93,12 +97,15 @@ namespace CheckerUI
 
         protected override void OnStart()
         {
-            loadDishes();
+            loadRep();
         }
 
-        private async void loadDishes()
+        private async void loadRep()
         {
             await Store.GetItemsAsync();
+            await linesStore.GetItemsAsync();
+            await oItemsStore.GetItemsAsync();
+            await ordersStore.GetItemsAsync();
         }
         protected override void OnSleep()
         {

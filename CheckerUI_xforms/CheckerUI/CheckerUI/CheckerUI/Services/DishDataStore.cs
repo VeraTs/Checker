@@ -39,15 +39,7 @@ namespace CheckerUI.Services
                 listy = JsonSerializer.Deserialize<List<Dish>>(res);
                 foreach (var item in listy)
                 {
-                    var dish = new Dish();
-                    dish.type = item.type;
-                    dish.description = item.description;
-                    dish.lineId = item.lineId;
-                    dish.name = item.name;
-                    dish.price = item.price;
-                    dish.restMenuId = item.restMenuId;
-                    dish.id = item.id;
-                    dishes.Add(dish);
+                    dishes.Add(item);
                 }
             }
             catch (Exception ex)

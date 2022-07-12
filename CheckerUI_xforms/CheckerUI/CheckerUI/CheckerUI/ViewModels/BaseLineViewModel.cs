@@ -79,17 +79,17 @@ namespace CheckerUI.ViewModels
             m_ButtonsToMake.Clear();
             m_Orders.Clear();
             m_OrdersList.Clear();
+            m_counterID = 0;
         }
         private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (m_counterID < m_Orders.Count) // new order is entered
-            {
+           
                 OrderItemView last = m_Orders.Last();
                 addItemToLinePlace(last);
                 last.OrderStatusChangedNotifier.CollectionChanged += OrderStatusChangedNotifierOnCollectionChanged;
                 m_OrdersList.Add(last.OderID, last);
-                m_counterID++;
-            }
+            
+            
         }
       
         public void AddOrderItem(OrderItem i_ToAdd)

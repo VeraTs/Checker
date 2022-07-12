@@ -7,7 +7,7 @@ namespace CheckerUI.Models
     {
         public int id { get; set; }
         public int table { get; set; } // change to inside property ?
-        public Dish dish { get; set; }
+        public Dish dish { get; set; } = new Dish();
 
         public int dishId { get; set; }
      

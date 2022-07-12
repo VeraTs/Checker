@@ -14,10 +14,7 @@ namespace CheckerUI.ViewModels
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
 
-        public LineViewModel() :base()
-        {
-           
-        }
+      
         public LineViewModel(Line i_model) :base()
         {
             base.init();

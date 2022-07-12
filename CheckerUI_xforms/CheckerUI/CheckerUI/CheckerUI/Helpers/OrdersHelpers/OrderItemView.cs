@@ -19,7 +19,7 @@ namespace CheckerUI.Helpers.OrdersHelpers
     public class OrderItemView : BaseViewModel
     {
         //Properties
-        private readonly OrderItem m_orderItem;
+        private readonly OrderItem m_orderItem = new OrderItem();
         
         // Commands
        
@@ -34,7 +34,9 @@ namespace CheckerUI.Helpers.OrdersHelpers
         {
             feelColorsState();
             m_orderItem = new OrderItem();
+            m_orderItem.dish = new Dish();
             m_orderItem = i_item;
+            m_orderItem.dish = i_item.dish;
             OrderStatus = i_item.lineStatus;
             OderID = i_item.id; // to fix
             OrderItemName = i_item.dish.name;
