@@ -267,6 +267,11 @@ namespace CheckerServer.utils
             }
         }
 
+
+        // actually faulty in regards to the algorithm, since all timers start at same time
+        // needs to be adjusted:
+        // either intervals need to be relative to first orderITem to go out,
+        // or timers need to be more sparingly activetd
         public void StartTimers()
         {
             if(starters != null && starters.Count > 0)
@@ -424,11 +429,14 @@ namespace CheckerServer.utils
         // since I want the last thing entered to be the first thing out
         private void addFromSortedList(SortedList<double, OrderItem> sortedList, Stack<TimedOrderItem> timedQueue)
         {
-            for (int i = 0; i < sortedList.Count - 1; i++)
+            for (int i = 1; i < sortedList.Count-1; i++)
             {
-                double interval = sortedList.Keys[i + 1] - sortedList.Keys[i];
-                timedQueue.Push(new TimedOrderItem(sortedList[i], interval));
+                double interval = sortedList.Keys[i] - sortedList.Keys[i-1];
+                timedQueue.Push(new TimedOrderItem(sortedList[i-1], interval));
             }
+
+            // for the last thing in the list:
+            timedQueue.Push(new TimedOrderItem(sortedList[sortedList.Count - 1], 0));
         }
 
         internal IEnumerable<OrderItem> GetAvailableItems()
