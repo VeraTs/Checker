@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CheckerUI.Services;
 using Xamarin.Forms;
 
-namespace CheckerUI
+namespace CheckerUI.Views
 {
     public partial class MainPage : ContentPage
     {

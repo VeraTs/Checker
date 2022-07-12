@@ -12,12 +12,13 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     public partial class ItemsDoneCardView : ContentView
     {
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
-       
+        public LineViewModel ViewModel { get; set; }
+
         public ItemsDoneCardView()
         {
             InitializeComponent();
         }
-        public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
+    
         
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {

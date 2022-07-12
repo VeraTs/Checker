@@ -47,5 +47,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<OrdersHub>("/OrdersHub");
+app.MapHub<KitchenHub>("/KitchenHub");
 
 app.Run();

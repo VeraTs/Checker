@@ -14,7 +14,7 @@ namespace CheckerUI
 {
     public partial class App : Application
     {
-
+        public static LinesDataStore linesStore { get; private set; }
         public static DishDataStore Store { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
@@ -40,7 +40,7 @@ namespace CheckerUI
 
             DependencyService.Register<DishDataStore>();
 
-
+            DependencyService.Register<LinesDataStore>();
             /*Store = new WebDataStore("https://checkertester.azurewebsites.net/JsonToDos/");
             HubConn = new HubConnectionBuilder()
                 .WithUrl("https://checkertester.azurewebsites.net/todosHub")
@@ -56,10 +56,11 @@ namespace CheckerUI
             };
 
             Store = new DishDataStore();
-
-            string ordersHubUrl = BaseAddress + "/OrdersHub";
+            linesStore = new LinesDataStore();
+           
+            string kitchenHubUrl = BaseAddress + "/KitchenHub";
             HubConn = new HubConnectionBuilder()
-                .WithUrl(ordersHubUrl, options =>
+                .WithUrl(kitchenHubUrl, options =>
                 {
                     if (isDebug)
                     {
@@ -77,7 +78,14 @@ namespace CheckerUI
             {
                 Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
             });
-
+            HubConn.On<String>("SignalRError", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
+            });
+            HubConn.On<String>("NewGroupMember", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("NewGroupMemberException!", str, "OK");
+            });
             MainPage = new NavigationPage(new MainPage())
             {
             };
@@ -85,8 +93,13 @@ namespace CheckerUI
 
         protected override void OnStart()
         {
+            loadDishes();
         }
 
+        private async void loadDishes()
+        {
+            await Store.GetItemsAsync();
+        }
         protected override void OnSleep()
         {
         }

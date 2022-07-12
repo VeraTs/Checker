@@ -23,7 +23,6 @@ namespace CheckerServer.Hubs
         // amnage the kitchen utils
         private async Task manageKitchen()
         {
-
             // we're currently ignoring multiple restaurants, and assuming singal restaurant
             // for multiple restaurants, we will have multiple users, and in the SignalR case,
             // multiple Clients associated with the user, in a Group
@@ -44,35 +43,42 @@ namespace CheckerServer.Hubs
              * 
              */
 
-            // step 2.1
-            // restId to Lines
-            Dictionary<int, List<LineDTO>> updatedLines = r_KitchenUtils.GetUpdatedLines();
-
-            // step 2.2
-            foreach (int restId in updatedLines.Keys)
+            while (true)
             {
-                Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
-                if (rest != null)
+
+                // step 2.1
+                // restId to Lines
+                Dictionary<int, List<LineDTO>> updatedLines = r_KitchenUtils.GetUpdatedLines();
+
+                // step 2.2
+                foreach (int restId in updatedLines.Keys)
                 {
-                    // not awaited since this pretains to different restaurants
-                    Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
+                    Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
+                    if (rest != null)
+                    {
+                        // not awaited since this pretains to different restaurants
+                        Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
+                    }
                 }
+
+                // step 2.3
+                int success = r_KitchenUtils.LoadNewOrders();
+                if (success > 0)
+                {
+                    // yay, things loaded and hoarded - continue with my life, this will happen again, obvs.
+                }
+                else
+                {
+                    // should I report a signalR error? And if so - to whom?
+                    await Clients.All.SendAsync("SignalRError", "Error in uploading new orders to the management system");
+                }
+
+                // step 2.4
+                r_KitchenUtils.ClearOrders();
             }
 
-            // step 2.3
-            int success = r_KitchenUtils.LoadNewOrders();
-            if (success > 0)
-            {
-                // yay, things loaded and hoarded - continue with my life, this will happen again, obvs.
-            }
-            else
-            {
-                // should I report a signalR error? And if so - to whom?
-                await Clients.All.SendAsync("SignalRError", "Error in uploading new orders to the management system");
-            }
 
-            // step 2.4
-            r_KitchenUtils.ClearOrders();
+
         }
 
         // temporary group registration with rest name

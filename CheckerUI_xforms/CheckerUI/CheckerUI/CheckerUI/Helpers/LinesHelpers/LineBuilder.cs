@@ -14,10 +14,8 @@ namespace CheckerUI.Helpers.LinesHelpers
                 Name = i_LineName,
                 Limit = i_Maximum,
                 State = i_State,
-                Dishes = new List<Dish>()
-            };
-            model.Dishes = i_dishes;
-
+                Dishes = i_dishes
+        };
             return model;
         }
     }

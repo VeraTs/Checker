@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using CheckerUI.Enums;
 using CheckerUI.Helpers.OrdersHelpers;
+using CheckerUI.Models;
 using Xamarin.Forms;
 //// <summary>
 // Basic line, if we want to add features to it we will do it by inheritance
@@ -46,20 +47,15 @@ namespace CheckerUI.ViewModels
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
 
-        private OrdersManager m_Manager;
+       // private OrdersManager m_Manager;
         public Command ReturnCommand { get; set; }
-
 
         public void init()
         {
             allocations();
 
             m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-            m_Manager = new OrdersManager
-            {
-                itemsLineView = m_Orders
-            }; // connect to OrderManger orders
-            m_Manager.UpdateAllLinesByOrders();
+           
             ReturnCommand = new Command(async () =>
             {
                 await Application.Current.MainPage.Navigation.PopAsync();
@@ -75,6 +71,15 @@ namespace CheckerUI.ViewModels
             m_ButtonsToMake = new ObservableCollection<OrderItemView>();
             m_ButtonsDone = new ObservableCollection<OrderItemView>();
         }
+        public void deAllocations()
+        {
+            m_ButtonsInProgress.Clear();
+            m_ButtonsDone.Clear();
+            m_ButtonsLocked.Clear();
+            m_ButtonsToMake.Clear();
+            m_Orders.Clear();
+            m_OrdersList.Clear();
+        }
         private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (m_counterID < m_Orders.Count) // new order is entered
@@ -86,8 +91,13 @@ namespace CheckerUI.ViewModels
                 m_counterID++;
             }
         }
-
-        private void addItemToLinePlace(OrderItemView i_ToAdd)
+      
+        public void AddOrderItem(OrderItem i_ToAdd)
+        {
+            var view = new OrderItemView(i_ToAdd);
+            addItemToLinePlace(view);
+        }
+        public void addItemToLinePlace(OrderItemView i_ToAdd)
         {
             switch (i_ToAdd.OrderStatus)
             {
