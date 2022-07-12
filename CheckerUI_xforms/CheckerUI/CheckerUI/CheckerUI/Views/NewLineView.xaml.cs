@@ -8,7 +8,7 @@ namespace CheckerUI.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewLineView : ContentPage
     {
-        private LineViewModel m_ViewModel;
+        public LineViewModel m_ViewModel;
         
         public NewLineView(LineViewModel i_VM)
         {

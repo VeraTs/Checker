@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
-             xmlns:fontAwesome="clr-namespace:FontAwesome;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsInProgressCardView" 
              x:DataType="viewModels:LineViewModel">
     <ContentView.Content>

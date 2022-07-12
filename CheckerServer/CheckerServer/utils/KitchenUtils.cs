@@ -362,9 +362,9 @@ namespace CheckerServer.utils
 
                 case eOrderType.Staggered:
                     // now here we need to consider 3 ordered lists
-                    SortedList<double, OrderItem> startersList = new SortedList<double, OrderItem>();
-                    SortedList<double, OrderItem> mainsList = new SortedList<double, OrderItem>();
-                    SortedList<double, OrderItem> dessertsList = new SortedList<double, OrderItem>();
+                    SortedList<double, OrderItem> startersList = new SortedList<double, OrderItem>(new DuplicateKeyComparer<double>());
+                    SortedList<double, OrderItem> mainsList = new SortedList<double, OrderItem>(new DuplicateKeyComparer<double>());
+                    SortedList<double, OrderItem> dessertsList = new SortedList<double, OrderItem>(new DuplicateKeyComparer<double>());
 
                     items.ForEach(item =>
                     {
@@ -424,14 +424,17 @@ namespace CheckerServer.utils
         // since I want the last thing entered to be the first thing out
         private void addFromSortedList(SortedList<double, OrderItem> sortedList, Stack<TimedOrderItem> timedQueue)
         {
-            for (int i = 1; i < sortedList.Count - 1; i++)
+            if (sortedList.Count > 0)
             {
-                double interval = sortedList.Keys[i] - sortedList.Keys[i - 1];
-                timedQueue.Push(new TimedOrderItem(sortedList[i - 1], interval));
-            }
+                for (int i = 1; i < sortedList.Count - 1; i++)
+                {
+                    double interval = sortedList.Keys[i] - sortedList.Keys[i - 1];
+                    timedQueue.Push(new TimedOrderItem(sortedList.Values[i - 1], interval));
+                }
 
-            // for the last thing in the list:
-            timedQueue.Push(new TimedOrderItem(sortedList[sortedList.Count - 1], 0));
+                // for the last thing in the list:
+                timedQueue.Push(new TimedOrderItem(sortedList.Last().Value, 0));
+            }
         }
 
         internal IEnumerable<OrderItem> GetAvailableItems()

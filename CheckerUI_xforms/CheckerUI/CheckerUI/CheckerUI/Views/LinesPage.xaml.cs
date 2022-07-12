@@ -15,9 +15,10 @@ namespace CheckerUI.Views
         private readonly LinesViewModel vm;
         public LinesPage()
         {
-            InitializeComponent();
             vm = new LinesViewModel();
             BindingContext = vm;
+            InitializeComponent();
+           
 
         }
         private async void LineButton_OnClicked(object sender, EventArgs e)

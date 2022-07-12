@@ -2,7 +2,7 @@
 using System.Drawing;
 using CheckerUI.Enums;
 using CheckerUI.ViewModels;
-using CheckerUI.Models;
+
 namespace CheckerUI.Helpers.OrdersHelpers
 {
     public class OrderViewModel : BaseViewModel

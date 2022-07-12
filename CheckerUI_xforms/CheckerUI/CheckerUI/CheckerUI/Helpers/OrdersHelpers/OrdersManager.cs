@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using CheckerUI.Enums;
 using CheckerUI.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
-using CheckerUI.Models;
+
 namespace CheckerUI.Helpers.OrdersHelpers
 {
     public class OrdersManager : BaseViewModel
@@ -13,11 +12,9 @@ namespace CheckerUI.Helpers.OrdersHelpers
         //  private List<OrderModel> m_OrdersList = new List<OrderModel>();
         private ObservableCollection<OrderViewModel> m_OrdersViews = new ObservableCollection<OrderViewModel>();
         private readonly Dictionary<int, OrderViewModel> m_Orders = new Dictionary<int, OrderViewModel>();
-        private int m_Length = 0;
-        private int m_ItemsGenerated = 1;
+
         // private ObservableCollection<ToDo> m_ToDoList;
 
-        private ObservableCollection<OrderItemView> m_OrderItemsLineView = new ObservableCollection<OrderItemView>();
         public OrdersManager()
         {
             //CreateSignal();
@@ -34,17 +31,22 @@ namespace CheckerUI.Helpers.OrdersHelpers
             //    m_OrderItemModelList.Add(item);
             //}
             //m_ItemsViewManager = new OrderItemViewManager(m_OrderItemModelList);
-        }
 
+            var orders = App.ordersStore.orders;
+            foreach (var order in orders)
+            {
+                var view = new OrderViewModel(order);
+                m_OrdersViews.Add(view);
+                m_Orders.Add(order.id, view);
+            }
+        }
         public void UpdateLines(ObservableCollection<OrderItemView> i_OrderItems)
         {
-         
             foreach (var item in i_OrderItems)
             {
                 itemsLineView.Add(item);
             }
         }
-
         public void UpdateAllLinesByOrders()
         {
             foreach (var order in m_OrdersViews)
@@ -68,18 +70,6 @@ namespace CheckerUI.Helpers.OrdersHelpers
             }
         }
 
-        //private void generateOrders(int i_Size)
-        //{
-        //    for (int i = 0; i < i_Size; i++)
-        //    {
-        //        Order model = generateOrderModel();
-        //        OrderViewModel viewModel = new OrderViewModel(model);
-        //        viewModel.AllItemsCheckedOrderID.CollectionChanged += AllItemsCheckedOnCollectionChanged;
-        //        m_Orders.Add(model.id, viewModel);
-        //        m_OrdersViews.Add(viewModel);
-        //    }
-        //}
-
         private void AllItemsCheckedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var observer = sender as ObservableCollection<int>;
@@ -87,44 +77,6 @@ namespace CheckerUI.Helpers.OrdersHelpers
             var viewToRemove = m_Orders[id];
             m_OrdersViews.Remove(viewToRemove);
         }
-
-        //private Order generateOrderModel()
-        //{
-        //    eOrderStatus[] allStates = { eOrderStatus.Ordered, eOrderStatus.Started, eOrderStatus.Done };
-
-        //    var items = generateOrderItemModels();
-        //    var orderModel = OrderBuilder.GenerateOrder(m_Length, m_Length + 100
-        //        , allStates[m_Length % 3], items);
-        //    m_Length++;
-        //    return orderModel;
-        //}
-        //private List<OrderItemModel> generateOrderItemModels(int i_TableNumber)
-        //{
-        //    var items = new List<OrderItemModel>();
-        //    string[] names = { "Bread", "Salad", "Fish Tartar", "Burger ", "Pizza", "Pasta", "Cake" };
-        //    eOrderItemType[] types =
-        //    {
-        //        eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Starter, eOrderItemType.Main,
-        //        eOrderItemType.Main, eOrderItemType.Unknown, eOrderItemType.Dessert
-        //    };
-        //    int[] deptId = { 1, 1, 1, 2, 2, 2, 3 };
-        //    eOrderItemState[] itemStates =
-        //    {
-        //        eOrderItemState.Waiting, eOrderItemState.Available, eOrderItemState.InPreparation, eOrderItemState.Ready
-        //    };
-        //    for (int i = 0; i < types.Length; i++)
-        //    {
-        //        var orderItem =
-        //            OrderItemBuilder.GenerateOrderItem(m_ItemsGenerated, names[i], i_TableNumber,
-        //            "Notes : " + Environment.NewLine + "No Cheese " + Environment.NewLine + "Medium " + Environment.NewLine + "etc",
-        //            deptId[i], eOrderItemType.Starter, itemStates[i % 3]);
-
-        //        m_ItemsGenerated++;
-
-        //        items.Add(orderItem);
-        //    }
-        //    return items;
-        //}
 
         public ObservableCollection<OrderViewModel> OrdersViews
         {
@@ -135,11 +87,6 @@ namespace CheckerUI.Helpers.OrdersHelpers
                 OnPropertyChanged(nameof(OrdersViews));
             }
         }
-
-        public ObservableCollection<OrderItemView> itemsLineView
-        {
-            get => m_OrderItemsLineView;
-            set => m_OrderItemsLineView = value;
-        }
+        public ObservableCollection<OrderItemView> itemsLineView { get; set; } = new ObservableCollection<OrderItemView>();
     }
 }

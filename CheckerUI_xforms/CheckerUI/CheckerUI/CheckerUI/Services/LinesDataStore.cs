@@ -41,11 +41,7 @@ namespace CheckerUI.Services
                 listy = System.Text.Json.JsonSerializer.Deserialize<List<Line>>(res);
                 foreach (var item in listy)
                 {
-                  
-                  var currentLine = new Line();
-                  currentLine = item;
-                 
-                  lines.Add(currentLine);
+                    lines.Add(item);
                 }
             }
             catch (Exception ex)
