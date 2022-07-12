@@ -1,4 +1,6 @@
-﻿using CheckerUI.Views;
+﻿using System.Collections.Generic;
+using CheckerUI.Models;
+using CheckerUI.Views;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
@@ -10,8 +12,10 @@ namespace CheckerUI.ViewModels
         public Command UpdateKitchenCommand { get; }
         public Command MangeKitchenCommand { get; }
         public Command ShowStatisticsCommand { get; }
+       
         public LoggedMainPageViewModel()
         {
+           
             MyKitchenCommand = new Command(async () =>
             {
                 LinesPage page = new LinesPage();

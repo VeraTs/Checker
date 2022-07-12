@@ -4,7 +4,7 @@
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsLockedCardView"      
-             x:DataType="viewModels:BaseLineViewModel">
+             x:DataType="viewModels:LineViewModel">
     <ContentView.Content>
         <Frame IsClippedToBounds="True"  
                HasShadow="True" 

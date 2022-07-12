@@ -17,7 +17,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     {
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
 
-        public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
+        public LineViewModel ViewModel { get; set; }
         public ItemsInProgressCardView()
         {
             InitializeComponent();

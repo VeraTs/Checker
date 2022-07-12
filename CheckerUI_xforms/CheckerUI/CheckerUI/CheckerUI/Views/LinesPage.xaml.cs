@@ -18,10 +18,12 @@ namespace CheckerUI.Views
             InitializeComponent();
             vm = new LinesViewModel();
             BindingContext = vm;
-            
+
         }
         private async void LineButton_OnClicked(object sender, EventArgs e)
         {
+            int id = int.Parse((sender as Button).Text);
+            vm.m_ClickedLineId = id;
             await vm.LineButton_OnClicked(sender, e);
         }
     }

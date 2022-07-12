@@ -1,25 +1,40 @@
 ﻿using System.Collections.Generic;
 using CheckerUI.Enums;
+using CheckerUI.Helpers.LinesHelpers;
 using CheckerUI.Models;
 using CheckerUI.ViewModels;
 using Xamarin.Forms;
 
-namespace CheckerUI.Helpers.LinesHelpers
+namespace CheckerUI.ViewModels
 {
-    public class LineView : BaseViewModel
+    public class LineViewModel : BaseLineViewModel
     {
-        private readonly Line model;
-        private List<Dish> m_DishItems = new List<Dish>();
+        private  Line model;
+      
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
-        
-        public LineView(Line i_model)
+
+        public LineViewModel() :base()
         {
+           
+        }
+        public LineViewModel(Line i_model) :base()
+        {
+            base.init();
+            m_BackgroundState = new Color();
+            model = LineBuilder.GenerateLine(i_model.Name, i_model.id, i_model.Limit, null, i_model.State);
+            model.Dishes = new List<Dish>();
+           
+            setColorState();
+        }
+
+        public void InitLineView(Line i_model)
+        {
+            base.init();
             m_BackgroundState = new Color();
             model = LineBuilder.GenerateLine(i_model.Name, i_model.id, i_model.Limit, null, i_model.State);
             setColorState();
         }
-
         private void setColorState()
         {
             switch (model.State)

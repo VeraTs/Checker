@@ -6,7 +6,7 @@
              xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
              xmlns:lottie="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsToMakeCardView"
-             x:DataType="viewModels:BaseLineViewModel">
+             x:DataType="viewModels:LineViewModel">
     <ContentView.Content>
         <Frame IsClippedToBounds="True"  
                HasShadow="True" 

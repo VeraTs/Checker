@@ -5,7 +5,7 @@
              xmlns:kitchenLineCardsViews="clr-namespace:CheckerUI.Views.KitchenLineCardsViews;assembly=CheckerUI"
              xmlns:fontAwesome="clr-namespace:FontAwesome;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.ItemsInProgressCardView" 
-             x:DataType="viewModels:BaseLineViewModel">
+             x:DataType="viewModels:LineViewModel">
     <ContentView.Content>
         <Frame IsClippedToBounds="True"  
                HasShadow="True" 

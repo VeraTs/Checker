@@ -43,7 +43,7 @@
                                    Margin="20"
                                    HeightRequest="300"
                                    HorizontalOptions="Center" BackgroundColor="Transparent">
-                            <Grid>
+                            <Grid x:Name="myGrid" >
                                 <Image Source="chefBackground" Aspect="Fill"></Image>
                                 <Grid >
                                     <Grid.RowDefinitions>
@@ -62,7 +62,8 @@
                                     <BoxView Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
                                              BackgroundColor ="{Binding LineStateColor}"
                                              CornerRadius="10" ></BoxView>
-                                        <Button Grid.Column="1" Grid.Row="1" Text="{Binding LineName}"
+                                        <Button  x:Name="m_LineButton"
+                                            Grid.Column="1" Grid.Row="1" Text="{Binding LineID}"
                                            HorizontalOptions="Center"
                                            FontSize="Title"
                                            FontFamily="FAS"

@@ -16,7 +16,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemsLockedCardView : ContentView
     {
-        public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
+        public LineViewModel ViewModel { get; set; }
 
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();  
 
