@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.InMemory;
 using CheckerServer.Hubs;
+using CheckerServer.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ builder.Services.AddDbContext<CheckerDBContext>(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<KitchenManager>();
+
+builder.Host.ConfigureServices(services => { services.AddHostedService<KitchenManager>(provider => provider.GetService<KitchenManager>()); });
 
 var app = builder.Build();
 
@@ -37,15 +41,18 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+
 app.UseRouting();
 
 
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<OrdersHub>("/OrdersHub");
+app.MapHub<KitchenHub>("/KitchenHub");
 
 app.Run();

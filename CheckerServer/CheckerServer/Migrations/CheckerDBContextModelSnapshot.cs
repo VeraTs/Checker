@@ -65,7 +65,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("RestMenuId");
 
-                    b.ToTable("Dishes", (string)null);
+                    b.ToTable("Dishes");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.DishStatistic", b =>
@@ -89,7 +89,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("DishId");
 
-                    b.ToTable("DishStatistics", (string)null);
+                    b.ToTable("DishStatistics");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Ingredient", b =>
@@ -115,7 +115,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("MeasurementType");
 
-                    b.ToTable("Ingredients", (string)null);
+                    b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Line", b =>
@@ -148,7 +148,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("ServingAreaId");
 
-                    b.ToTable("Lines", (string)null);
+                    b.ToTable("Lines");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Maker", b =>
@@ -170,7 +170,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("LineId");
 
-                    b.ToTable("Maker", (string)null);
+                    b.ToTable("Maker");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Measurement", b =>
@@ -180,7 +180,7 @@ namespace CheckerServer.Migrations
 
                     b.HasKey("Type");
 
-                    b.ToTable("Measurements", (string)null);
+                    b.ToTable("Measurements");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Order", b =>
@@ -211,7 +211,7 @@ namespace CheckerServer.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.OrderItem", b =>
@@ -247,7 +247,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Restaurant", b =>
@@ -275,7 +275,7 @@ namespace CheckerServer.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Restaurants", (string)null);
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.RestMenu", b =>
@@ -297,7 +297,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("RestMenus", (string)null);
+                    b.ToTable("RestMenus");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.ServingArea", b =>
@@ -322,7 +322,7 @@ namespace CheckerServer.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("ServingAreas", (string)null);
+                    b.ToTable("ServingAreas");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Dish", b =>
