@@ -14,7 +14,7 @@ namespace CheckerServer.Controllers
         public OrderController(CheckerDBContext context)
             : base(context, context.Orders) 
         {
-            KitchenUtils kitchen = new KitchenUtils(context);
+            
         }
 
         protected override void updateItem(Order existingItem, Order updatedItem)
@@ -31,7 +31,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<IEnumerable<Order>>> get()
         {
             var res = await r_Set
-                .Include("Items.Dish")
+                .Include("Items")
                 .ToListAsync();
 
             return res;
