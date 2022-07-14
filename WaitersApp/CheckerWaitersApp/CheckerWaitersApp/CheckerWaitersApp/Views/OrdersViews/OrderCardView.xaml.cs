@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace CheckerWaitersApp.Views.OrdersViews
@@ -9,6 +10,11 @@ namespace CheckerWaitersApp.Views.OrdersViews
         public OrderCardView()
         {
             InitializeComponent();
+        }
+
+        private void Button_OnClicked(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

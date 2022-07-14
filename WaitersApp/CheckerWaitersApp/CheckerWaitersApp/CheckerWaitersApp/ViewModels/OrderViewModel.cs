@@ -23,6 +23,7 @@ namespace CheckerWaitersApp.ViewModels
             set => Order.orderType = value;
         }
         public string Counter => "Total Items :" + Order.items.Count;
+        public string Cost => "Price :" + Order.totalCost;
         public string CreatedTime => Order.createdDate.ToShortTimeString();
 
         public ObservableCollection<OrderItem> Items { get; private set; }

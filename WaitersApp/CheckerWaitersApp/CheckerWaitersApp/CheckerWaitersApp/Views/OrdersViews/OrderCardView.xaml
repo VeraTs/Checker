@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
              xmlns:ordersViews="clr-namespace:CheckerWaitersApp.Views.OrdersViews;assembly=CheckerWaitersApp"
+             xmlns:fontAwesome="clr-namespace:FontAwesome;assembly=CheckerWaitersApp"
              x:DataType="viewmodels:OrderViewModel"
              x:Class="CheckerWaitersApp.Views.OrdersViews.OrderCardView">
     <ContentView.Content>
@@ -38,6 +39,7 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height=".7*"/>
                         </Grid.RowDefinitions>
 
@@ -45,12 +47,11 @@
                                FontAttributes="Bold"
                                TextColor="Black"
                                VerticalOptions="Center"
-                               HorizontalOptions="End"
+                               HorizontalOptions="Center"
                                FontSize="Title"
                                Text="{Binding OrderHeader}"/>
-
-                       
-
+                        <ImageButton Grid.Row="0" Grid.Column="4" CornerRadius="10"
+                               ></ImageButton>
                         <Label Grid.Row="2" Grid.Column="1" 
                                FontAttributes="Bold"
                                TextColor="RoyalBlue"
@@ -58,11 +59,10 @@
                                HorizontalOptions="Center"
                                FontSize="Title"
                                Text="{Binding OrderState}"/>
-
                         <Label Grid.Row="1" Grid.Column="1" 
                                FontAttributes="Bold"
                                TextColor="RoyalBlue"
-                               VerticalOptions="Center"
+                               VerticalOptions="Start"
                                HorizontalOptions="Start"
                                FontSize="Title"
                                Text="{Binding OrderType}"/>
@@ -74,7 +74,15 @@
                                HorizontalOptions="Start"
                                FontSize="Title"
                                Text="{Binding Counter}"/>
-                        <BoxView Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="3" 
+                        <Label Grid.Column="1" Grid.Row="4"
+                               Grid.ColumnSpan="2" 
+                               FontAttributes="Bold"
+                               TextColor="RoyalBlue"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"
+                               FontSize="Title"
+                               Text="{Binding Cost}"/>
+                        <BoxView Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="4" 
                                  Color="Transparent" WidthRequest="10"/>
                     </Grid>
                 </StackLayout>
