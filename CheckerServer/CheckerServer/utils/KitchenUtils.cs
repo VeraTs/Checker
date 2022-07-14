@@ -174,7 +174,6 @@ namespace CheckerServer.utils
                     // issue detected - this is not a tracked item any more, so they all need to be retracked.
                     item.LineStatus = eLineItemStatus.ToDo;
                     item.Status = eItemStatus.AtLine;
-                    item.Dish = null;
                 }
             }
             
@@ -190,9 +189,18 @@ namespace CheckerServer.utils
                         updatedLines.Add(r_Lines[thing].line.ServingArea.RestaurantId, new List<LineDTO>());
                     }
 
+                    List<OrderItem> toDoItems = new List<OrderItem>();
+                    r_Lines[thing].ToDoItems.ForEach(item => toDoItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
+
+                    List<OrderItem> doingItems = new List<OrderItem>();
+                    r_Lines[thing].ToDoItems.ForEach(item => doingItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
+
+                    List<OrderItem> doneItems = new List<OrderItem>();
+                    r_Lines[thing].ToDoItems.ForEach(item => doneItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
+
                     updatedLines[r_Lines[thing].line.ServingArea.RestaurantId].Add(new LineDTO() 
                     {
-                        lineId = thing, DoingItems = r_Lines[thing].DoingItems, LockedItems = r_Lines[thing].LockedItems, ToDoItems = r_Lines[thing].ToDoItems
+                        lineId = thing, DoingItems = r_Lines[thing].DoingItems, LockedItems = r_Lines[thing].LockedItems, ToDoItems = toDoItems
                     }) ;  // this is always the first time the line is added to the list, since lines are uniquely indexed
                 }
             }
@@ -258,8 +266,9 @@ namespace CheckerServer.utils
             public OrderItem item;
             private System.Timers.Timer? timer = null;
             public Boolean available = false;
+            public Boolean timerUp = false;
 
-            public TimedOrderItem(OrderItem item, double limit, bool? _available = null)
+            public TimedOrderItem(OrderItem item, double limit, bool? _available = null, bool? _timerUp = null)
             {
                 this.item = item; // set item
 
@@ -288,12 +297,15 @@ namespace CheckerServer.utils
 
                         timer.Stop(); 
                     };
+
+                    if (_timerUp != null)
+                        timerUp = _timerUp.Value;
                 }
             }
 
             public void StartTimer()
             {
-                if(timer!= null)
+                if(timer!= null && timerUp)
                     timer.Start();
             }
         }
@@ -335,7 +347,7 @@ namespace CheckerServer.utils
                 {
                     if (item.Dish.Type == eDishType.Drink)
                     {
-                        starters.Push(new TimedOrderItem(item, 0, true));    // drinks are to be made available immediately
+                        starters.Push(new TimedOrderItem(item, 0, true, true));    // drinks are to be made available immediately
                     }
                 });
             }
@@ -462,7 +474,7 @@ namespace CheckerServer.utils
             }
 
             // for the last thing in the list:
-            timedQueue.Push(new TimedOrderItem(sortedList.Last().Value, 0));
+            timedQueue.Push(new TimedOrderItem(sortedList.Last().Value, 0, true, true));
         }
 
         internal IEnumerable<OrderItem> GetAvailableItems()
@@ -471,6 +483,8 @@ namespace CheckerServer.utils
             if(starters != null && starters.Count > 0)      { availableItems = getFromStack(starters);}
             else if(mains != null && mains.Count > 0)    { availableItems = getFromStack(mains); }
             else if (desserts != null &&  desserts.Count > 0 )  { availableItems = getFromStack(desserts); }
+
+            StartTimers();  // start timers for newly allowed items
 
             return availableItems;
         }
@@ -488,7 +502,18 @@ namespace CheckerServer.utils
                     if (hasItem)
                     {
                         temp = stack.Pop();
-                        availableItems.Add(temp.item);
+                        if (temp.available)
+                        {
+                            availableItems.Add(temp.item);
+                        }
+                        else
+                        {
+                            // if temp is not available, and timer for it hasn;t been started - give it the option
+                            if (!temp.timerUp)
+                                temp.timerUp = true;
+                            stack.Push(temp);
+                            hasItem = false;
+                        }
                     }
                 } while (hasItem);
             }

@@ -5,8 +5,7 @@ namespace CheckerServer.Models
 {
     public class OrderItem : BaseDBItem
     {
-        public virtual Dish Dish { get; set; }
-
+        public virtual Dish? Dish { get; set; }
 
         [ForeignKey("Dish")]
         public int DishId { get; set; }

@@ -93,15 +93,15 @@ namespace CheckerServer.Models
                     Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests);
 
                     // step 2.2 - delayed
-                    /*            foreach (int restId in updatedLines.Keys)
-                                {
-                                    Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
-                                    if (rest != null)
-                                    {
-                                        // not awaited since this pretains to different restaurants
-                                        Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
-                                    }
-                                }*/
+                    foreach (int restId in updatedLines.Keys)
+                    {
+                        Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
+                        if (rest != null)
+                        {
+                            // not awaited since this pretains to different restaurants
+                            _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
+                        }
+                    }
 
                     // step 2.3
                     int success = r_KitchenUtils.LoadNewOrders();
@@ -119,8 +119,8 @@ namespace CheckerServer.Models
                     // step 2.4
                     r_KitchenUtils.ClearOrders();
 
-                    if(updatedLines != null)
-                        await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);
+                    /*if(updatedLines != null)
+                        await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);*/
                 }
             }
             
