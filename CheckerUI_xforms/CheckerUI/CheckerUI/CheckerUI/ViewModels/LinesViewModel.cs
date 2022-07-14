@@ -23,14 +23,14 @@ namespace CheckerUI.ViewModels
         {
 
             m_Dishes = App.Store.dishes;
-            init();
+            initLinesByRepository();
+         //   initUsingRepository();
             App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
             {
 
                 foreach (var lineDTO in linesDTO)
                 {
-
-                    var id = lineDTO.line.id;
+                    var id = lineDTO.lineId; 
                     var lineVM = m_LinesList.FirstOrDefault(ll => ll.LineID == id);
                     if (lineVM == null) continue;
                     lineVM.deAllocations();
@@ -57,9 +57,8 @@ namespace CheckerUI.ViewModels
             SignalR();
         }
 
-        private void init()
+        private void initLinesByRepository()
         {
-            var items = App.oItemsStore.items;
             var list = App.linesStore.lines;
             foreach (var vm in list.Select(item => new LineViewModel(item)))
             {
@@ -67,7 +66,10 @@ namespace CheckerUI.ViewModels
                 var view = new NewLineView(vm);
                 m_LinesViews.Add(view);
             }
-
+        }
+        private void initUsingRepository()
+        {
+            var items = App.oItemsStore.items;
             foreach (var orderItem in items)
             {
                 var lineId = orderItem.dish.lineId;
@@ -133,7 +135,6 @@ namespace CheckerUI.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public async Task LineButton_OnClicked(object sender, EventArgs e)
         {
             var view = m_LinesViews.FirstOrDefault(ll => ll.GetLineId() == m_ClickedLineId);

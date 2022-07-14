@@ -13,7 +13,7 @@ namespace CheckerServer.Models
         private readonly KitchenUtils r_KitchenUtils = null;
         private readonly Dictionary<int, List<LineDTO>> r_KitchenLines = new Dictionary<int, List<LineDTO>>();
         private readonly Dictionary<int, int> r_RestsActiveKitchens = new Dictionary<int, int>();
-        private readonly object r_RestUsesLock  = new object();
+        private readonly object r_RestUsesLock = new object();
         private readonly IHubContext<KitchenHub> _hubContext;
         private Timer? _timer = null;
         public IServiceProvider Services { get; }
@@ -31,7 +31,8 @@ namespace CheckerServer.Models
             {
                 using (var context = new CheckerDBContext(
                  scope.ServiceProvider.GetRequiredService<
-                     DbContextOptions<CheckerDBContext>>())){
+                     DbContextOptions<CheckerDBContext>>()))
+                {
                     List<Restaurant> rests = context.Restaurants.ToList();
                     rests.ForEach(r =>
                     {
@@ -75,7 +76,7 @@ namespace CheckerServer.Models
              * 
              */
 
-            using(var scope = Services.CreateScope())
+            using (var scope = Services.CreateScope())
             {
                 using (var context = new CheckerDBContext(
                     scope.ServiceProvider.GetRequiredService<
@@ -93,15 +94,15 @@ namespace CheckerServer.Models
                     Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests);
 
                     // step 2.2 - delayed
-                    /*            foreach (int restId in updatedLines.Keys)
-                                {
-                                    Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
-                                    if (rest != null)
-                                    {
-                                        // not awaited since this pretains to different restaurants
-                                        Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
-                                    }
-                                }*/
+                    foreach (int restId in updatedLines.Keys)
+                    {
+                        Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
+                        if (rest != null)
+                        {
+                            // not awaited since this pretains to different restaurants
+                            _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
+                        }
+                    }
 
                     // step 2.3
                     int success = r_KitchenUtils.LoadNewOrders();
@@ -119,11 +120,11 @@ namespace CheckerServer.Models
                     // step 2.4
                     r_KitchenUtils.ClearOrders();
 
-                    if(updatedLines != null)
-                        await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);
+                    /*if(updatedLines != null)
+                        await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);*/
                 }
             }
-            
+
 
             // can't lock if there us async inside :CRY:
         }
@@ -158,7 +159,7 @@ namespace CheckerServer.Models
                 await ManageKitchenAsync();
                 shouldRun = true;
             }
-            
+
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

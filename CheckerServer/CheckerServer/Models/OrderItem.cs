@@ -5,8 +5,7 @@ namespace CheckerServer.Models
 {
     public class OrderItem : BaseDBItem
     {
-        public virtual Dish Dish { get; set; }
-
+        public virtual Dish? Dish { get; set; }
 
         [ForeignKey("Dish")]
         public int DishId { get; set; }
@@ -14,7 +13,7 @@ namespace CheckerServer.Models
         public int OrderId { get; set; }
         [Required]
         public int ServingAreaZone { get; set; }
-        
+
         public string Changes { get; set; }
         public eItemStatus Status { get; set; } = eItemStatus.Ordered;
         public eLineItemStatus LineStatus { get; set; } = eLineItemStatus.Locked;
