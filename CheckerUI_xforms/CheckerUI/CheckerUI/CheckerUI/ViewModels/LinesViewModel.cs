@@ -3,72 +3,66 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using CheckerUI.Helpers.OrdersHelpers;
+using CheckerUI.Enums;
 using CheckerUI.Models;
 using CheckerUI.Views;
 using Xamarin.Forms;
-
 using Microsoft.AspNetCore.SignalR.Client;
+
 namespace CheckerUI.ViewModels
 {
     public class LinesViewModel : BaseViewModel
     {
         private ObservableCollection<LineViewModel> m_LinesList = new ObservableCollection<LineViewModel>();
-        private ObservableCollection<NewLineView> m_LinesViews = new ObservableCollection<NewLineView>();
-        
+        private readonly ObservableCollection<NewLineView> m_LinesViews = new ObservableCollection<NewLineView>();
+
         private List<Dish> m_Dishes { get; set; }
 
         public int m_ClickedLineId { get; set; } = 0;
         public LinesViewModel()
         {
-           
+
             m_Dishes = App.Store.dishes;
             init();
-            App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDtos) =>
+            App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
             {
-               
-                foreach (var lineDTO in linesDtos)
+
+                foreach (var lineDTO in linesDTO)
                 {
-                    
+
                     var id = lineDTO.line.id;
                     var lineVM = m_LinesList.FirstOrDefault(ll => ll.LineID == id);
-                    if (lineVM != null)
+                    if (lineVM == null) continue;
+                    lineVM.deAllocations();
+                    foreach (var orderItem in lineDTO.LockedItems)
                     {
-                       lineVM.deAllocations();
-                        foreach (var orderItem in lineDTO.LockedItems)
-                        {
-                            var currentID = orderItem.dishId;
-                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            var itemView = new OrderItemView(orderItem);
-                            lineVM.m_Orders.Add(itemView);
-                        }
-                        foreach (var orderItem in lineDTO.ToDoItems)
-                        {
-                            var currentID = orderItem.dishId;
-                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            var itemView = new OrderItemView(orderItem);
-                            lineVM.m_Orders.Add(itemView);
-                        }
-                        foreach (var orderItem in lineDTO.DoingItems)
-                        {
-                            var currentID = orderItem.dishId;
-                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            var itemView = new OrderItemView(orderItem);
-                            lineVM.m_Orders.Add(itemView);
-                        }
+                        var currentID = orderItem.dishId;
+                        orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                        lineVM.AddOrderItemToLocked(orderItem);
+                    }
+                    foreach (var orderItem in lineDTO.ToDoItems)
+                    {
+                        var currentID = orderItem.dishId;
+                        orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                        lineVM.AddOrderItemToAvailable(orderItem);
+                    }
+                    foreach (var orderItem in lineDTO.DoingItems)
+                    {
+                        var currentID = orderItem.dishId;
+                        orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                        lineVM.AddOrderItemToInProgress(orderItem);
                     }
                 }
             });
             SignalR();
         }
 
-        private async void init()
+        private void init()
         {
             var items = App.oItemsStore.items;
             var list = App.linesStore.lines;
-            foreach (var item in list)
+            foreach (var vm in list.Select(item => new LineViewModel(item)))
             {
-                var vm = new LineViewModel(item);
                 m_LinesList.Add(vm);
                 var view = new NewLineView(vm);
                 m_LinesViews.Add(view);
@@ -79,11 +73,33 @@ namespace CheckerUI.ViewModels
                 var lineId = orderItem.dish.lineId;
                 var lineView = m_LinesViews.First(view => view.m_ViewModel.LineID == lineId);
                 var vm = lineView.m_ViewModel;
-                var oVM = new OrderItemView(orderItem);
-                vm.m_Orders.Add(oVM);
+                switch (orderItem.lineStatus)
+                {
+                    case eLineItemStatus.Locked:
+                        {
+                            vm.AddOrderItemToLocked(orderItem);
+                            break;
+                        }
+                    case eLineItemStatus.ToDo:
+                        {
+                            vm.AddOrderItemToAvailable(orderItem);
+
+                            break;
+                        }
+                    case eLineItemStatus.Doing:
+                        {
+                            vm.AddOrderItemToInProgress(orderItem);
+                            break;
+                        }
+                    case eLineItemStatus.Done:
+                        {
+                            vm.AddOrderItemToDone(orderItem);
+                            break;
+                        }
+                }
             }
         }
-        private async void SignalR()
+        private static async void SignalR()
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)
             {
@@ -107,7 +123,7 @@ namespace CheckerUI.ViewModels
                 await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
             }
         }
-       
+
         public ObservableCollection<LineViewModel> LinesList
         {
             get => m_LinesList;
@@ -117,7 +133,7 @@ namespace CheckerUI.ViewModels
                 OnPropertyChanged();
             }
         }
-       
+
         public async Task LineButton_OnClicked(object sender, EventArgs e)
         {
             var view = m_LinesViews.FirstOrDefault(ll => ll.GetLineId() == m_ClickedLineId);
