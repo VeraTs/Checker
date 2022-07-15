@@ -55,6 +55,39 @@ namespace CheckerServer.Hubs
             timer.Start();*/
         }
 
+        // checks if orderITem is legitimate and moves it if it is
+        public async Task MoveOrderItemToDoing(int id)
+        {
+            OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
+            if(item != null)
+            {
+                if(item.LineStatus == eLineItemStatus.ToDo)
+                {
+                    // move to doing state and list
+                    item.LineStatus = eLineItemStatus.Doing;
+                    if(Services != null && await _context.SaveChangesAsync() > 0)
+                    {
+                        // yay - success
+                        // now just update KitchenManager
+                        KitchenManager manager = Services.GetService<KitchenManager>();
+                        Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
+                        manager.ItemWasMoved(order, item);
+                        await Clients.Caller.SendAsync("ItemMoved", "item num." + id + " was successfully moved");
+                    } else
+                    {
+                        await Clients.Caller.SendAsync("DBError", "Error in updating DB, try again later");
+                    }
+                } else
+                {
+                    await Clients.Caller.SendAsync("DBError", "Can't move to Doing List - it is not in ToDo list");
+                }
+                
+            } else
+            {
+                await Clients.Caller.SendAsync("DBError", "No such orderItem, can't move to Doing List");
+            }
+        }
+
         // temporary group registration with rest name
         // in future will be with actual protection and privacy thing
         /******************* IMPORTANT - THIS IS NOT RECONNECT SAFE
