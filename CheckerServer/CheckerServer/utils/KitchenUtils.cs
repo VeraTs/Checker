@@ -224,8 +224,12 @@ namespace CheckerServer.utils
 
             orders.ForEach(o =>
             {
-                r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
-                o.Status = eOrderStatus.InProgress;
+                // only add orders that have items that need to go to kitchen
+                if(o.Items.Any(item => item.Status == eItemStatus.Ordered))
+                {
+                    r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
+                    o.Status = eOrderStatus.InProgress;
+                }
             });
 
             return _Context.SaveChanges();
@@ -534,9 +538,11 @@ namespace CheckerServer.utils
 
     public class DuplicateKeyComparer<Tkey> : IComparer<Tkey> where Tkey : IComparable
     {
-        public int Compare(Tkey x, Tkey y)
+        public int Compare(Tkey? x, Tkey? y)
         {
-            int result = x.CompareTo(y);
+            int result = 0;
+            if(x!= null && y!= null)
+                result = x.CompareTo(y);
 
             if (result == 0)
                 return 1;

@@ -11,7 +11,7 @@ namespace CheckerServer.Models
     {
         private CheckerDBContext _context = null;
         private readonly KitchenUtils r_KitchenUtils = null;
-        private readonly Dictionary<int, List<LineDTO>> r_KitchenLines = new Dictionary<int, List<LineDTO>>();
+        private readonly Dictionary<int, Dictionary<int, LineDTO>> r_KitchenLines = new Dictionary<int, Dictionary<int,LineDTO>>();
         private readonly Dictionary<int, int> r_RestsActiveKitchens = new Dictionary<int, int>();
         private readonly object r_RestUsesLock = new object();
         private readonly IHubContext<KitchenHub> _hubContext;
@@ -36,7 +36,7 @@ namespace CheckerServer.Models
                     List<Restaurant> rests = context.Restaurants.ToList();
                     rests.ForEach(r =>
                     {
-                        r_KitchenLines.Add(r.ID, new List<LineDTO>());
+                        r_KitchenLines.Add(r.ID, new Dictionary<int, LineDTO>());
                         r_RestsActiveKitchens.Add(r.ID, 0);
                     });
                     r_KitchenUtils = new KitchenUtils(context);
@@ -93,14 +93,30 @@ namespace CheckerServer.Models
                     r_KitchenUtils.UpdateContext(context);
                     Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests);
 
-                    // step 2.2 - delayed
+                    // step 2.2
                     foreach (int restId in updatedLines.Keys)
                     {
                         Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
                         if (rest != null)
                         {
+                            updatedLines[restId].ForEach(lineDTO => {
+                                if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
+                                {
+                                    r_KitchenLines[restId][lineDTO.lineId] = lineDTO;
+                                }
+                                else
+                                {
+                                    lock (r_KitchenLines[restId][lineDTO.lineId])
+                                    {
+                                        // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
+                                        r_KitchenLines[restId][lineDTO.lineId].ToDoItems.AddRange(lineDTO.ToDoItems);
+                                    }
+                                }
+                            });
+
                             // not awaited since this pretains to different restaurants
-                            _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", updatedLines[rest.ID]);
+                            _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", r_KitchenLines[restId].Values);
+                            
                         }
                     }
 
@@ -127,6 +143,32 @@ namespace CheckerServer.Models
 
 
             // can't lock if there us async inside :CRY:
+        }
+
+        
+
+        internal void ItemWasMoved(Order order, OrderItem item)
+        {
+            int lineId = item.Dish.LineId;
+            int restId = order.RestaurantId;
+            eLineItemStatus lineStatus = item.LineStatus;
+            switch (lineStatus)
+            {
+                case eLineItemStatus.Doing:
+                    lock (r_KitchenLines[restId][lineId])
+                    {
+                        r_KitchenLines[restId][lineId].ToDoItems.Remove(item);
+                        r_KitchenLines[restId][lineId].DoingItems.Add(item);
+                    }
+                    
+                    break;
+                case eLineItemStatus.Done:
+                    lock (r_KitchenLines[restId][lineId])
+                    {
+                        r_KitchenLines[restId][lineId].DoingItems.Remove(item);
+                    }
+                    break;
+            }
         }
 
         internal void AddGroupMember(int restId)
