@@ -18,7 +18,7 @@ namespace CheckerServer.Hubs
         // gets all orders in system
         public async Task GetAllOrders()
         {
-            List<Order> orders = await _context.Orders.ToListAsync();
+            List<Order> orders = await _context.Orders.Include("Items").ToListAsync();
 
             await Clients.Caller.SendAsync("ReceiveOrders", orders);
             
@@ -32,8 +32,17 @@ namespace CheckerServer.Hubs
         {
             List<OrderItem> items = order.Items;
             order.Items = null;
-            await _context.Orders.AddAsync(order);
-            int success = await _context.SaveChangesAsync();
+            int success = 0;
+            try
+            {
+                await _context.Orders.AddAsync(order);
+                success = await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                Clients.Caller.SendAsync("DBError", ex.Message);
+            }
+            
             if(success > 0)
             {
                 foreach(OrderItem item in items)
@@ -52,7 +61,9 @@ namespace CheckerServer.Hubs
                     Console.WriteLine(exception.Message);
                 }
 
-                await Clients.All.SendAsync("ReceiveOrder", order);
+                Order dbOrder = _context.Orders.Include("Items.Dish").FirstOrDefault(o => o.ID == order.ID);
+
+                await Clients.All.SendAsync("ReceiveOrder", dbOrder);
             } else
             {
                 await Clients.Caller.SendAsync("DBError", "Error in adding order");

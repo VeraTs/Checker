@@ -15,7 +15,10 @@ namespace CheckerWaitersApp
 {
     public partial class App : Application
     {
-        public static DishDataStore Store { get; private set; }
+        //public static DishDataStore DishesStore { get; private set; }
+        //public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
+        //public static OrdersDataStore OrdersStore { get; private set; }
+        public static ServerRepository Repository { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
 
@@ -55,8 +58,8 @@ namespace CheckerWaitersApp
                 return errors == System.Net.Security.SslPolicyErrors.None;
             };
 
-            Store = new DishDataStore();
-           
+            Repository = new ServerRepository();
+            Repository.LoadData();
             string ordersHubUrl = BaseAddress + "/OrdersHub";
             HubConn = new HubConnectionBuilder()
                 .WithUrl(ordersHubUrl, options =>
@@ -79,7 +82,7 @@ namespace CheckerWaitersApp
             });
 
 
-            MainPage = new CreateOrderView(Store);
+            MainPage = new CreateOrderView();
 
         }
 

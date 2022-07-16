@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CheckerWaitersApp.Enums;
-using CheckerWaitersApp.Helpers.Dishes;
 using CheckerWaitersApp.Models;
-using CheckerWaitersApp.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 
@@ -14,29 +12,27 @@ namespace CheckerWaitersApp.ViewModels
     public class CreateOrderViewModel : BaseViewModel
     {
         private readonly ObservableCollection<Dish> m_Dishes;
-        private DishesManager m_Manager;
         private static int m_CountItemsID = 0;
-        private static int m_CountOrdersID = 0;
+        
         private float m_TotalPrice = 0;
-        private int restId = 1;
+        private const int restId = 1;
         public OrdersViewModel Orders { get; set; } = new OrdersViewModel();
 
+     
         public CreateOrderViewModel()
         {
+            m_Dishes = new ObservableCollection<Dish>();
+            initUsingRepository();
             App.HubConn.On<Order>("ReceiveOrder", (order) =>
             {
                 Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
+                Orders.AddNewOrder(order);
 
             });
-        }
-        public CreateOrderViewModel(DishDataStore i_Store)
-        {
-            m_Manager = new DishesManager(i_Store);
-            m_Dishes = new ObservableCollection<Dish>();
-            m_Dishes = m_Manager.Dishes;
+            
             DishTypesStrings = new List<string>();
-            var typesList = m_Manager.AllDishTypesList();
-            foreach (var type in typesList){ DishTypesStrings.Add(m_Manager.OrderTypeToString(type));}
+            var typesList = AllDishTypesList();
+            foreach (var type in typesList){ DishTypesStrings.Add(OrderTypeToString(type));}
             foreach (var model in m_Dishes)
             {
                 var dishViewModel = new DishViewModel(model);
@@ -63,6 +59,56 @@ namespace CheckerWaitersApp.ViewModels
             }
         }
 
+        private void initUsingRepository()
+        {
+            foreach (var dish in App.Repository.Dishes)
+            {
+                m_Dishes.Add(dish);
+            }
+            var orders = App.Repository.Orders;
+            foreach (var order in orders)
+            {
+                Orders.AddNewOrder(order);
+            }
+        }
+        public List<eOrderType> AllDishTypesList()
+        {
+            var list = new List<eOrderType>
+            {
+                eOrderType.FIFO,
+                eOrderType.AllTogether,
+                eOrderType.Staggered
+            };
+            return list;
+        }
+        public string OrderTypeToString(eOrderType i_Type)
+        {
+            string output;
+            switch (i_Type)
+            {
+                case eOrderType.FIFO:
+                {
+                    output = "FIFO";
+                    break;
+                }
+                case eOrderType.AllTogether:
+                {
+                    output = "All Together";
+                    break;
+                }
+                case eOrderType.Staggered:
+                {
+                    output = "Staggered";
+                    break;
+                }
+                default:
+                {
+                    output = "Staggered";
+                    break;
+                }
+            }
+            return output;
+        }
         private void dishViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (sender is DishViewModel {IsOrdered: true} dishView)
@@ -102,7 +148,7 @@ namespace CheckerWaitersApp.ViewModels
             return i_num > 0;
         }
         // should be async
-        public void GenerateOrder()
+        public async void GenerateOrder()
         {
             var orderItems = new List<OrderItem>();
             foreach (var item in ToOrderCollection)
@@ -124,11 +170,11 @@ namespace CheckerWaitersApp.ViewModels
                 totalCost = m_TotalPrice,
                 restaurantId = restId
             };
-            UpdateManagerNewOrder(newOrder);
+           await UpdateManagerNewOrder(newOrder);
             m_CountItemsID++;
         }
 
-        private async void UpdateManagerNewOrder(Order ToUpdate)
+        private async Task UpdateManagerNewOrder(Order ToUpdate)
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)
             {
@@ -146,8 +192,6 @@ namespace CheckerWaitersApp.ViewModels
             try
             {
                 await App.HubConn.InvokeAsync("AddOrder", ToUpdate);
-                OrdersCollection.Add(ToUpdate);
-                Orders.AddNewOrder(ToUpdate);
             }
             catch (System.Exception ex)
             {

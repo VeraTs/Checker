@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using System.Collections.ObjectModel;
+using System.Linq;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Models;
 using CheckerWaitersApp.ViewModels;
@@ -22,7 +23,19 @@ namespace CheckerWaitersApp.ViewModels
               Orders = new ObservableCollection<Order>();
               views = new ObservableCollection<OrderViewModel>();
               Details = "Total Orders :" + views.Count;
+            Orders.CollectionChanged += Orders_CollectionChanged;
         }
+
+        private void Orders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (count < Orders.Count)
+            {
+                var view = new OrderViewModel(Orders.Last());
+                views.Add(view);
+                count++;
+            }
+        }
+
         public OrdersViewModel(ObservableCollection<Order> i_Orders)
         {
             Orders = new ObservableCollection<Order>();
@@ -32,8 +45,8 @@ namespace CheckerWaitersApp.ViewModels
         public void AddNewOrder(Order i_Order)
         {
             Orders.Add(i_Order);
-            var view = new OrderViewModel(i_Order);
-            views.Add(view);
+           
+
         }
         public void RemoveOrder(Order i_Order)
         {
