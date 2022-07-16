@@ -115,7 +115,7 @@ namespace CheckerWaitersApp.ViewModels
             var newOrder = new Order()
             {
                 table = int.Parse(EntryValue),
-                id = m_CountOrdersID++,
+                id = 0,
                 status = eOrderStatus.Ordered,
                 orderType = PickedOrderType,
                 items = orderItems,
@@ -124,9 +124,8 @@ namespace CheckerWaitersApp.ViewModels
                 totalCost = m_TotalPrice,
                 restaurantId = restId
             };
-            UpdateManagerNewOrder(newOrder); // update after succsess
-            OrdersCollection.Add(newOrder);
-            Orders.AddNewOrder(newOrder);
+            UpdateManagerNewOrder(newOrder);
+            m_CountItemsID++;
         }
 
         private async void UpdateManagerNewOrder(Order ToUpdate)
@@ -140,17 +139,19 @@ namespace CheckerWaitersApp.ViewModels
                 }
                 catch (System.Exception ex)
                 { 
-                    await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                    await Application.Current.MainPage.DisplayAlert("Server Error!", ex.Message, "OK");
                 }
             }
 
             try
             {
                 await App.HubConn.InvokeAsync("AddOrder", ToUpdate);
+                OrdersCollection.Add(ToUpdate);
+                Orders.AddNewOrder(ToUpdate);
             }
             catch (System.Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                await Application.Current.MainPage.DisplayAlert("Server Error!", ex.Message, "OK");
             }
         }
         public List<string> DishTypesStrings { get; private set; }
