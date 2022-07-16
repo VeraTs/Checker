@@ -13,7 +13,7 @@ namespace CheckerUI.Services
         public List<Dish> dishes { get; set; } = new List<Dish>(); 
         public OrderItemDataStore()
         {
-            dishes = App.Store.dishes;
+           
         }
         public Task<bool> AddItemAsync(OrderItem item)
         {
@@ -33,6 +33,7 @@ namespace CheckerUI.Services
         public async Task<IEnumerable<OrderItem>> GetItemsAsync(bool forceRefresh = false)
         {
             List<OrderItem> listy = new List<OrderItem>();
+            var dishes = App.Repository.Dishes;
             items = new List<OrderItem>();
             try
             {
@@ -40,7 +41,7 @@ namespace CheckerUI.Services
                 listy = JsonSerializer.Deserialize<List<OrderItem>>(res);
                 foreach (var item in listy)
                 {
-                    item.dish = App.Store.dishes.Find(dish => dish.id == item.dishId);
+                    item.dish = dishes.Find(dish => dish.id == item.dishId);
                     items.Add(item);
                 }
             }

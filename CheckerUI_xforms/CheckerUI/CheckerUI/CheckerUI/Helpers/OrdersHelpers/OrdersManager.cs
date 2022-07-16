@@ -32,13 +32,13 @@ namespace CheckerUI.Helpers.OrdersHelpers
             //}
             //m_ItemsViewManager = new OrderItemViewManager(m_OrderItemModelList);
 
-            var orders = App.ordersStore.orders;
-            foreach (var order in orders)
-            {
-                var view = new OrderViewModel(order);
-                m_OrdersViews.Add(view);
-                m_Orders.Add(order.id, view);
-            }
+            //var orders = App.Repository.Orders;
+            //foreach (var order in orders)
+            //{
+            //    var view = new OrderViewModel(order);
+            //    m_OrdersViews.Add(view);
+            //    m_Orders.Add(order.id, view);
+            //}
         }
         public void UpdateLines(ObservableCollection<OrderItemView> i_OrderItems)
         {

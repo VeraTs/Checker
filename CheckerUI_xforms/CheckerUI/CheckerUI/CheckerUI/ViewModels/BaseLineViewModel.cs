@@ -79,7 +79,7 @@ namespace CheckerUI.ViewModels
             m_ButtonsToMake.Clear();
             m_Orders.Clear();
             m_OrdersList.Clear();
-           
+
         }
         private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -96,8 +96,8 @@ namespace CheckerUI.ViewModels
         public void AddOrderItemToAvailable(OrderItem i_ToAdd)
         {
             var view = new OrderItemView( i_ToAdd);
-            m_Orders.Add(view);
             m_ButtonsToMake.Add(view);
+            m_Orders.Add(view);
         }
         public void AddOrderItemToLocked(OrderItem i_ToAdd)
         {

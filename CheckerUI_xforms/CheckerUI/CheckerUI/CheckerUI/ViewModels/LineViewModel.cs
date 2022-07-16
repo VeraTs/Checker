@@ -3,6 +3,7 @@ using CheckerUI.Enums;
 using CheckerUI.Helpers.LinesHelpers;
 using CheckerUI.Models;
 using CheckerUI.ViewModels;
+using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
@@ -21,10 +22,62 @@ namespace CheckerUI.ViewModels
             m_BackgroundState = new Color();
             model = LineBuilder.GenerateLine(i_model.Name, i_model.id, i_model.Limit, null, i_model.State);
             model.Dishes = new List<Dish>();
-           
+            var dishes = App.Repository.Dishes;
+            App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
+            {
+                var dto = linesDTO.Find(line => line.lineId == model.id);
+                if (dto.lineId == model.id)
+                {
+                    //deAllocations();
+                    foreach (var orderItem in dto.LockedItems)
+                    {
+                        var currentID = orderItem.dishId;
+                        orderItem.dish = dishes.Find(dish => dish.id == currentID);
+                        AddOrderItemToLocked(orderItem);
+                    }
+
+                    foreach (var orderItem in dto.ToDoItems)
+                    {
+                        var currentID = orderItem.dishId;
+                        orderItem.dish = dishes.Find(dish => dish.id == currentID);
+                        AddOrderItemToAvailable(orderItem);
+                    }
+
+                    foreach (var orderItem in dto.DoingItems)
+                    {
+                        var currentID = orderItem.dishId;
+                        orderItem.dish = dishes.Find(dish => dish.id == currentID);
+                        AddOrderItemToInProgress(orderItem);
+                    }
+                }
+            });
+                sendListener();
             setColorState();
         }
+        private static async void sendListener()
+        {
+            if (App.HubConn.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await App.HubConn.StartAsync();     // start async connection to SignalR Hub at server
 
+                }
+                catch (System.Exception ex)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                }
+            }
+
+            try
+            {
+                await App.HubConn.InvokeAsync("RegisterForGroup", 1);
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+            }
+        }
         public void InitLineView(Line i_model)
         {
             base.init();

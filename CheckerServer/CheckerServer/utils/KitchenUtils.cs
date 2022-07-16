@@ -480,14 +480,17 @@ namespace CheckerServer.utils
         // since I want the last thing entered to be the first thing out
         private void addFromSortedList(SortedList<double, OrderItem> sortedList, Stack<TimedOrderItem> timedQueue)
         {
-            for (int i = 1; i < sortedList.Count - 1; i++)
+            if (sortedList.Count > 0)
             {
-                double interval = sortedList.Keys[i] - sortedList.Keys[i - 1];
-                timedQueue.Push(new TimedOrderItem(sortedList.Values[i - 1], interval));
-            }
+                for (int i = 1; i < sortedList.Count - 1; i++)
+                {
+                    double interval = sortedList.Keys[i] - sortedList.Keys[i - 1];
+                    timedQueue.Push(new TimedOrderItem(sortedList.Values[i - 1], interval));
+                }
 
-            // for the last thing in the list:
-            timedQueue.Push(new TimedOrderItem(sortedList.Last().Value, 0, true, true));
+                // for the last thing in the list:
+                timedQueue.Push(new TimedOrderItem(sortedList.Last().Value, 0, true, true));
+            }
         }
 
         internal IEnumerable<OrderItem> GetAvailableItems()

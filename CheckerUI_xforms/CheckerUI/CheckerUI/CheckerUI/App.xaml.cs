@@ -15,10 +15,7 @@ namespace CheckerUI
     public partial class App : Application
     {
 
-        public static  OrdersDataStore ordersStore { get; private set; }
-        public static LinesDataStore linesStore { get; private set; }
-        public static OrderItemDataStore oItemsStore { get; private set; }
-        public static DishDataStore Store { get; private set; }
+      public static ServerRepository Repository { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
 
@@ -42,7 +39,8 @@ namespace CheckerUI
 
 
             DependencyService.Register<DishDataStore>();
-
+            DependencyService.Register<OrderItemDataStore>();
+            DependencyService.Register<OrdersDataStore>();
             DependencyService.Register<LinesDataStore>();
             /*Store = new WebDataStore("https://checkertester.azurewebsites.net/JsonToDos/");
             HubConn = new HubConnectionBuilder()
@@ -58,10 +56,7 @@ namespace CheckerUI
                 return errors == System.Net.Security.SslPolicyErrors.None;
             };
 
-            Store = new DishDataStore();
-            linesStore = new LinesDataStore();
-            oItemsStore = new OrderItemDataStore();
-            ordersStore = new OrdersDataStore();
+            loadRepository();
             string kitchenHubUrl = BaseAddress + "/KitchenHub";
             HubConn = new HubConnectionBuilder()
                 .WithUrl(kitchenHubUrl, options =>
@@ -97,15 +92,13 @@ namespace CheckerUI
 
         protected override void OnStart()
         {
-            loadRep();
+           
         }
 
-        private async void loadRep()
+        private async void loadRepository()
         {
-            await Store.GetItemsAsync();
-            await linesStore.GetItemsAsync();
-            await oItemsStore.GetItemsAsync();
-            await ordersStore.GetItemsAsync();
+            Repository = new ServerRepository();
+            Repository.LoadData();
         }
         protected override void OnSleep()
         {

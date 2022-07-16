@@ -32,10 +32,10 @@ namespace CheckerUI.Services
         {
             List<Order> listy = new List<Order>();
             orders = new List<Order>();
-            var dishes = App.Store.dishes;
+            var dishes = App.Repository.Dishes;
             try
             {
-                var orderedItems = App.oItemsStore.items;
+               // var orderedItems = App.Repository.OrderedItems;
                 string res = App.client.GetStringAsync("/Orders").Result;
                 listy = JsonSerializer.Deserialize<List<Order>>(res);
                 foreach (var order in listy)

@@ -22,44 +22,44 @@ namespace CheckerUI.ViewModels
         public LinesViewModel()
         {
 
-            m_Dishes = App.Store.dishes;
+            m_Dishes = App.Repository.Dishes;
             initLinesByRepository();
          //   initUsingRepository();
-            App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
-            {
+            //App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
+            //{
 
-                foreach (var lineDTO in linesDTO)
-                {
-                    var id = lineDTO.lineId; 
-                    var lineVM = m_LinesList.FirstOrDefault(ll => ll.LineID == id);
-                    if (lineVM == null) continue;
-                    lineVM.deAllocations();
-                    foreach (var orderItem in lineDTO.LockedItems)
-                    {
-                        var currentID = orderItem.dishId;
-                        orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                        lineVM.AddOrderItemToLocked(orderItem);
-                    }
-                    foreach (var orderItem in lineDTO.ToDoItems)
-                    {
-                        var currentID = orderItem.dishId;
-                        orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                        lineVM.AddOrderItemToAvailable(orderItem);
-                    }
-                    foreach (var orderItem in lineDTO.DoingItems)
-                    {
-                        var currentID = orderItem.dishId;
-                        orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                        lineVM.AddOrderItemToInProgress(orderItem);
-                    }
-                }
-            });
-            SignalR();
+            //    foreach (var lineDTO in linesDTO)
+            //    {
+            //        var id = lineDTO.lineId; 
+            //        var lineVM = m_LinesList.First(ll => ll.LineID == id);
+            //        if (lineVM == null) continue;
+            //      //  lineVM.deAllocations();
+            //        foreach (var orderItem in lineDTO.LockedItems)
+            //        {
+            //            var currentID = orderItem.dishId;
+            //            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+            //            lineVM.AddOrderItemToLocked(orderItem);
+            //        }
+            //        foreach (var orderItem in lineDTO.ToDoItems)
+            //        {
+            //            var currentID = orderItem.dishId;
+            //            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+            //            lineVM.AddOrderItemToAvailable(orderItem);
+            //        }
+            //        foreach (var orderItem in lineDTO.DoingItems)
+            //        {
+            //            var currentID = orderItem.dishId;
+            //            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+            //            lineVM.AddOrderItemToInProgress(orderItem);
+            //        }
+            //    }
+            //});
+            //SignalR();
         }
 
         private void initLinesByRepository()
         {
-            var list = App.linesStore.lines;
+            var list = App.Repository.lines;
             foreach (var vm in list.Select(item => new LineViewModel(item)))
             {
                 m_LinesList.Add(vm);
@@ -67,40 +67,40 @@ namespace CheckerUI.ViewModels
                 m_LinesViews.Add(view);
             }
         }
-        private void initUsingRepository()
-        {
-            var items = App.oItemsStore.items;
-            foreach (var orderItem in items)
-            {
-                var lineId = orderItem.dish.lineId;
-                var lineView = m_LinesViews.First(view => view.m_ViewModel.LineID == lineId);
-                var vm = lineView.m_ViewModel;
-                switch (orderItem.lineStatus)
-                {
-                    case eLineItemStatus.Locked:
-                        {
-                            vm.AddOrderItemToLocked(orderItem);
-                            break;
-                        }
-                    case eLineItemStatus.ToDo:
-                        {
-                            vm.AddOrderItemToAvailable(orderItem);
+        //private void initUsingRepository()
+        //{
+        //   // var items = App.Repository.OrderedItems;
+        //    foreach (var orderItem in items)
+        //    {
+        //        var lineId = orderItem.dish.lineId;
+        //        var lineView = m_LinesViews.First(view => view.m_ViewModel.LineID == lineId);
+        //        var vm = lineView.m_ViewModel;
+        //        switch (orderItem.lineStatus)
+        //        {
+        //            case eLineItemStatus.Locked:
+        //                {
+        //                    vm.AddOrderItemToLocked(orderItem);
+        //                    break;
+        //                }
+        //            case eLineItemStatus.ToDo:
+        //                {
+        //                    vm.AddOrderItemToAvailable(orderItem);
 
-                            break;
-                        }
-                    case eLineItemStatus.Doing:
-                        {
-                            vm.AddOrderItemToInProgress(orderItem);
-                            break;
-                        }
-                    case eLineItemStatus.Done:
-                        {
-                            vm.AddOrderItemToDone(orderItem);
-                            break;
-                        }
-                }
-            }
-        }
+        //                    break;
+        //                }
+        //            case eLineItemStatus.Doing:
+        //                {
+        //                    vm.AddOrderItemToInProgress(orderItem);
+        //                    break;
+        //                }
+        //            case eLineItemStatus.Done:
+        //                {
+        //                    vm.AddOrderItemToDone(orderItem);
+        //                    break;
+        //                }
+        //        }
+        //    }
+        //}
         private static async void SignalR()
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)
@@ -138,6 +138,7 @@ namespace CheckerUI.ViewModels
         public async Task LineButton_OnClicked(object sender, EventArgs e)
         {
             var view = m_LinesViews.FirstOrDefault(ll => ll.GetLineId() == m_ClickedLineId);
+            
             await Application.Current.MainPage.Navigation.PushAsync(view);
         }
     }

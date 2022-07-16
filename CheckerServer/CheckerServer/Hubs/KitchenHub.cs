@@ -61,30 +61,50 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if(item != null)
             {
-                if(item.LineStatus == eLineItemStatus.ToDo)
-                {
-                    // move to doing state and list
-                    item.LineStatus = eLineItemStatus.Doing;
-                    if(Services != null && await _context.SaveChangesAsync() > 0)
-                    {
-                        // yay - success
-                        // now just update KitchenManager
-                        KitchenManager manager = Services.GetService<KitchenManager>();
-                        Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
-                        manager.ItemWasMoved(order, item);
-                        await Clients.Caller.SendAsync("ItemMoved", "item num." + id + " was successfully moved");
-                    } else
-                    {
-                        await Clients.Caller.SendAsync("DBError", "Error in updating DB, try again later");
-                    }
-                } else
-                {
-                    await Clients.Caller.SendAsync("DBError", "Can't move to Doing List - it is not in ToDo list");
-                }
-                
+                moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
             } else
             {
-                await Clients.Caller.SendAsync("DBError", "No such orderItem, can't move to Doing List");
+                await Clients.Caller.SendAsync("DBError", "No such orderItem");
+            }
+        }
+
+        // checks if orderITem is legitimate and moves it if it is
+        public async Task MoveOrderItemToDone(int id)
+        {
+            OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
+            if (item != null)
+            {
+                moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("DBError", "No such orderItem");
+            }
+        }
+
+        private async void moveFromListToList(OrderItem item, eLineItemStatus prevStatus, eLineItemStatus nextStatus, string prevListName, string nextListName)
+        {
+            if (item.LineStatus == prevStatus)
+            {
+                // move to doing state and list
+                item.LineStatus = nextStatus;
+                if (Services != null && await _context.SaveChangesAsync() > 0)
+                {
+                    // yay - success
+                    // now just update KitchenManager
+                    KitchenManager manager = Services.GetService<KitchenManager>();
+                    Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
+                    manager.ItemWasMoved(order, item);
+                    await Clients.Caller.SendAsync("ItemMoved", "item num." + item.ID + " was successfully moved");
+                }
+                else
+                {
+                    await Clients.Caller.SendAsync("DBError", "Error in updating DB, try again later");
+                }
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("DBError", "Can't move to " + nextListName + " List - it is not in " + prevListName + "list");
             }
         }
 
