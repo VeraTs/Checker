@@ -28,7 +28,8 @@ namespace CheckerUI.ViewModels
                 var dto = linesDTO.Find(line => line.lineId == model.id);
                 if (dto.lineId == model.id)
                 {
-                    //deAllocations();
+                    deAllocations();
+                    init();
                     foreach (var orderItem in dto.LockedItems)
                     {
                         var currentID = orderItem.dishId;
