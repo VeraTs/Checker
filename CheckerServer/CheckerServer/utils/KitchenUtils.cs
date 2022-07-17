@@ -71,7 +71,7 @@ namespace CheckerServer.utils
         private OrderQueue getQueuesForOrder(Order order)
         {
             OrderQueue orderQueue = new OrderQueue(order.ID);
-            orderQueue.enterItems(order.Items.Where(i => i.LineStatus == eLineItemStatus.Locked).ToList(), order.OrderType);
+            orderQueue.enterItems(order.Items.Where(i => i.LineStatus == eLineItemStatus.Locked && i.Status != eItemStatus.AtLine).ToList(), order.OrderType);
             return orderQueue;
         }
 
@@ -127,6 +127,7 @@ namespace CheckerServer.utils
             // restId to Line list
             Dictionary<int, List<LineDTO>> updatedLines = new Dictionary<int, List<LineDTO>>();
             List<OrderItem>? availableItems = null;
+            List<OrderItem>? lockedItems = null;
             List<int> availableItemIDS = new List<int>();
             foreach (int restId in r_RestaurantOrderQueuesList.Keys)
             {
@@ -149,6 +150,7 @@ namespace CheckerServer.utils
             }
 
             availableItems = _Context.OrderItems.Where(x => availableItemIDS.Contains(x.ID)).Include("Dish").ToList();
+
 
             if (availableItems != null)
             {
@@ -180,8 +182,39 @@ namespace CheckerServer.utils
                 }
             }
 
-
             int success = await _Context.SaveChangesAsync();
+
+
+            lockedItems = _Context.OrderItems.Where(oi => oi.LineStatus == eLineItemStatus.Locked && oi.Status != eItemStatus.AtLine).Include("Dish").ToList();
+            if (lockedItems != null)
+            {
+                foreach (OrderItem item in lockedItems)
+                {
+                    // check for line entry registered here
+                    if (!r_Lines.ContainsKey(item.Dish.LineId))
+                    {
+                        // create the entry
+                        Line line = _Context.Lines.FirstOrDefault(line => line.ID == item.Dish.LineId);
+                        if (line == null)
+                        {
+                            Console.WriteLine("ERROR! No such line omg");
+                        }
+                        else
+                        {
+                            if (!r_Lines.ContainsKey(item.Dish.LineId))
+                                r_Lines.Add(item.Dish.LineId, new LineDTO() { line = line });
+                        }
+                    }
+
+                    // add to line list and update item status
+                    // assumes that these items are tracking from DB
+                    r_Lines[item.Dish.LineId].LockedItems.Add(item);
+                    // issue detected - this is not a tracked item any more, so they all need to be retracked.
+                    //item.Status = eItemStatus.AtLine;
+                }
+            }
+
+            success += await _Context.SaveChangesAsync();
             if (success > 0)
             {
                 foreach (int thing in r_Lines.Keys)
@@ -225,7 +258,7 @@ namespace CheckerServer.utils
             orders.ForEach(o =>
             {
                 // only add orders that have items that need to go to kitchen
-                if(o.Items.Any(item => item.Status == eItemStatus.Ordered))
+                if (o.Items.Any(item => item.Status == eItemStatus.Ordered))
                 {
                     r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
                     o.Status = eOrderStatus.InProgress;
@@ -424,6 +457,7 @@ namespace CheckerServer.utils
 
                     items.ForEach(item =>
                     {
+                        item.Status = eItemStatus.AtLine;
                         Dish dish = item.Dish;
                         switch (dish.Type)
                         {
@@ -544,7 +578,7 @@ namespace CheckerServer.utils
         public int Compare(Tkey? x, Tkey? y)
         {
             int result = 0;
-            if(x!= null && y!= null)
+            if (x != null && y != null)
                 result = x.CompareTo(y);
 
             if (result == 0)

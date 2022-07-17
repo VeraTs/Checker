@@ -25,7 +25,7 @@ namespace CheckerServer.Hubs
             Services = services;
             _context = context;
 
-         //   useKitchenManager();
+            //   useKitchenManager();
         }
 
         private object locker = new object();
@@ -35,34 +35,33 @@ namespace CheckerServer.Hubs
 
             //Dictionary<int, List<LineDTO>> lines = r_Manager.ManageKitchen();
             r_Manager.ManageKitchenAsync();
-/*            foreach (var line in lines)
-            {
-                Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
-                // not awaited since this pretains to different restaurants
-                if (rest != null)
-                    await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
-            }*/
+            /*            foreach (var line in lines)
+                        {
+                            Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
+                            // not awaited since this pretains to different restaurants
+                            if (rest != null)
+                                await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
+                        }*/
 
             /*System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 30000; // 50 sec for denugging purposes
             timer.Elapsed += async (o, e) => {
                 
                 r_Manager.UpdateContext(_context);
-
-
             };
-
             timer.Start();*/
         }
 
         // checks if orderITem is legitimate and moves it if it is
+        // checks if orderITem is legitimate and moves it if it is
         public async Task MoveOrderItemToDoing(int id)
         {
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
-            if(item != null)
+            if (item != null)
             {
-               await moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
-            } else
+                await moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
+            }
+            else
             {
                 await Clients.Caller.SendAsync("DBError", "No such orderItem");
             }
@@ -95,7 +94,7 @@ namespace CheckerServer.Hubs
                     KitchenManager manager = Services.GetService<KitchenManager>();
                     Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
                     manager.ItemWasMoved(order, item);
-                    await Clients.Caller.SendAsync("ItemMoved", item).;
+                    await Clients.Caller.SendAsync("ItemMoved", item);
                 }
                 else
                 {
@@ -142,7 +141,7 @@ namespace CheckerServer.Hubs
             else
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, rest.Name);
-                
+
                 //s_Manager.RemoveGroupMember(restId);
                 await Clients.Group(rest.Name).SendAsync("NewGroupMember", $"{Context.ConnectionId} has left the group {rest.Name}.");
             }

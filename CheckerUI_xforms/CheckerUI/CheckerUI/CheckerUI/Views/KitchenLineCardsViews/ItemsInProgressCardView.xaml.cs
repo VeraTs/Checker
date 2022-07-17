@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CheckerUI.Helpers;
 using CheckerUI.Helpers.OrdersHelpers;
 using CheckerUI.ViewModels;
@@ -43,8 +39,6 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             KitchenOrderItemInProgressCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemInProgressCardView;
             var item = card.BindingContext as OrderItemView;
            await ViewModel.ItemInProgressOnDoubleClick(item);
-
-
         }
     }
 }

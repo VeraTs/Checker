@@ -1,5 +1,4 @@
-﻿using CheckerUI.Models;
-using CheckerUI.ViewModels;
+﻿using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

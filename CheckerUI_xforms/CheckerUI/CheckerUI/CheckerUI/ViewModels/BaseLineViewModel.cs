@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Threading.Tasks;
 using CheckerUI.Enums;
 using CheckerUI.Helpers.OrdersHelpers;
@@ -49,15 +47,11 @@ namespace CheckerUI.ViewModels
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
 
-        // private OrdersManager m_Manager;
         public Command ReturnCommand { get; set; }
 
         public void init()
         {
             allocations();
-
-            // m_OrderItemsViews.CollectionChanged += ordersCh_CollectionChanged;
-
             ReturnCommand = new Command(async () => { await Application.Current.MainPage.Navigation.PopAsync(); });
         }
 
@@ -132,12 +126,14 @@ namespace CheckerUI.ViewModels
             {
                 case eLineItemStatus.Locked:
                 {
+                    itemView.OrderItemLineStatus = eLineItemStatus.ToDo;
                     m_ButtonsToMake.Add(itemView);
                     m_ButtonsLocked.Remove(itemView);
                         break;
                 }
                 case eLineItemStatus.ToDo:
                 {
+                    itemView.OrderItemLineStatus = eLineItemStatus.Doing;
                     m_ButtonsToMake.Remove(itemView);
                     itemView.OrderItemTimeStarted = DateTime.Now;
                     m_ButtonsInProgress.Add(itemView);
@@ -145,6 +141,7 @@ namespace CheckerUI.ViewModels
                 }
                 case eLineItemStatus.Doing:
                 {
+                    itemView.OrderItemLineStatus = eLineItemStatus.Done;
                     m_ButtonsDone.Add(itemView);
                     itemView.OrderItemTimeDone = DateTime.Now; 
                     itemView.FirstTimeToShowString = itemView.OrderItemTimeDoneString; 
@@ -192,73 +189,7 @@ namespace CheckerUI.ViewModels
     //        }
     //    }
 
-        private async Task caseIsAvailable(OrderItemView i_OrderItem)
-        {
-            if (!m_ButtonsLocked.Contains(i_OrderItem)) return;
-            try
-            {
-              //  await App.HubConn.InvokeAsync("RegisterForGroup", i_OrderItem.OderItemID);
-                m_ButtonsToMake.Add(i_OrderItem);
-                m_ButtonsLocked.Remove(i_OrderItem);
-            }
-            catch (System.Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
-            }
-        }
-
-        private async Task caseIsRestored(OrderItemView i_OrderItem)
-        {
-            try
-            {
-                i_OrderItem.isRestored = false;
-                m_ButtonsInProgress.Add(i_OrderItem);
-                m_ButtonsDone.Remove(i_OrderItem);
-            }
-            catch (System.Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Exception! caseIsRestored", ex.Message, "OK");
-            }
-        }
-        private async Task caseIsHolding(OrderItemView i_OrderItem)
-        {
-            try
-            {
-
-            }
-            catch (System.Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Exception! caseIsRestored", ex.Message, "OK");
-            }
-        }
-
-        private async Task caseIsInProgress(OrderItemView i_OrderItem)
-        {
-            if (m_ButtonsInProgress.Contains(i_OrderItem)) return;
-            try
-            {
-                await App.HubConn.InvokeAsync("MoveOrderItemToDoing", i_OrderItem.OderItemID);
-            }
-            catch (System.Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Exception! moving to Doing", ex.Message, "OK");
-            }
-           
-        }
-
-        private async Task caseIsCompleted(OrderItemView i_OrderItem)
-        {
-            if (m_ButtonsDone.Contains(i_OrderItem)) return;
-            try
-            {
-                await App.HubConn.InvokeAsync("MoveOrderItemToDone", i_OrderItem.OderItemID);
-            }
-            catch (System.Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Exception! moving to Done", ex.Message, "OK");
-            }
-        }
-
+      
         public ObservableCollection<OrderItemView> InProgressItemsCollection
         {
             get => m_ButtonsInProgress;
@@ -322,6 +253,5 @@ namespace CheckerUI.ViewModels
             set => m_ButtonsLocked = value;
         }
         public OrderItemView LastSelectedItem { get; set; } = new OrderItemView();
-
     }
 }
