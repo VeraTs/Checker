@@ -32,13 +32,13 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             r_ItemCardHelper.OnSingleTap(frame, expander);
         }
 
-        private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
+        private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
             ToMakeListView.SelectedItem = stackLayout.BindingContext;
             var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
             var item = card.BindingContext as OrderItemView;
-            ViewModel.ItemToMakeOnDoubleClicked(item);
+            await  ViewModel.ItemToMakeOnDoubleClicked(item);
         }
     }
 }

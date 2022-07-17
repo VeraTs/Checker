@@ -10,6 +10,7 @@ namespace CheckerUI.Services
        // public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
       //  public static OrdersDataStore OrdersStore { get; private set; }
         public List<Dish> Dishes { get; private set; }
+        
         public List<Line> lines { get; private set; }
     //    public List<OrderItem> OrderedItems { get; private set; }
     //    public List<Order> Orders { get; private set; }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using CheckerUI.Enums;
 using CheckerUI.Models;
 using CheckerUI.Views;
 using Xamarin.Forms;
@@ -24,37 +23,46 @@ namespace CheckerUI.ViewModels
 
             m_Dishes = App.Repository.Dishes;
             initLinesByRepository();
-         //   initUsingRepository();
-            //App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
-            //{
 
-            //    foreach (var lineDTO in linesDTO)
-            //    {
-            //        var id = lineDTO.lineId; 
-            //        var lineVM = m_LinesList.First(ll => ll.LineID == id);
-            //        if (lineVM == null) continue;
-            //      //  lineVM.deAllocations();
-            //        foreach (var orderItem in lineDTO.LockedItems)
-            //        {
-            //            var currentID = orderItem.dishId;
-            //            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-            //            lineVM.AddOrderItemToLocked(orderItem);
-            //        }
-            //        foreach (var orderItem in lineDTO.ToDoItems)
-            //        {
-            //            var currentID = orderItem.dishId;
-            //            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-            //            lineVM.AddOrderItemToAvailable(orderItem);
-            //        }
-            //        foreach (var orderItem in lineDTO.DoingItems)
-            //        {
-            //            var currentID = orderItem.dishId;
-            //            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-            //            lineVM.AddOrderItemToInProgress(orderItem);
-            //        }
-            //    }
-            //});
-            //SignalR();
+
+            App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
+            {
+
+                foreach (var dto in linesDTO)
+                {
+                    var lineVM = m_LinesList.First(line => line.LineID == dto.lineId);
+                    if (lineVM.LineID > 0)
+                    {
+                        foreach (var orderItem in dto.LockedItems)
+                        {
+                            var currentID = orderItem.dishId;
+                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            lineVM.AddOrderItemToLocked(orderItem);
+                        }
+
+                        foreach (var orderItem in dto.ToDoItems)
+                        {
+                            var currentID = orderItem.dishId;
+                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            lineVM.AddOrderItemToAvailable(orderItem);
+                        }
+
+                        foreach (var orderItem in dto.DoingItems)
+                        {
+                            var currentID = orderItem.dishId;
+                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            lineVM.AddOrderItemToInProgress(orderItem);
+                        }
+                    }
+                }
+            });
+            App.HubConn.On<OrderItem>("ItemMoved", (item) =>
+            {
+                item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
+                var lineVm = m_LinesList.First(line => line.LineID == item.dish.lineId);
+                lineVm.moveItemViewToRightView(item.id);
+            });
+            StartListening();
         }
 
         private void initLinesByRepository()
@@ -101,7 +109,7 @@ namespace CheckerUI.ViewModels
         //        }
         //    }
         //}
-        private static async void SignalR()
+        private static async void StartListening()
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)
             {
@@ -112,7 +120,7 @@ namespace CheckerUI.ViewModels
                 }
                 catch (System.Exception ex)
                 {
-                    await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                    await Application.Current.MainPage.DisplayAlert("Exception! Disconnected", ex.Message, "OK");
                 }
             }
 
@@ -122,7 +130,7 @@ namespace CheckerUI.ViewModels
             }
             catch (System.Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+               // await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
             }
         }
 

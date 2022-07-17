@@ -61,7 +61,7 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if(item != null)
             {
-                moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
+               await moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
             } else
             {
                 await Clients.Caller.SendAsync("DBError", "No such orderItem");
@@ -74,7 +74,7 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if (item != null)
             {
-                moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+                await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
             }
             else
             {
@@ -82,7 +82,7 @@ namespace CheckerServer.Hubs
             }
         }
 
-        private async void moveFromListToList(OrderItem item, eLineItemStatus prevStatus, eLineItemStatus nextStatus, string prevListName, string nextListName)
+        private async Task moveFromListToList(OrderItem item, eLineItemStatus prevStatus, eLineItemStatus nextStatus, string prevListName, string nextListName)
         {
             if (item.LineStatus == prevStatus)
             {
@@ -95,7 +95,7 @@ namespace CheckerServer.Hubs
                     KitchenManager manager = Services.GetService<KitchenManager>();
                     Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
                     manager.ItemWasMoved(order, item);
-                    await Clients.Caller.SendAsync("ItemMoved", "item num." + item.ID + " was successfully moved");
+                    await Clients.Caller.SendAsync("ItemMoved", item).;
                 }
                 else
                 {

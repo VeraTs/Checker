@@ -36,13 +36,13 @@ namespace CheckerUI.Views.KitchenLineCardsViews
 
         }
 
-        private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
+        private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
             InProgressCollection.SelectedItem = stackLayout.BindingContext;
             KitchenOrderItemInProgressCardView card = stackLayout.LogicalChildren[0] as KitchenOrderItemInProgressCardView;
             var item = card.BindingContext as OrderItemView;
-            ViewModel.ItemInProgressOnDoubleClick(item);
+           await ViewModel.ItemInProgressOnDoubleClick(item);
 
 
         }

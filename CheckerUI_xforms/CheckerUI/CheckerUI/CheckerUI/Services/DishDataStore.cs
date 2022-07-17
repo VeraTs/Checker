@@ -11,6 +11,7 @@ namespace CheckerUI.Services
     {
 
         public List<Dish> dishes { get; set; }
+        public Dictionary<int, Dish> DishesDict { get; set; } = new Dictionary<int, Dish>();
         public DishDataStore()
         {
         }
@@ -40,6 +41,7 @@ namespace CheckerUI.Services
                 foreach (var item in listy)
                 {
                     dishes.Add(item);
+                    DishesDict.Add(item.id, item);
                 }
             }
             catch (Exception ex)

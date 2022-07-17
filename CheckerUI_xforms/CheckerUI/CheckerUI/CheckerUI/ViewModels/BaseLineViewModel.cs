@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using CheckerUI.Enums;
 using CheckerUI.Helpers.OrdersHelpers;
 using CheckerUI.Models;
+using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 //// <summary>
 // Basic line, if we want to add features to it we will do it by inheritance
@@ -39,158 +41,221 @@ namespace CheckerUI.ViewModels
 {
     public class BaseLineViewModel : BaseViewModel
     {
-       
-        public ObservableCollection<OrderItemView> m_Orders { get; set; }
-        private Dictionary<int, OrderItemView> m_OrdersList { get; set; }
+
+        public ObservableCollection<OrderItemView> m_OrderItemsViews { get; set; }
+        private Dictionary<int, OrderItemView> m_OrderItemsViewsList { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsLocked { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
 
-       // private OrdersManager m_Manager;
+        // private OrdersManager m_Manager;
         public Command ReturnCommand { get; set; }
 
         public void init()
         {
             allocations();
 
-            m_Orders.CollectionChanged += ordersCh_CollectionChanged;
-           
-            ReturnCommand = new Command(async () =>
-            {
-                await Application.Current.MainPage.Navigation.PopAsync();
-            });
+            // m_OrderItemsViews.CollectionChanged += ordersCh_CollectionChanged;
+
+            ReturnCommand = new Command(async () => { await Application.Current.MainPage.Navigation.PopAsync(); });
         }
 
         private void allocations()
         {
-            m_Orders = new ObservableCollection<OrderItemView>();
-            m_OrdersList = new Dictionary<int, OrderItemView>();
+            m_OrderItemsViews = new ObservableCollection<OrderItemView>();
+            m_OrderItemsViewsList = new Dictionary<int, OrderItemView>();
             m_ButtonsInProgress = new ObservableCollection<OrderItemView>();
             m_ButtonsLocked = new ObservableCollection<OrderItemView>();
             m_ButtonsToMake = new ObservableCollection<OrderItemView>();
             m_ButtonsDone = new ObservableCollection<OrderItemView>();
         }
+
         public void deAllocations()
         {
             m_ButtonsInProgress.Clear();
             m_ButtonsDone.Clear();
             m_ButtonsLocked.Clear();
             m_ButtonsToMake.Clear();
-            m_Orders.Clear();
-            m_OrdersList.Clear();
+            m_OrderItemsViews.Clear();
+            m_OrderItemsViewsList.Clear();
 
         }
-        private void ordersCh_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+
+       
+        private bool CheckNewOrderItemByID(int i_id)
         {
-            var last = m_Orders.Last(); 
-            last.OrderStatusChangedNotifier.CollectionChanged += OrderStatusChangedNotifierOnCollectionChanged; 
-            m_OrdersList.Add(last.OderID, last);
+            return !m_OrderItemsViewsList.ContainsKey(i_id);
         }
+
         public void AddOrderItemToInProgress(OrderItem i_ToAdd)
         {
-            var view = new OrderItemView( i_ToAdd);
-            m_Orders.Add(view);
+            if (!CheckNewOrderItemByID(i_ToAdd.id)) return;
+            var view = new OrderItemView(i_ToAdd);
             m_ButtonsInProgress.Add(view);
+            m_OrderItemsViews.Add(view);
+            m_OrderItemsViewsList.Add(i_ToAdd.id, view);
         }
+
         public void AddOrderItemToAvailable(OrderItem i_ToAdd)
         {
-            var view = new OrderItemView( i_ToAdd);
+            if (!CheckNewOrderItemByID(i_ToAdd.id)) return;
+            var view = new OrderItemView(i_ToAdd);
             m_ButtonsToMake.Add(view);
-            m_Orders.Add(view);
+            m_OrderItemsViews.Add(view);
+            m_OrderItemsViewsList.Add(i_ToAdd.id, view);
         }
+
         public void AddOrderItemToLocked(OrderItem i_ToAdd)
         {
+            if (!CheckNewOrderItemByID(i_ToAdd.id)) return;
             var view = new OrderItemView(i_ToAdd);
-            m_Orders.Add(view);
+            m_OrderItemsViews.Add(view);
             m_ButtonsLocked.Add(view);
+            m_OrderItemsViewsList.Add(i_ToAdd.id, view);
+
         }
+
         public void AddOrderItemToDone(OrderItem i_ToAdd)
         {
+            if (!CheckNewOrderItemByID(i_ToAdd.id)) return;
             var view = new OrderItemView(i_ToAdd);
-            m_Orders.Add(view);
+            m_OrderItemsViews.Add(view);
             m_ButtonsDone.Add(view);
+            m_OrderItemsViewsList.Add(i_ToAdd.id, view);
         }
 
-        
-        private void OrderStatusChangedNotifierOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void moveItemViewToRightView(int i_itemID)
         {
-            var observer = sender as ObservableCollection<int>;
-
-            var id = observer[0];
-            var order = m_Orders[id];
-
-            switch (order.OrderStatus)
+            var itemView = m_OrderItemsViewsList[i_itemID];
+            switch (itemView.OrderItemLineStatus)
             {
                 case eLineItemStatus.Locked:
-                    {
-                        caseIsHolding(order);
+                {
+                    m_ButtonsToMake.Add(itemView);
+                    m_ButtonsLocked.Remove(itemView);
                         break;
-                    }
+                }
                 case eLineItemStatus.ToDo:
-                    {
-                        caseIsAvailable(order);
-                        break;
-                    }
+                {
+                    m_ButtonsToMake.Remove(itemView);
+                    itemView.OrderItemTimeStarted = DateTime.Now;
+                    m_ButtonsInProgress.Add(itemView);
+                    break;
+                }
                 case eLineItemStatus.Doing:
-                    {
-                        caseIsInProgress(order);
-                        break;
-                    }
-                case eLineItemStatus.Done:
-                    {
-                        caseIsCompleted(order);
-                        break;
-                    }
-
-                default:
-                    {
-                        caseIsRestored(order);
-                        break;
-                    }
+                {
+                    m_ButtonsDone.Add(itemView);
+                    itemView.OrderItemTimeDone = DateTime.Now; 
+                    itemView.FirstTimeToShowString = itemView.OrderItemTimeDoneString; 
+                    m_ButtonsInProgress.Remove(itemView);
+                    break;
+                }
             }
         }
 
-        private void caseIsAvailable(OrderItemView i_Order)
+    //private async void OrderStatusChangedNotifierOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    //    {
+    //        var observer = sender as ObservableCollection<int>;
+
+    //        var id = observer[0];
+    //        var order = m_OrderItemsViews[id];
+
+    //        switch (order.OrderStatus)
+    //        {
+    //            case eLineItemStatus.Locked:
+    //                {
+    //                    await caseIsHolding(order);
+    //                    break;
+    //                }
+    //            case eLineItemStatus.ToDo:
+    //                {
+    //                    await caseIsAvailable(order);
+    //                    break;
+    //                }
+    //            case eLineItemStatus.Doing:
+    //                {
+    //                    await caseIsInProgress(order);
+    //                    break;
+    //                }
+    //            case eLineItemStatus.Done:
+    //                {
+    //                    await caseIsCompleted(order);
+    //                    break;
+    //                }
+
+    //            default:
+    //                {
+    //                    await caseIsRestored(order);
+    //                    break;
+    //                }
+    //        }
+    //    }
+
+        private async Task caseIsAvailable(OrderItemView i_OrderItem)
         {
-            if (m_ButtonsLocked.Contains(i_Order))
+            if (!m_ButtonsLocked.Contains(i_OrderItem)) return;
+            try
             {
-                m_ButtonsToMake.Add(i_Order);
-                m_ButtonsLocked.Remove(i_Order);
+              //  await App.HubConn.InvokeAsync("RegisterForGroup", i_OrderItem.OderItemID);
+                m_ButtonsToMake.Add(i_OrderItem);
+                m_ButtonsLocked.Remove(i_OrderItem);
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
             }
         }
 
-        private void caseIsRestored(OrderItemView i_Order)
+        private async Task caseIsRestored(OrderItemView i_OrderItem)
         {
-            i_Order.isRestored = false;
-            m_ButtonsInProgress.Add(i_Order);
-            m_ButtonsDone.Remove(i_Order);
-
-        }
-        private void caseIsHolding(OrderItemView i_Order)
-        {
-
-        }
-
-        private void caseIsInProgress(OrderItemView i_Order)
-        {
-            if (!m_ButtonsInProgress.Contains(i_Order))
+            try
             {
-                m_ButtonsInProgress.Add(i_Order);
+                i_OrderItem.isRestored = false;
+                m_ButtonsInProgress.Add(i_OrderItem);
+                m_ButtonsDone.Remove(i_OrderItem);
             }
-            m_ButtonsToMake.Remove(i_Order);
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception! caseIsRestored", ex.Message, "OK");
+            }
+        }
+        private async Task caseIsHolding(OrderItemView i_OrderItem)
+        {
+            try
+            {
+
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception! caseIsRestored", ex.Message, "OK");
+            }
         }
 
-        private void caseIsCompleted(OrderItemView i_Order)
+        private async Task caseIsInProgress(OrderItemView i_OrderItem)
         {
-            if (m_ButtonsInProgress.Contains(i_Order))
+            if (m_ButtonsInProgress.Contains(i_OrderItem)) return;
+            try
             {
-                m_ButtonsInProgress.Remove(i_Order);
-                m_ButtonsDone.Add(i_Order);
+                await App.HubConn.InvokeAsync("MoveOrderItemToDoing", i_OrderItem.OderItemID);
             }
-            else
+            catch (System.Exception ex)
             {
+                await Application.Current.MainPage.DisplayAlert("Exception! moving to Doing", ex.Message, "OK");
+            }
+           
+        }
 
+        private async Task caseIsCompleted(OrderItemView i_OrderItem)
+        {
+            if (m_ButtonsDone.Contains(i_OrderItem)) return;
+            try
+            {
+                await App.HubConn.InvokeAsync("MoveOrderItemToDone", i_OrderItem.OderItemID);
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception! moving to Done", ex.Message, "OK");
             }
         }
 
@@ -199,34 +264,43 @@ namespace CheckerUI.ViewModels
             get => m_ButtonsInProgress;
             set => m_ButtonsInProgress = value;
         }
-        public void ItemToMakeOnDoubleClicked(OrderItemView i_Item)
+        public async Task ItemToMakeOnDoubleClicked(OrderItemView i_Item)
         {
-            m_ButtonsToMake.Remove(i_Item);
-            i_Item.OrderStatus = eLineItemStatus.Doing;
-            i_Item.OrderItemTimeStarted = DateTime.Now;
-            m_ButtonsInProgress.Add(i_Item);
+            try
+            {
+                await App.HubConn.InvokeAsync("MoveOrderItemToDoing", i_Item.OderItemID);
+                
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception! moving to Doing", ex.Message, "OK");
+            }
         }
 
-        public void ItemInProgressOnDoubleClick(OrderItemView i_Item)
+        public async Task ItemInProgressOnDoubleClick(OrderItemView i_Item)
         {
-            m_ButtonsInProgress.Remove(i_Item);
-            i_Item.OrderStatus = eLineItemStatus.Done;
-            i_Item.OrderItemTimeDone = DateTime.Now;
-            i_Item.FirstTimeToShowString = i_Item.OrderItemTimeDoneString;
-            m_ButtonsDone.Add(i_Item);
+            try
+            {
+                await App.HubConn.InvokeAsync("MoveOrderItemToDone", i_Item.OderItemID);
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception! moving to Done", ex.Message, "OK");
+            }
         }
-        public void ItemLockedOnDoubleClicked(OrderItemView i_Item)
+
+        public async Task ItemLockedOnDoubleClicked(OrderItemView i_Item)
         {
             m_ButtonsLocked.Remove(i_Item);
-            i_Item.OrderStatus = eLineItemStatus.ToDo;
+            i_Item.OrderItemLineStatus = eLineItemStatus.ToDo;
            
             m_ButtonsToMake.Add(i_Item);
         }
 
-        public void ItemReadyOnDoubleClick(OrderItemView i_Item)
+        public async Task ItemReadyOnDoubleClick(OrderItemView i_Item)
         {
             m_ButtonsDone.Remove(i_Item);
-            i_Item.OrderStatus = eLineItemStatus.Doing;
+            i_Item.OrderItemLineStatus = eLineItemStatus.Doing;
             i_Item.OrderItemTimeDone = DateTime.MinValue;
             i_Item.FirstTimeToShowString = i_Item.OrderItemTimeCreate;
             m_ButtonsInProgress.Add(i_Item);

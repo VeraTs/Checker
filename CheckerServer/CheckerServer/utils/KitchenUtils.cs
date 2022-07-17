@@ -71,7 +71,7 @@ namespace CheckerServer.utils
         private OrderQueue getQueuesForOrder(Order order)
         {
             OrderQueue orderQueue = new OrderQueue(order.ID);
-            orderQueue.enterItems(order.Items, order.OrderType);
+            orderQueue.enterItems(order.Items.Where(i => i.LineStatus == eLineItemStatus.Locked).ToList(), order.OrderType);
             return orderQueue;
         }
 

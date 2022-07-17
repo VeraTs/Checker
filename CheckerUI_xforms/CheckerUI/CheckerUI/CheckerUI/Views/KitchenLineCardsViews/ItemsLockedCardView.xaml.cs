@@ -41,7 +41,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             bool answer = await Application.Current.MainPage.DisplayAlert("Order Locked", "Are You Sure ?", "Yes", "No");
             if (answer)
             {
-                ViewModel.ItemLockedOnDoubleClicked(item);
+               await ViewModel.ItemLockedOnDoubleClicked(item);
             }
         }
     }

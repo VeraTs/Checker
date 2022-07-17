@@ -37,6 +37,7 @@ namespace CheckerServer.Models
                     rests.ForEach(r =>
                     {
                         r_KitchenLines.Add(r.ID, new Dictionary<int, LineDTO>());
+
                         r_RestsActiveKitchens.Add(r.ID, 0);
                     });
                     r_KitchenUtils = new KitchenUtils(context);
@@ -94,30 +95,34 @@ namespace CheckerServer.Models
                     Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests);
 
                     // step 2.2
-                    foreach (int restId in updatedLines.Keys)
+                    foreach (int restId in r_RestsActiveKitchens.Keys)
                     {
-                        Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
-                        if (rest != null)
+                        if (r_RestsActiveKitchens[restId] > 0)
                         {
-                            updatedLines[restId].ForEach(lineDTO => {
-                                if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
-                                {
-                                    r_KitchenLines[restId][lineDTO.lineId] = lineDTO;
-                                }
-                                else
-                                {
-                                    lock (r_KitchenLines[restId][lineDTO.lineId])
+                            Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
+                            if (updatedLines.ContainsKey(restId))
+                            {
+                                updatedLines[restId].ForEach(lineDTO => {
+                                    if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
                                     {
-                                        // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
-                                        r_KitchenLines[restId][lineDTO.lineId].ToDoItems.AddRange(lineDTO.ToDoItems);
+                                        r_KitchenLines[restId][lineDTO.lineId] = lineDTO;
                                     }
-                                }
-                            });
+                                    else
+                                    {
+                                        lock (r_KitchenLines[restId][lineDTO.lineId])
+                                        {
+                                            // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
+                                            r_KitchenLines[restId][lineDTO.lineId].ToDoItems.AddRange(lineDTO.ToDoItems);
+                                        }
+                                    }
+                                });
 
-                            // not awaited since this pretains to different restaurants
-                            _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", r_KitchenLines[restId].Values);
-                            
+                                // not awaited since this pretains to different restaurants
+                                _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", r_KitchenLines[restId].Values);
+
+                            }
                         }
+                        
                     }
 
                     // step 2.3
@@ -189,7 +194,7 @@ namespace CheckerServer.Models
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
             return Task.CompletedTask;
         }
 

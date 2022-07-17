@@ -33,12 +33,11 @@ namespace CheckerUI.Helpers.OrdersHelpers
         public OrderItemView(OrderItem i_item)
         {
             feelColorsState();
-            m_orderItem = new OrderItem();
-            m_orderItem.dish = new Dish();
+            
             m_orderItem = i_item;
             m_orderItem.dish = i_item.dish;
-            OrderStatus = i_item.lineStatus;
-            OderID = i_item.id; // to fix
+            OrderItemLineStatus = i_item.lineStatus;
+            OderItemID = i_item.id; // to fix
             OrderItemName = i_item.dish.name;
             OrderItemDescription = i_item.changes;
             FirstTimeToShowString = OrderItemTimeCreate;
@@ -51,21 +50,21 @@ namespace CheckerUI.Helpers.OrdersHelpers
            m_StateColors.Add(eLineItemStatus.Doing, Color.DarkOrange);
            m_StateColors.Add(eLineItemStatus.Done, Color.DarkGreen);
         }
-        public int OderID
+        public int OderItemID
         {
             get => m_orderItem.id;
             set => m_orderItem.id = value;
         }
 
-        public eLineItemStatus OrderStatus
+        public eLineItemStatus OrderItemLineStatus
         {
             get => m_orderItem.lineStatus;
             set
             {
                 m_orderItem.lineStatus = value;
                 OrderStatusString = value.ToString();
-                OrderStatusColor = m_StateColors[OrderStatus];
-                OnPropertyChanged(nameof(OrderStatus));
+                OrderStatusColor = m_StateColors[OrderItemLineStatus];
+              //  OnPropertyChanged(nameof(OrderItemLineStatus));
             } 
         }
 
