@@ -5,11 +5,9 @@ using CheckerUI.Enums;
 
 namespace CheckerUI.Models
 {
-    public class Order
+    public class Order : BaseDBItem
     {
-        public int id { get; set; }
 
-       
         public int restaurantId { get; set; }
         public int table { get; set; }
         public eOrderStatus status { get; set; } = eOrderStatus.Ordered;

@@ -4,12 +4,9 @@ using CheckerUI.Enums;
 
 namespace CheckerUI.Models
 {
-    public class Line
+    public class Line :BaseDBItem
     {
-       
-        public int id { get; set; }
-
-       
+        
         public string Name { get; set; }
        
         public int ServingAreaId { get; set; } // id of serving area related to this line

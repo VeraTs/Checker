@@ -2,9 +2,9 @@
 
 namespace CheckerUI.Models
 {
-    public class Dish
+    public class Dish : BaseDBItem
     {
-        public int id { get; set; }
+       
         public string name { get; set; }
         public int lineId { get; set; }
         public int restMenuId { get; set; }

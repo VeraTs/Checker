@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using CheckerUI.Enums;
-using CheckerUI.Helpers.LinesHelpers;
 using CheckerUI.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
@@ -19,11 +18,9 @@ namespace CheckerUI.ViewModels
         {
             base.init();
             m_BackgroundState = new Color();
-            model = new Line();
+            
             model = i_model;
             model.Dishes = new List<Dish>();
-            var dishes = App.Repository.Dishes;
-            
             setColorState();
         }
  

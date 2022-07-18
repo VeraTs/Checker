@@ -65,7 +65,7 @@
                                         VerticalOptions="Start"
                                         HorizontalOptions="Start"
                                         IsClippedToBounds="True"
-                                        Padding="0"/>
+                                        Padding="0" />
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup Name="CommonStates">
                                                 <VisualState Name="Normal"/>

@@ -19,16 +19,12 @@ namespace CheckerUI.Helpers.OrdersHelpers
     public class OrderItemView : BaseViewModel
     {
         //Properties
-        private readonly OrderItem m_orderItem = new OrderItem();
+        private readonly OrderItem m_orderItem;
         
         // Commands
        
         private readonly Dictionary<eLineItemStatus,Color> m_StateColors = new Dictionary<eLineItemStatus, Color>();
 
-        public OrderItemView()
-        {
-
-        }
 
         public OrderItemView(OrderItem i_item)
         {
@@ -64,7 +60,6 @@ namespace CheckerUI.Helpers.OrdersHelpers
                 m_orderItem.lineStatus = value;
                 OrderStatusString = value.ToString();
                 OrderStatusColor = m_StateColors[OrderItemLineStatus];
-              //  OnPropertyChanged(nameof(OrderItemLineStatus));
             } 
         }
 

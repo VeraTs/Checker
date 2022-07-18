@@ -14,7 +14,7 @@
                Margin="1"
                BackgroundColor="White" BorderColor="Gray">
 
-            <views:Expander  Margin="0,0,0,0" IsClippedToBounds="True" WidthRequest="500" IsEnabled="False">
+            <views:Expander  Margin="0,0,0,0" IsClippedToBounds="True" WidthRequest="450"  IsEnabled="False">
                 <views:Expander.Header>
 
                     <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
@@ -25,31 +25,34 @@
                             <Label 
                             Text="{Binding OrderItemName}" 
                             FontFamily="FAS" 
+                            FontSize="Large"
+                            TextColor="Black"
                             VerticalOptions="Center" HorizontalOptions="Center"
                             Margin="2"/>
                             <Label  
-                            Text="{Binding  OrderStatusString}"
+                            Text="{Binding  OrderItemType}"
                             VerticalOptions="Center" HorizontalOptions="Center"
                             FontFamily="FAS" 
                             Margin="2"/>
                         </StackLayout>
                     </StackLayout>
 
-                </views:Expander.Header>
+                </views:Expander.Header> 
                 <StackLayout Orientation="Horizontal">
                     <BoxView Color="{Binding OrderStatusColor}" WidthRequest="10"></BoxView>
                     <StackLayout Orientation="Vertical">
 
-                        <Label  HorizontalOptions="Center"
-                                Text="{Binding OrderItemType}"/>
+                        <Label  HorizontalOptions="Start"
+                                Text="{Binding OrderStatusString}"/>
                         <Label HorizontalOptions="Start"
-                       Text="{Binding FirstTimeToShowString}" FontFamily="FAS"/>
+                       Text="{Binding FirstTimeToShowString}" FontFamily="FAS" />
                         <Label HorizontalOptions="Start"
                        Text="{Binding OrderItemTimeStartedString}" FontFamily="FAS"/>
 
                         <Label 
-                    HorizontalOptions="Center"
-                       Text="{Binding OrderItemDescription}" FontFamily="FAS"/>
+                    HorizontalOptions="Start"
+                       Text="{Binding OrderItemDescription}" FontFamily="FAS"  FontSize="Large"
+                    TextColor="Black"/>
                     </StackLayout>
 
                 </StackLayout>

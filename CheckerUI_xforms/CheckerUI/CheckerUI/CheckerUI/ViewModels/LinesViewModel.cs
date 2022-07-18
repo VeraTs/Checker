@@ -37,21 +37,21 @@ namespace CheckerUI.ViewModels
                         {
                             var currentID = orderItem.dishId;
                             orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            lineVM.AddOrderItemToLocked(orderItem);
+                            lineVM.moveItemViewToRightView(orderItem);
                         }
 
                         foreach (var orderItem in dto.ToDoItems)
                         {
                             var currentID = orderItem.dishId;
                             orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            lineVM.AddOrderItemToAvailable(orderItem);
+                            lineVM.moveItemViewToRightView(orderItem);
                         }
 
                         foreach (var orderItem in dto.DoingItems)
                         {
                             var currentID = orderItem.dishId;
                             orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            lineVM.AddOrderItemToInProgress(orderItem);
+                            lineVM.moveItemViewToRightView(orderItem);
                         }
                     }
                 }
@@ -60,7 +60,7 @@ namespace CheckerUI.ViewModels
             {
                 item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
                 var lineVm = m_LinesList.First(line => line.LineID == item.dish.lineId);
-                lineVm.moveItemViewToRightView(item.id);
+                lineVm.moveItemViewToRightView(item);
             });
             StartListening();
         }
