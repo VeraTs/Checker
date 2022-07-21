@@ -8,7 +8,6 @@ namespace CheckerUI.Views
         public MainPage()
         {
             InitializeComponent();
-
         }
         
     }

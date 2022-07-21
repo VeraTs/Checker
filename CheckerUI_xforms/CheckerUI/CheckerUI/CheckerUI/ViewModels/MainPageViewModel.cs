@@ -24,10 +24,10 @@ namespace CheckerUI.ViewModels
                 if (checkUserDetails())
                 {
                     var user = await loadUserDetails();
-                    var loggedVm = new LoggedMainPageViewModel();
-                    var loggedPage = new LoggedMainPage
+                   
+                    var loggedPage = new UserMainPage
                     {
-                        BindingContext = loggedVm
+                      
                     };
                     await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
                 }

@@ -7,7 +7,7 @@ namespace CheckerUI.Models
     public class Line :BaseDBItem
     {
         
-        public string Name { get; set; }
+        public string name { get; set; }
        
         public int ServingAreaId { get; set; } // id of serving area related to this line
 

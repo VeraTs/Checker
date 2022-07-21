@@ -14,10 +14,11 @@ namespace CheckerUI.ViewModels
     {
         private ObservableCollection<LineViewModel> m_LinesList = new ObservableCollection<LineViewModel>();
         private readonly ObservableCollection<NewLineView> m_LinesViews = new ObservableCollection<NewLineView>();
-
+        public Command NextPageCommand { get; private set; }
         private List<Dish> m_Dishes { get; set; }
 
         public int m_ClickedLineId { get; set; } = 0;
+        public string ClickedLineName { get; set; }
         public LinesViewModel()
         {
 
@@ -63,8 +64,13 @@ namespace CheckerUI.ViewModels
                 lineVm.moveItemViewToRightView(item);
             });
             StartListening();
+            NextPageCommand = new Command(() =>
+            {
+                
+            });
         }
 
+       
         private void initLinesByRepository()
         {
             var list = App.Repository.lines;
@@ -147,6 +153,12 @@ namespace CheckerUI.ViewModels
         {
             var view = m_LinesViews.FirstOrDefault(ll => ll.GetLineId() == m_ClickedLineId);
             
+            await Application.Current.MainPage.Navigation.PushAsync(view);
+        }
+        public async Task LineButton_OnClickedString(object sender, EventArgs e)
+        {
+            var view = m_LinesViews.FirstOrDefault(ll => ll.GetLineName() == ClickedLineName);
+
             await Application.Current.MainPage.Navigation.PushAsync(view);
         }
     }

@@ -41,7 +41,7 @@ namespace CheckerUI.ViewModels
     {
 
         //  public ObservableCollection<OrderItemView> m_OrderItemsViews { get; set; }
-        private Dictionary<int, OrderItemView> m_OrderItemsViewsList { get; set; }
+        public Dictionary<int, OrderItemView> m_OrderItemsViewsList { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsLocked { get; set; }
         private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }

@@ -18,8 +18,9 @@ namespace CheckerUI.ViewModels
         {
             base.init();
             m_BackgroundState = new Color();
-            
+
             model = i_model;
+            LineName =model.name;
             model.Dishes = new List<Dish>();
             setColorState();
         }
@@ -51,10 +52,10 @@ namespace CheckerUI.ViewModels
         }
         public string LineName
         {
-            get => model.Name;
+            get => model.name;
             set
             {
-                model.Name = value;
+                model.name = value;
                 OnPropertyChanged(nameof(LineName));
             } 
         }
@@ -78,6 +79,8 @@ namespace CheckerUI.ViewModels
                 OnPropertyChanged(nameof(MaximumParallelism));
             }
         }
+
+        public string LineCapacity => "Current Capacity :" + this.m_OrderItemsViewsList.Count;
 
         public eLineState LineStateString
         {

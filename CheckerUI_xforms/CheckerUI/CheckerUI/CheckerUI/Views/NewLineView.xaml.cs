@@ -26,5 +26,10 @@ namespace CheckerUI.Views
         {
             return m_ViewModel.LineID;
         }
+
+        public string GetLineName()
+        {
+            return m_ViewModel.LineName;
+        }
     }
 }

@@ -28,9 +28,10 @@ namespace CheckerUI
         private List<Dish> dishes = new List<Dish>();
         public App()
         {
-#if DEBUG
+
+        #if DEBUG
             isDebug = true;
-#endif
+        #endif
 
             InitializeComponent();
             client = isDebug ? new HttpClient(handler) : new HttpClient();
