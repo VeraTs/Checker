@@ -27,13 +27,19 @@
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"/>
                     <Label Grid.Row ="0"
-                           Text ="To Make"
-                           x:Name="m_LabelToMake"
-                            FontAttributes ="Bold"
-                           FontSize="Title"
+                           Text ="To Do"
+                           FontAttributes ="Bold"
+                           FontSize="60"
                            FontFamily ="FAS"
                            HorizontalOptions="CenterAndExpand"
                            VerticalOptions="FillAndExpand"/>
+                    <Label Grid.Row ="0"
+                           Text ="{Binding ToDoCapacity}"
+                           FontAttributes ="Bold"
+                           FontSize="Large"
+                           FontFamily ="FAS"
+                           HorizontalOptions="End"
+                           VerticalOptions="Fill"/>
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="End" HeightRequest="2"

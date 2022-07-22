@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CheckerUI.Models;
 
@@ -10,10 +9,7 @@ namespace CheckerUI.Services
     {
         public List<Line> lines { get; set; }
         public List<Line> listy { get; private set; } = new List<Line>();
-        public LinesDataStore()
-        {
-            
-        }
+        
 
         public Task<bool> AddItemAsync(Line item)
         {

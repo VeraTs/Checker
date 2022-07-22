@@ -24,12 +24,19 @@
                     </Grid.RowDefinitions>
                     <BoxView Grid.Row="0" BackgroundColor="LightGoldenrodYellow" Margin="-8,0,-8,-5"/>
                     <Label Grid.Row ="0" 
-                           Text ="In Progress"
+                           Text ="Doing"
                            FontAttributes ="Bold"
-                           FontSize="Title"
+                           FontSize="70"
                            FontFamily ="FAS"
-                            HorizontalOptions="CenterAndExpand"
+                           HorizontalOptions="CenterAndExpand"
                            VerticalOptions="CenterAndExpand"/>
+                    <Label Grid.Row ="0"
+                           Text ="{Binding DoingCapacity}"
+                           FontAttributes ="Bold"
+                           FontSize="Large"
+                           FontFamily ="FAS"
+                           HorizontalOptions="End"
+                           VerticalOptions="Fill"/>
                     <Button Grid.Row="0"
                             HorizontalOptions="Start"
                             VerticalOptions="StartAndExpand"

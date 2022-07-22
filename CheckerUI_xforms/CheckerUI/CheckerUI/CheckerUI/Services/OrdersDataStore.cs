@@ -10,9 +10,6 @@ namespace CheckerUI.Services
     {
         public List<Order> orders { get; set; }
 
-        public OrdersDataStore()
-        {
-        }
         public Task<bool> AddItemAsync(Order item)
         {
             throw new NotImplementedException();

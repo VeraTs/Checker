@@ -1,5 +1,4 @@
-﻿
-using CheckerUI.ViewModels;
+﻿using CheckerUI.ViewModels;
 using Xamarin.Forms;
 
 namespace CheckerUI.Views

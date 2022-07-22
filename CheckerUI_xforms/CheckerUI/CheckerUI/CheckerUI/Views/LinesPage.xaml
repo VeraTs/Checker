@@ -94,7 +94,7 @@
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
             </CarouselView>
-        <IndicatorView x:Name="indicatorView"
+            <IndicatorView x:Name="indicatorView"
                        IndicatorColor="White"
                        SelectedIndicatorColor="DarkGray"
                        HorizontalOptions="Center" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using CheckerUI.Helpers;
-using CheckerUI.Helpers.OrdersHelpers;
 using CheckerUI.ViewModels;
 using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
@@ -37,7 +36,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             var stackLayout = sender as StackLayout;
             ToMakeListView.SelectedItem = stackLayout.BindingContext;
             var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
-            var item = card.BindingContext as OrderItemView;
+            var item = card.BindingContext as OrderItemViewModel;
             await  ViewModel.ItemToMakeOnDoubleClicked(item);
         }
     }

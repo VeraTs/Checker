@@ -14,7 +14,6 @@ namespace CheckerUI.Views
             InitializeComponent();
             BackgroundColor = Color.Transparent;
             m_ViewModel = i_VM;
-            
             BindingContext = m_ViewModel;
             m_ItemsToMakeCardView.ViewModel = m_ViewModel;
             m_ItemsInProgressCardView.ViewModel = m_ViewModel;

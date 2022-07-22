@@ -10,7 +10,7 @@ namespace CheckerUI.Services
        // public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
       //  public static OrdersDataStore OrdersStore { get; private set; }
         public List<Dish> Dishes { get; private set; }
-        
+        public Dictionary<int, Dish> DishesDictionary { get; private set; } = new Dictionary<int, Dish>();
         public List<Line> lines { get; private set; }
     //    public List<OrderItem> OrderedItems { get; private set; }
     //    public List<Order> Orders { get; private set; }
@@ -31,6 +31,7 @@ namespace CheckerUI.Services
         {
             await DishesStore.GetItemsAsync();
             Dishes = DishesStore.dishes;
+            DishesDictionary = DishesStore.DishesDict;
             await LinesStore.GetItemsAsync();
             lines = LinesStore.lines;
            // await AllOrdersItemsStore.GetItemsAsync();

@@ -1,5 +1,4 @@
 ﻿using CheckerUI.Enums;
-using CheckerUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,22 +10,11 @@ using Xamarin.Forms;
 //In the second row, the status of the dish varies depending on the button being pressed
 //And in the third row three buttons are linked to the command respectively
 //An order item knows to update those responsible for a change in its status
-
-
-// To Do:  Status should be changed to Enum
-namespace CheckerUI.Helpers.OrdersHelpers
+namespace CheckerUI.ViewModels
 {
-    public class OrderItemView : BaseViewModel
+    public class OrderItemViewModel : BaseViewModel
     {
-        //Properties
-        private readonly OrderItem m_orderItem;
-        
-        // Commands
-       
-        private readonly Dictionary<eLineItemStatus,Color> m_StateColors = new Dictionary<eLineItemStatus, Color>();
-
-
-        public OrderItemView(OrderItem i_item)
+        public OrderItemViewModel(OrderItem i_item)
         {
             feelColorsState();
             
@@ -41,9 +29,9 @@ namespace CheckerUI.Helpers.OrdersHelpers
 
         private void feelColorsState()
         {
-           m_StateColors.Add(eLineItemStatus.Locked, Color.Firebrick);
-           m_StateColors.Add(eLineItemStatus.ToDo, Color.Gold);
-           m_StateColors.Add(eLineItemStatus.Doing, Color.DarkOrange);
+           m_StateColors.Add(eLineItemStatus.Locked, Color.SeaGreen);
+           m_StateColors.Add(eLineItemStatus.ToDo, Color.Coral);
+           m_StateColors.Add(eLineItemStatus.Doing, Color.LightGoldenrodYellow);
            m_StateColors.Add(eLineItemStatus.Done, Color.DarkGreen);
         }
         public int OderItemID
@@ -62,13 +50,21 @@ namespace CheckerUI.Helpers.OrdersHelpers
                 OrderStatusColor = m_StateColors[OrderItemLineStatus];
             } 
         }
+        //Properties
+        private readonly OrderItem m_orderItem;
+        private readonly Dictionary<eLineItemStatus, Color> m_StateColors = new Dictionary<eLineItemStatus, Color>();
 
-    
         public bool isRestored { get; set; } = false;
-
         public string OrderStatusString { get; set; }
 
-       
+        public string FirstTimeToShowString { get; set; }
+        public Color OrderStatusColor { get; set; } = new Color();
+        public eDishType OrderItemType => m_orderItem.dish.type;
+        public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
+        public string OrderItemTimeCreate => "Created: " + m_orderItem.createdDate.ToString("hh:mm tt");
+        public string OrderItemTimeStartedString => "Started: " + m_orderItem.startDate.ToString(" hh: mm tt");
+
+        public string OrderItemTimeDoneString => "Done: " + m_orderItem.doneDate.ToString("hh:mm tt");
 
         public DateTime OrderItemTimeStarted
         {
@@ -79,15 +75,7 @@ namespace CheckerUI.Helpers.OrdersHelpers
                 OnPropertyChanged(nameof(OrderItemTimeStarted));
             }
         }
-
-        public string FirstTimeToShowString { get; set; }
-
-        public string OrderItemTimeCreate => "Created: " + m_orderItem.createdDate.ToString("hh:mm tt");
-        public string OrderItemTimeStartedString => "Started: "+m_orderItem.startDate.ToString(" hh: mm tt");
-
-        public string OrderItemTimeDoneString => "Done: " + m_orderItem.doneDate.ToString("hh:mm tt");
         
-
         public DateTime OrderItemTimeDone
         {
             get => m_orderItem.doneDate;
@@ -98,25 +86,16 @@ namespace CheckerUI.Helpers.OrdersHelpers
             }
         }
 
-
         public string OrderItemName
         {
             get => m_orderItem.dish.name;
             private set => m_orderItem.dish.name = value;
         }
 
-        public Color OrderStatusColor { get; set; } = new Color();
         public string OrderItemDescription
         {
             get => m_orderItem.changes;
             set => m_orderItem.changes = value;
         }
-        public eDishType OrderItemType => m_orderItem.dish.type;
-        //replace with enum !
-
-        public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
-
-        
-
     }
 }

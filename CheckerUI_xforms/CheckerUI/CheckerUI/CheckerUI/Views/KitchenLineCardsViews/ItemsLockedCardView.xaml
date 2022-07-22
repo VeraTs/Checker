@@ -27,12 +27,18 @@
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"/>
                     <Label Grid.Row ="0"
-                           Text ="Waiting"
-                           x:Name="m_LabelToMake"
+                           Text ="Locked"
                            FontAttributes ="Bold"
-                           FontSize="Title"
+                           FontSize="60"
                            FontFamily ="FAS"
-                           HorizontalOptions="CenterAndExpand"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Start"/>
+                    <Label Grid.Row ="0"
+                           Text ="{Binding LockedCapacity}"
+                           FontAttributes ="Bold"
+                           FontSize="Large"
+                           FontFamily ="FAS"
+                           HorizontalOptions="End"
                            VerticalOptions="FillAndExpand"/>
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"

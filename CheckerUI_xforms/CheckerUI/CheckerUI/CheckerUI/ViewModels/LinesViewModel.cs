@@ -14,44 +14,39 @@ namespace CheckerUI.ViewModels
     {
         private ObservableCollection<LineViewModel> m_LinesList = new ObservableCollection<LineViewModel>();
         private readonly ObservableCollection<NewLineView> m_LinesViews = new ObservableCollection<NewLineView>();
-        public Command NextPageCommand { get; private set; }
-        private List<Dish> m_Dishes { get; set; }
 
         public int m_ClickedLineId { get; set; } = 0;
         public string ClickedLineName { get; set; }
         public LinesViewModel()
         {
-
-            m_Dishes = App.Repository.Dishes;
+            var mDishesDictionary = App.Repository.DishesDictionary;
             initLinesByRepository();
-
 
             App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
             {
-
                 foreach (var dto in linesDTO)
                 {
                     var lineVM = m_LinesList.First(line => line.LineID == dto.lineId);
                     if (lineVM.LineID > 0)
                     {
-                        foreach (var orderItem in dto.LockedItems)
+                        foreach (var orderItem in from orderItem in dto.LockedItems let currentID = orderItem.dishId select orderItem)
                         {
-                            var currentID = orderItem.dishId;
-                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            // orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            orderItem.dish = mDishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
 
-                        foreach (var orderItem in dto.ToDoItems)
+                        foreach (var orderItem in from orderItem in dto.ToDoItems let currentID = orderItem.dishId select orderItem)
                         {
-                            var currentID = orderItem.dishId;
-                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            // orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            orderItem.dish = mDishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
 
-                        foreach (var orderItem in dto.DoingItems)
+                        foreach (var orderItem in from orderItem in dto.DoingItems let currentID = orderItem.dishId select orderItem)
                         {
-                            var currentID = orderItem.dishId;
-                            orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            //orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
+                            orderItem.dish = mDishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
                     }
@@ -59,18 +54,13 @@ namespace CheckerUI.ViewModels
             });
             App.HubConn.On<OrderItem>("ItemMoved", (item) =>
             {
-                item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
+                //item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
+                item.dish = mDishesDictionary[item.dishId];
                 var lineVm = m_LinesList.First(line => line.LineID == item.dish.lineId);
                 lineVm.moveItemViewToRightView(item);
             });
             StartListening();
-            NextPageCommand = new Command(() =>
-            {
-                
-            });
         }
-
-       
         private void initLinesByRepository()
         {
             var list = App.Repository.lines;

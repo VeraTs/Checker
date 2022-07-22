@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local ="clr-namespace:CheckerUI;assembly=CheckerUI"
-             xmlns:fontAwesome="clr-namespace:FontAwesome;assembly=CheckerUI"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              x:Class="CheckerUI.Views.MainPage" NavigationPage.HasNavigationBar="false" BackgroundImageSource="Checker_Logo">
     <ContentPage.BindingContext>

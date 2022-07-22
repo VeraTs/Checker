@@ -11,14 +11,14 @@
         <StackLayout Orientation="Horizontal" Grid.Row="1"
                      VerticalOptions="CenterAndExpand"
                      HorizontalOptions="CenterAndExpand">
-                <CollectionView ItemsSource="{Binding  OrdersViews}" 
+            <CollectionView ItemsSource="{Binding  OrdersViews}" 
                                 ItemsUpdatingScrollMode="KeepItemsInView"
                                 ItemsLayout="HorizontalList"
                                 HorizontalScrollBarVisibility="Always">
-                    <CollectionView.ItemTemplate>
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout Margin="10">
-                                <views:OrderCardView Margin="10" HeightRequest="300" WidthRequest="200"/>
+                            <views:OrderCardView Margin="10" HeightRequest="300" WidthRequest="200"/>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

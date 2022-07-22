@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CheckerUI.Models;
@@ -9,12 +8,9 @@ namespace CheckerUI.Services
 {
     public class DishDataStore : IDataStore<Dish>
     {
-
         public List<Dish> dishes { get; set; }
         public Dictionary<int, Dish> DishesDict { get; set; } = new Dictionary<int, Dish>();
-        public DishDataStore()
-        {
-        }
+     
         public Task<bool> AddItemAsync(Dish item)
         {
             throw new NotImplementedException();

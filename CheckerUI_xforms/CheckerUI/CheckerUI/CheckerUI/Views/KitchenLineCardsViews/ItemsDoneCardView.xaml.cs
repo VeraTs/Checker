@@ -33,7 +33,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         {
             var stackLayout = sender as StackLayout;
             var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
-            var item = card.BindingContext as OrderItemView;
+            var item = card.BindingContext as OrderItemViewModel;
             await ViewModel.ItemReadyOnDoubleClick(item);
         }
 

@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Drawing;
 using CheckerUI.Enums;
-using CheckerUI.ViewModels;
 
-namespace CheckerUI.Helpers.OrdersHelpers
+namespace CheckerUI.ViewModels
 {
     public class OrderViewModel : BaseViewModel
     {
@@ -15,7 +14,7 @@ namespace CheckerUI.Helpers.OrdersHelpers
             m_Order = i_model;
             foreach (var itemModel in i_model.items)
             {
-                var itemView = new OrderItemView(itemModel);
+                var itemView = new OrderItemViewModel(itemModel);
                 Items.Add(itemView);
             }
 
@@ -31,7 +30,7 @@ namespace CheckerUI.Helpers.OrdersHelpers
         // here we are updating the order items list ,
         // an item should note when the kitchen started to make him 
         // and when done , so by that we can change order state 
-        public bool CheckOutItem(OrderItemView i_ToCheck)
+        public bool CheckOutItem(OrderItemViewModel i_ToCheck)
         {
             Items.Remove(i_ToCheck);
             int currentSize = Items.Count;
@@ -90,7 +89,7 @@ namespace CheckerUI.Helpers.OrdersHelpers
 
         public string TableNumberString => "Table : " + m_Order.table.ToString();
 
-        public ObservableCollection<OrderItemView> Items { get; set; } = new ObservableCollection<OrderItemView>();
+        public ObservableCollection<OrderItemViewModel> Items { get; set; } = new ObservableCollection<OrderItemViewModel>();
 
         public eOrderStatus State
         {

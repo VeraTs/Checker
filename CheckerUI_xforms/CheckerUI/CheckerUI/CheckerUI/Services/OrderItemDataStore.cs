@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CheckerUI.Models;
@@ -11,10 +10,7 @@ namespace CheckerUI.Services
     {
         public List<OrderItem> items { get; set; } = new List<OrderItem>();
         public List<Dish> dishes { get; set; } = new List<Dish>(); 
-        public OrderItemDataStore()
-        {
-           
-        }
+   
         public Task<bool> AddItemAsync(OrderItem item)
         {
             throw new NotImplementedException();

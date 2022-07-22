@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using CheckerUI.Enums;
 using CheckerUI.Models;
-using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
@@ -9,45 +8,45 @@ namespace CheckerUI.ViewModels
     public class LineViewModel : BaseLineViewModel
     {
         private readonly Line model;
-      
+
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
 
-      
-        public LineViewModel(Line i_model) :base()
+
+        public LineViewModel(Line i_model) : base()
         {
             base.init();
             m_BackgroundState = new Color();
 
             model = i_model;
-            LineName =model.name;
+            LineName = model.name;
             model.Dishes = new List<Dish>();
             setColorState();
         }
- 
-      
+
+
         private void setColorState()
         {
             switch (model.State)
             {
                 case eLineState.Open:
-                {
-                    LabelsColor = Color.DimGray;
-                    LineStateColor = Color.BlanchedAlmond;
-                    break;
-                }
+                    {
+                        LabelsColor = Color.DimGray;
+                        LineStateColor = Color.BlanchedAlmond;
+                        break;
+                    }
                 case eLineState.Busy:
-                {
-                    LabelsColor = Color.DarkCyan; 
-                    LineStateColor = Color.YellowGreen;
-                    break;
-                }
+                    {
+                        LabelsColor = Color.DarkCyan;
+                        LineStateColor = Color.YellowGreen;
+                        break;
+                    }
                 case eLineState.Closed:
-                {
-                    LineStateColor = Color.White;
-                    LineStateColor = Color.Firebrick;
-                    break;
-                }
+                    {
+                        LineStateColor = Color.White;
+                        LineStateColor = Color.Firebrick;
+                        break;
+                    }
             }
         }
         public string LineName
@@ -57,7 +56,7 @@ namespace CheckerUI.ViewModels
             {
                 model.name = value;
                 OnPropertyChanged(nameof(LineName));
-            } 
+            }
         }
 
         public int LineID
@@ -67,7 +66,7 @@ namespace CheckerUI.ViewModels
             {
                 model.id = value;
                 OnPropertyChanged(nameof(LineID));
-            } 
+            }
         }
 
         public string MaximumParallelism
@@ -97,7 +96,7 @@ namespace CheckerUI.ViewModels
             get => m_BackgroundState;
             private set
             {
-                m_BackgroundState = value; 
+                m_BackgroundState = value;
                 OnPropertyChanged(nameof(LineStateColor));
 
             }

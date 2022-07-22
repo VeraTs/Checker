@@ -40,7 +40,7 @@ namespace CheckerUI.Helpers.OrdersHelpers
             //    m_Orders.Add(order.id, view);
             //}
         }
-        public void UpdateLines(ObservableCollection<OrderItemView> i_OrderItems)
+        public void UpdateLines(ObservableCollection<OrderItemViewModel> i_OrderItems)
         {
             foreach (var item in i_OrderItems)
             {
@@ -87,6 +87,6 @@ namespace CheckerUI.Helpers.OrdersHelpers
                 OnPropertyChanged(nameof(OrdersViews));
             }
         }
-        public ObservableCollection<OrderItemView> itemsLineView { get; set; } = new ObservableCollection<OrderItemView>();
+        public ObservableCollection<OrderItemViewModel> itemsLineView { get; set; } = new ObservableCollection<OrderItemViewModel>();
     }
 }

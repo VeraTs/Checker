@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using CheckerUI.Models;
 using Xamarin.Forms;
@@ -10,7 +8,7 @@ namespace CheckerUI.ViewModels
     public class RegistrationPageViewModel : TriggerAction<ImageButton>, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private RegistrationPageModel m_Model;
+        private readonly RegistrationPageModel m_Model;
 
         public Command SignCommand { get; }
         public Command ReturnCommand { get; }

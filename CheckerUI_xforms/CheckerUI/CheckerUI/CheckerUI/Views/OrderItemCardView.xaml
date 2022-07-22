@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:order="clr-namespace:CheckerUI.Helpers.OrdersHelpers;assembly=CheckerUI"
-             x:DataType="order:OrderItemView"
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             x:DataType="viewModels:OrderItemViewModel"
              x:Class="CheckerUI.Views.OrderItemCardView"  WidthRequest="200" HeightRequest="35">
     <ContentView.Content>
         <Frame HasShadow="True" 
@@ -14,7 +14,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width=".5*"/>
                     <ColumnDefinition Width="*"/>
-                      <ColumnDefinition Width=".5*"/>
+                    <ColumnDefinition Width=".5*"/>
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Column="1"

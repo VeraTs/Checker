@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:order="clr-namespace:CheckerUI.Helpers.OrdersHelpers;assembly=CheckerUI"
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.KitchenOrderItemInProgressCardView"
-             x:DataType="order:OrderItemView">
+             x:DataType="viewModels:OrderItemViewModel">
     <ContentView.Content>
         <Frame IsClippedToBounds="True"  
                HasShadow="True"

@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
 {
-    public class UserMainPageViewModel 
+    public class UserMainPageViewModel
     {
         public Command ReturnCommand { get; }
         public Command MyKitchenCommand { get; }
@@ -13,13 +13,13 @@ namespace CheckerUI.ViewModels
         public Command UpdateKitchenCommand { get; }
         public Command MangeKitchenCommand { get; }
         public LinesPage linesPage { get; private set; }
-       public UpdateKitchenViewModel updateVm { get; private set; }
-       public UpdateKitchenPage updatePage { get; private set; }
-       public MangePage mangeKitchenPage { get; private set; }
-       public MangePageViewModel mangeKitchenVm { get; private set; }
-       public OrdersView ordersView { get; private set; }
+        public UpdateKitchenViewModel updateVm { get; private set; }
+        public UpdateKitchenPage updatePage { get; private set; }
+        public MangePage mangeKitchenPage { get; private set; }
+        public MangePageViewModel mangeKitchenVm { get; private set; }
+        public OrdersView ordersView { get; private set; }
 
-       public ObservableCollection<PageModel> Pages { get; private set; }
+        public ObservableCollection<PageModel> Pages { get; private set; }
 
         public UserMainPageViewModel()
         {
@@ -60,11 +60,11 @@ namespace CheckerUI.ViewModels
 
         private void init()
         {
-            var  p1 = new PageModel
+            var p1 = new PageModel
             {
                 Name = "Kitchen Lines",
                 Id = 1,
-                Description = "view your kitchen Lines, start Working ",
+                Description = "View your kitchen Lines, start Working ",
                 BackgroundImageURL = "KitchenBackground.PNG",
                 NextPageCommand = MyKitchenCommand
             };

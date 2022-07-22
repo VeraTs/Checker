@@ -9,7 +9,7 @@
     <ContentPage.Content>
         <StackLayout>
             <CarouselView ItemsSource="{Binding Pages}" PeekAreaInsets="200"
-                          IsScrollAnimated="True" >
+                          IsScrollAnimated="True"  IndicatorView="indicatorView" >
                 <CarouselView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" />
                 </CarouselView.ItemsLayout>
@@ -71,6 +71,10 @@
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
             </CarouselView>
+            <IndicatorView x:Name="indicatorView"
+                           IndicatorColor="White"
+                           SelectedIndicatorColor="DarkGray"
+                           HorizontalOptions="Center" Margin="20" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -1,5 +1,4 @@
-﻿using CheckerUI.Services;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace CheckerUI.Views
 {
@@ -9,6 +8,5 @@ namespace CheckerUI.Views
         {
             InitializeComponent();
         }
-        
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CheckerUI.Enums;
-using CheckerUI.Helpers.OrdersHelpers;
 using CheckerUI.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
@@ -39,30 +38,27 @@ namespace CheckerUI.ViewModels
 {
     public class BaseLineViewModel : BaseViewModel
     {
-
-        //  public ObservableCollection<OrderItemView> m_OrderItemsViews { get; set; }
-        public Dictionary<int, OrderItemView> m_OrderItemsViewsList { get; set; }
-        private ObservableCollection<OrderItemView> m_ButtonsInProgress { get; set; }
-        private ObservableCollection<OrderItemView> m_ButtonsLocked { get; set; }
-        private ObservableCollection<OrderItemView> m_ButtonsToMake { get; set; }
-        private ObservableCollection<OrderItemView> m_ButtonsDone { get; set; }
+        public Dictionary<int, OrderItemViewModel> m_OrderItemsViewsList { get; set; }
+        private ObservableCollection<OrderItemViewModel> m_ButtonsInProgress { get; set; }
+        private ObservableCollection<OrderItemViewModel> m_ButtonsLocked { get; set; }
+        private ObservableCollection<OrderItemViewModel> m_ButtonsToMake { get; set; }
+        private ObservableCollection<OrderItemViewModel> m_ButtonsDone { get; set; }
 
         public Command ReturnCommand { get; set; }
 
         public void init()
         {
             allocations();
-            ReturnCommand = new Command(() => {  Application.Current.MainPage.Navigation.PopAsync(); });
+            ReturnCommand = new Command(() => { Application.Current.MainPage.Navigation.PopAsync(); });
         }
 
         private void allocations()
         {
-         //   m_OrderItemsViews = new ObservableCollection<OrderItemView>();
-            m_OrderItemsViewsList = new Dictionary<int, OrderItemView>();
-            m_ButtonsInProgress = new ObservableCollection<OrderItemView>();
-            m_ButtonsLocked = new ObservableCollection<OrderItemView>();
-            m_ButtonsToMake = new ObservableCollection<OrderItemView>();
-            m_ButtonsDone = new ObservableCollection<OrderItemView>();
+            m_OrderItemsViewsList = new Dictionary<int, OrderItemViewModel>();
+            m_ButtonsInProgress = new ObservableCollection<OrderItemViewModel>();
+            m_ButtonsLocked = new ObservableCollection<OrderItemViewModel>();
+            m_ButtonsToMake = new ObservableCollection<OrderItemViewModel>();
+            m_ButtonsDone = new ObservableCollection<OrderItemViewModel>();
         }
 
         public void deAllocations()
@@ -71,12 +67,9 @@ namespace CheckerUI.ViewModels
             m_ButtonsDone.Clear();
             m_ButtonsLocked.Clear();
             m_ButtonsToMake.Clear();
-         //   m_OrderItemsViews.Clear();
             m_OrderItemsViewsList.Clear();
-
         }
 
-       
         private bool CheckNewOrderItemByID(int i_id)
         {
             return !m_OrderItemsViewsList.ContainsKey(i_id);
@@ -89,13 +82,13 @@ namespace CheckerUI.ViewModels
                 var view = m_OrderItemsViewsList[i_ToAdd.id];
                 view.OrderItemLineStatus = eLineItemStatus.Doing;
                 view.OrderItemTimeStarted = DateTime.Now;
-                if(m_ButtonsToMake.Remove(view))
-                m_ButtonsInProgress.Add(view);
+                if (m_ButtonsToMake.Remove(view))
+                    m_ButtonsInProgress.Add(view);
             }
             else
             {
                 i_ToAdd.lineStatus = eLineItemStatus.Doing;
-                var view = new OrderItemView(i_ToAdd);
+                var view = new OrderItemViewModel(i_ToAdd);
                 if (!m_ButtonsInProgress.Contains(view))
                     m_ButtonsInProgress.Add(view);
                 m_OrderItemsViewsList.Add(i_ToAdd.id, view);
@@ -114,7 +107,7 @@ namespace CheckerUI.ViewModels
             else
             {
                 i_ToAdd.lineStatus = eLineItemStatus.ToDo;
-                var view = new OrderItemView(i_ToAdd);
+                var view = new OrderItemViewModel(i_ToAdd);
                 if (!m_ButtonsToMake.Contains(view))
                     m_ButtonsToMake.Add(view);
                 m_OrderItemsViewsList.Add(i_ToAdd.id, view);
@@ -125,7 +118,7 @@ namespace CheckerUI.ViewModels
         {
             i_ToAdd.lineStatus = eLineItemStatus.Locked;
             if (!CheckNewOrderItemByID(i_ToAdd.id)) return;
-            var view = new OrderItemView(i_ToAdd);
+            var view = new OrderItemViewModel(i_ToAdd);
             if (!m_OrderItemsViewsList.ContainsKey(i_ToAdd.id) && !m_ButtonsLocked.Contains(view))
             {
                 m_ButtonsLocked.Add(view);
@@ -146,7 +139,7 @@ namespace CheckerUI.ViewModels
             else
             {
                 i_ToAdd.lineStatus = eLineItemStatus.Done;
-                var view = new OrderItemView(i_ToAdd);
+                var view = new OrderItemViewModel(i_ToAdd);
                 if (!m_ButtonsDone.Contains(view))
                     m_ButtonsDone.Add(view);
                 m_OrderItemsViewsList.Add(i_ToAdd.id, view);
@@ -158,38 +151,38 @@ namespace CheckerUI.ViewModels
             switch (i_item.lineStatus)
             {
                 case eLineItemStatus.Locked:
-                {
-                    AddOrderItemToLocked(i_item);
-                    break;
-                }
+                    {
+                        AddOrderItemToLocked(i_item);
+                        break;
+                    }
                 case eLineItemStatus.ToDo:
-                {
-                    AddOrderItemToAvailable(i_item);
-                    break;
-                }
+                    {
+                        AddOrderItemToAvailable(i_item);
+                        break;
+                    }
                 case eLineItemStatus.Doing:
-                {
-                    AddOrderItemToInProgress(i_item);
-                    break;
-                }
+                    {
+                        AddOrderItemToInProgress(i_item);
+                        break;
+                    }
                 case eLineItemStatus.Done:
-                {
-                    AddOrderItemToDone(i_item);
-                    break;
-                }
+                    {
+                        AddOrderItemToDone(i_item);
+                        break;
+                    }
             }
         }
-        public ObservableCollection<OrderItemView> InProgressItemsCollection
+        public ObservableCollection<OrderItemViewModel> InProgressItemsCollection
         {
             get => m_ButtonsInProgress;
             set => m_ButtonsInProgress = value;
         }
-        public async Task ItemToMakeOnDoubleClicked(OrderItemView i_Item)
+        public async Task ItemToMakeOnDoubleClicked(OrderItemViewModel i_Item)
         {
             try
             {
                 await App.HubConn.InvokeAsync("MoveOrderItemToDoing", i_Item.OderItemID);
-                
+
             }
             catch (System.Exception ex)
             {
@@ -197,7 +190,7 @@ namespace CheckerUI.ViewModels
             }
         }
 
-        public async Task ItemInProgressOnDoubleClick(OrderItemView i_Item)
+        public async Task ItemInProgressOnDoubleClick(OrderItemViewModel i_Item)
         {
             try
             {
@@ -209,15 +202,15 @@ namespace CheckerUI.ViewModels
             }
         }
 
-        public async Task ItemLockedOnDoubleClicked(OrderItemView i_Item)
+        public async Task ItemLockedOnDoubleClicked(OrderItemViewModel i_Item)
         {
-           // m_ButtonsLocked.Remove(i_Item);
+            // m_ButtonsLocked.Remove(i_Item);
             i_Item.OrderItemLineStatus = eLineItemStatus.ToDo;
-           
-           // m_ButtonsToMake.Add(i_Item);
+
+            // m_ButtonsToMake.Add(i_Item);
         }
 
-        public async Task ItemReadyOnDoubleClick(OrderItemView i_Item)
+        public async Task ItemReadyOnDoubleClick(OrderItemViewModel i_Item)
         {
             m_ButtonsDone.Remove(i_Item);
             i_Item.OrderItemLineStatus = eLineItemStatus.Doing;
@@ -225,22 +218,27 @@ namespace CheckerUI.ViewModels
             i_Item.FirstTimeToShowString = i_Item.OrderItemTimeCreate;
             m_ButtonsInProgress.Add(i_Item);
         }
-        public ObservableCollection<OrderItemView> ToMakeItemsCollection
+        public ObservableCollection<OrderItemViewModel> ToMakeItemsCollection
         {
             get => m_ButtonsToMake;
             set => m_ButtonsToMake = value;
         }
 
-        public ObservableCollection<OrderItemView> DoneItemsCollection
+        public ObservableCollection<OrderItemViewModel> DoneItemsCollection
         {
             get => m_ButtonsDone;
             set => m_ButtonsDone = value;
         }
-        public ObservableCollection<OrderItemView> LockedItemsCollection
+        public ObservableCollection<OrderItemViewModel> LockedItemsCollection
         {
             get => m_ButtonsLocked;
             set => m_ButtonsLocked = value;
         }
-        public OrderItemView LastSelectedItem { get; set; }
+
+        public string LockedCapacity => "Capacity :" + m_ButtonsLocked.Count;
+        public string ToDoCapacity => "Capacity :" + m_ButtonsToMake.Count;
+        public string DoingCapacity => "Capacity :" + m_ButtonsInProgress.Count;
+        public string ReadyCapacity => "Capacity :" + m_ButtonsDone.Count;
+        public OrderItemViewModel LastSelectedItem { get; set; }
     }
 }
