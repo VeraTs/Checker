@@ -7,7 +7,7 @@ namespace CheckerServer.utils
     public class KitchenUtils
     {
         // restaurantID -> major list of queues that depict orders
-        private readonly Dictionary<int, List<OrderQueue>> r_RestaurantOrderQueuesList= new Dictionary<int, List<OrderQueue>>();
+        private readonly Dictionary<int, List<OrderPyramid>> r_RestaurantOrderQueuesList= new Dictionary<int, List<OrderPyramid>>();
 
         // lineID -> Line with ORDERED LISTS!~!!! so this needs to be kept updated!
         private Dictionary<int, LineDTO> r_Lines = new Dictionary<int, LineDTO>();
@@ -22,7 +22,7 @@ namespace CheckerServer.utils
             List<Line> lines = context.Lines.Include("ServingArea").ToList();
             foreach (Restaurant restaurant in rests)
             {
-                r_RestaurantOrderQueuesList.Add(restaurant.ID, new List<OrderQueue>());
+                r_RestaurantOrderQueuesList.Add(restaurant.ID, new List<OrderPyramid>());
             }
 
             foreach(Line line in lines)
@@ -42,7 +42,7 @@ namespace CheckerServer.utils
         // for when an entirely new restaurant is added
         public void AddRestaurant(Restaurant rest)
         {
-            r_RestaurantOrderQueuesList.Add(rest.ID, new List<OrderQueue>());
+            r_RestaurantOrderQueuesList.Add(rest.ID, new List<OrderPyramid>());
             List<Line> lines = _Context.Lines.Where(l => l.ServingArea.RestaurantId == rest.ID).Include("ServingArea").ToList();
 
             foreach(Line line in lines)
@@ -68,9 +68,9 @@ namespace CheckerServer.utils
             _Context.SaveChanges();
         }
 
-        private OrderQueue getQueuesForOrder(Order order)
+        private OrderPyramid getQueuesForOrder(Order order)
         {
-            OrderQueue orderQueue = new OrderQueue(order.ID);
+            OrderPyramid orderQueue = new OrderPyramid(order.ID);
             orderQueue.enterItems(order.Items.Where(i => i.LineStatus == eLineItemStatus.Locked && i.Status!= eItemStatus.AtLine).ToList(), order.OrderType);
             return orderQueue;
         }
@@ -83,7 +83,7 @@ namespace CheckerServer.utils
             // if no such restaurant has orders here yet, fix that
 
 
-            OrderQueue orderQueue = new OrderQueue(order.ID);
+            OrderPyramid orderQueue = new OrderPyramid(order.ID);
             if (order.OrderType.Equals(eOrderType.AllTogether)) { 
                 
 
@@ -130,7 +130,7 @@ namespace CheckerServer.utils
             {
                 if(activeRests != null && activeRests.Contains(restId))
                 {
-                    foreach (OrderQueue order in r_RestaurantOrderQueuesList[restId])
+                    foreach (OrderPyramid order in r_RestaurantOrderQueuesList[restId])
                     {
                         var items = order.GetAvailableItems();
                         if(items!= null)
@@ -268,7 +268,7 @@ namespace CheckerServer.utils
             List<Order> closedOrders = _Context.Orders.Where(o => o.Status == eOrderStatus.Done).ToList();
             foreach (int id in r_RestaurantOrderQueuesList.Keys)
             {
-                List<OrderQueue> toClose = new List<OrderQueue>();
+                List<OrderPyramid> toClose = new List<OrderPyramid>();
                 r_RestaurantOrderQueuesList[id].ForEach(o =>
                 {
                     if (closedOrders.Any(co => co.ID == o.Id))
@@ -284,14 +284,14 @@ namespace CheckerServer.utils
 
 
 
-    public class OrderQueue
+    public class OrderPyramid
     {
         public int Id { get; private set; }
         public Stack<TimedOrderItem>? starters = null;
         public Stack<TimedOrderItem>? mains = null;
         public Stack<TimedOrderItem>? desserts = null;
 
-        public OrderQueue(int id)
+        public OrderPyramid(int id)
         {
             Id = id;
         }
@@ -549,7 +549,7 @@ namespace CheckerServer.utils
                         }
                         else
                         {
-                            // if temp is not available, and timer for it hasn;t been started - give it the option
+                            // if temp is not available, and timer for it hasn't been started - give it the option
                             if (!temp.timerUp)
                                 temp.timerUp = true;
                             stack.Push(temp);
