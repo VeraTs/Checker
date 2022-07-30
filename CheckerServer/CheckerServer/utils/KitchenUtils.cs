@@ -509,7 +509,7 @@ namespace CheckerServer.utils
             {
                 for (int i = 1; i < sortedList.Count - 1; i++)
                 {
-                    double interval = sortedList.Keys[i] - sortedList.Keys[i - 1];
+                    double interval = Math.Abs(sortedList.Keys[i] - sortedList.Keys[i - 1]);
                     timedQueue.Push(new TimedOrderItem(sortedList.Values[i - 1], interval));
                 }
 
