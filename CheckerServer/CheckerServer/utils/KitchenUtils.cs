@@ -173,6 +173,13 @@ namespace CheckerServer.utils
                     // add to line list and update item status
                     // assumes that these items are tracking from DB
                     r_Lines[item.Dish.LineId].ToDoItems.Add(item);
+                    bool hasItem = r_Lines[item.Dish.LineId].LockedItems.Any(i => i.ID == item.ID);
+                    if(hasItem)
+                    {
+                        OrderItem? oi = r_Lines[item.Dish.LineId].LockedItems.FirstOrDefault(i => i.ID == item.ID);
+                        r_Lines[item.Dish.LineId].LockedItems.Remove(oi);
+                    }
+                    
                     // issue detected - this is not a tracked item any more, so they all need to be retracked.
                     item.LineStatus = eLineItemStatus.ToDo;
                     item.Status = eItemStatus.AtLine;
@@ -205,7 +212,9 @@ namespace CheckerServer.utils
 
                     // add to line list and update item status
                     // assumes that these items are tracking from DB
-                    r_Lines[item.Dish.LineId].LockedItems.Add(item);
+                    bool hasItem = r_Lines[item.Dish.LineId].LockedItems.Any(i => i.ID == item.ID);
+                    if(!hasItem)
+                        r_Lines[item.Dish.LineId].LockedItems.Add(item);
                     // issue detected - this is not a tracked item any more, so they all need to be retracked.
                     //item.Status = eItemStatus.AtLine;
                 }
@@ -226,14 +235,14 @@ namespace CheckerServer.utils
                     r_Lines[thing].ToDoItems.ForEach(item => toDoItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
                     List<OrderItem> doingItems = new List<OrderItem>();
-                    r_Lines[thing].ToDoItems.ForEach(item => doingItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
+                    r_Lines[thing].DoingItems.ForEach(item => doingItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
-                    List<OrderItem> doneItems = new List<OrderItem>();
-                    r_Lines[thing].ToDoItems.ForEach(item => doneItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
+                    //List<OrderItem> doneItems = new List<OrderItem>();
+                    //r_Lines[thing].DoingItems.ForEach(item => doneItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
                     updatedLines[r_Lines[thing].line.ServingArea.RestaurantId].Add(new LineDTO() 
                     {
-                        lineId = thing, DoingItems = r_Lines[thing].DoingItems, LockedItems = r_Lines[thing].LockedItems, ToDoItems = toDoItems
+                        lineId = thing, DoingItems = doingItems, LockedItems = r_Lines[thing].LockedItems, ToDoItems = toDoItems
                     }) ;  // this is always the first time the line is added to the list, since lines are uniquely indexed
                 }
             }
@@ -507,7 +516,7 @@ namespace CheckerServer.utils
         {
             if(sortedList.Count > 0)
             {
-                for (int i = 1; i < sortedList.Count - 1; i++)
+                for (int i = 1; i <= sortedList.Count - 1; i++)
                 {
                     double interval = Math.Abs(sortedList.Keys[i] - sortedList.Keys[i - 1]);
                     timedQueue.Push(new TimedOrderItem(sortedList.Values[i - 1], interval));
