@@ -70,7 +70,7 @@ namespace CheckerServer.Hubs
             }
         }
 
-        public async Task AddOrderItem(OrderItem item)  // orderITem should contain the order id propertly.
+        public async Task AddOrderItem(OrderItem item)  // orderItem should contain the order id propertly.
         {
             Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
             int success = -1;
@@ -98,6 +98,33 @@ namespace CheckerServer.Hubs
                 order.Items.AddRange(_context.OrderItems.Where(oi => oi.OrderId == order.ID));
 
                 await Clients.All.SendAsync("OrderUpdate", order); // send updated DB state to this instance
+            }
+        }
+
+        // for closing order by waiter: given a sum payes it (to fully or partially pay for the order),
+        // after successful payment is made, waiter is immediately informed, and after, all waiters get update of payment.
+        public async Task PayForOrder(int orderId, float sum)
+        {
+            bool isOrder = await _context.Orders.AnyAsync(o => o.ID == orderId);
+            if (isOrder)
+            {
+                Order order = await _context.Orders.FirstAsync(o => o.ID == orderId);
+                if(sum >= order.RemainsToPay)
+                {
+                    sum = sum - order.RemainsToPay;
+                    order.RemainsToPay = 0;
+                    await Clients.Caller.SendAsync("PaymentMadeFull", order, sum);
+                } else
+                {
+                    order.RemainsToPay -= sum;
+                    await Clients.Caller.SendAsync("PartialPaymentMade", order, sum);
+                }
+
+                await _context.SaveChangesAsync();
+                await GetAllOrders();
+            }else
+            {
+                await Clients.Caller.SendAsync("DBError", "No order with id " + orderId + " exists");
             }
         }
 

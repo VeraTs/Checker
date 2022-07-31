@@ -14,6 +14,8 @@ namespace CheckerServer.Controllers
             : base(context, context.RestMenus) 
         { }
 
+        // add a more specified post I guess, to enter the dishes as well as the menu entity
+
         protected override void updateItem(RestMenu existingItem, RestMenu updatedItem)
         {
             if (!string.IsNullOrEmpty(updatedItem.Name))
