@@ -2,48 +2,78 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
-             x:Class="CheckerUI.Views.MainPage" NavigationPage.HasNavigationBar="false" BackgroundImageSource="Checker_Logo">
+             x:Class="CheckerUI.Views.MainPage" 
+             Title="Welcome to Checker" 
+             BackgroundColor="Azure" NavigationPage.HasNavigationBar="False"  BackgroundImageSource="Cover">
     <ContentPage.BindingContext>
         <viewModels:MainPageViewModel/>
     </ContentPage.BindingContext>
-    <ScrollView>
-        <StackLayout>
-        <Grid Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-                <Entry Grid.Column="0"  Grid.Row="0"
-                       Text="{Binding UserName}" Placeholder="User Name"  
-                       FontFamily="FAS"/>
-                <Entry Grid.Column="1"  Grid.Row="0" 
-                       Placeholder="Password" Text ="{Binding Password}" 
-                       FontFamily="FAS"
-                       IsPassword="{Binding  Path=HidePassword}"/>
-            <Button 
-                x:Name=" EnterButton" 
-                Grid.Row="1" Grid.Column="0"
-                Text="Enter" BackgroundColor="OliveDrab"  Font="Large" 
-                Command="{Binding EnterCommand}"/>
-            <Button 
-                x:Name="SignButton"
-                Grid.Row="1" Grid.Column="1" 
-                Text="Sign-up" BackgroundColor="Khaki" Font="Large" 
-                Command="{Binding SignUpCommand}"/>
-            <Button
-                x:Name="ExitButton"
-                Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
-                Text="Exit" FontFamily="FAS"
-                Font="Large"  
-                VerticalOptions="End"
-                Command="{Binding ExitCommand}"/>
-        </Grid>
-    </StackLayout>
-    </ScrollView>
+        <ContentPage.Content>
+            <StackLayout  Orientation="Horizontal" >
+                <Frame IsClippedToBounds="True"  
+                       HasShadow="True"
+                       Padding="50" 
+                       CornerRadius="10"
+                       Margin="10"
+                       BackgroundColor="WhiteSmoke"
+                       BorderColor="Black"
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="EndAndExpand"
+                       WidthRequest="500"
+                       HeightRequest="250">
+                    <StackLayout x:Name="SL1"
+                                 Padding="0">
+                        <Entry x:Name="email" 
+                               Placeholder="Email"
+                               FontSize="30"
+                               ClearButtonVisibility="WhileEditing"
+                               PlaceholderColor="Black"
+                               Text="{Binding UserName}"
+                               Margin="0"/>
+
+                        <Entry x:Name="Password"
+                               Placeholder="Password"
+                               FontSize="30"
+                               Text ="{Binding Password}"
+                               IsPassword="{Binding  Path=HidePassword}"
+                               ClearButtonVisibility="WhileEditing"
+                               PlaceholderColor="Black"
+                               Margin="0"
+                               FlowDirection="MatchParent" />
+
+                        <StackLayout Orientation="Vertical">
+                            <BoxView BackgroundColor="Transparent" HeightRequest="50"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Button x:Name=" EnterButton"
+                                    IsEnabled="True"
+                                    BackgroundColor="#B6CACB"
+                                    CornerRadius="10"
+                                    Font="30"
+                                    HorizontalOptions="FillAndExpand"
+                                    Text="Login"
+                                    TextColor="#000000" 
+                                    Command="{Binding LogInCommand}" 
+                                    BorderColor="#8C9B9A" 
+                                    BorderWidth="5" 
+                                    FontFamily="FAS"
+                                    FontAttributes="Bold"/>
+
+                            <Button x:Name=" exitButton"
+                                    BackgroundColor="LightGray"
+                                    Command="{Binding ExitCommand}"
+                                    CornerRadius="10"
+                                    Font="30"
+                                    HorizontalOptions="FillAndExpand"
+                                    Text="Exit"
+                                    TextColor="Black"
+                                    BorderColor="#8C9B9A"
+                                    BorderWidth="5"
+                                    FontFamily="FAS"
+                                    FontAttributes="Bold"/>
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+        </ContentPage.Content>
 </ContentPage>
