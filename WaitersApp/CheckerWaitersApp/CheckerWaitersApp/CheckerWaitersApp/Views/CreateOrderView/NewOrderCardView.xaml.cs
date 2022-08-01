@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.ViewModels;
 using Xamarin.Forms;
@@ -64,12 +65,20 @@ namespace CheckerWaitersApp.Views.CreateOrderView
             else
             {
                 TypeLabel.Text = "FIFO";
+                TypePicker.SelectedIndex = 0;
             }
         }
 
         private void TableEntry_OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             TableNumLabel.Text = TableEntry.Text;
+        }
+
+        private async void ImageButton_OnClicked(object sender, EventArgs e)
+        {
+            trashButton.Source = "iconTrashOpen.png";
+            await Task.Delay(100);
+            trashButton.Source = "iconTrashClose.png";
         }
     }
 }

@@ -22,9 +22,6 @@ namespace CheckerServer.Models
 
         public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext)
         {
-            // used to determine how many times this is initialized - answer was 1
-            /*Interlocked.Increment(ref counter);
-            Console.WriteLine("$$$$$$$$$$$$$$$$$$$$$$$$$$$" + counter.ToString() + "$$$$$$$$$$$$$$$$$$$$$$$$$$$");*/
             Services = serviceProvider;
             _hubContext = kitchenHubContext;
             using (var scope = Services.CreateScope())
@@ -164,7 +161,7 @@ namespace CheckerServer.Models
                                         lock (r_KitchenLines[restId][lineDTO.lineId])
                                         {
                                             // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
-                                            r_KitchenLines[restId][lineDTO.lineId].ToDoItems.AddRange(lineDTO.ToDoItems);
+
 
                                             lineDTO.LockedItems.ForEach(item => {
                                                 OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
@@ -180,7 +177,13 @@ namespace CheckerServer.Models
                                                 {
                                                     r_KitchenLines[restId][lineDTO.lineId].LockedItems.Remove(oi);
                                                 }
+
+                                                oi = r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Find(i => i.ID == item.ID);
+                                                if (oi == null)
+                                                    r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Add(item);
+
                                             });
+
 
 
                                         }

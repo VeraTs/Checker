@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CheckerWaitersApp.Models;
+using CheckerWaitersApp.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -15,9 +16,6 @@ namespace CheckerWaitersApp
 {
     public partial class App : Application
     {
-        //public static DishDataStore DishesStore { get; private set; }
-        //public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
-        //public static OrdersDataStore OrdersStore { get; private set; }
         public static ServerRepository Repository { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
@@ -82,7 +80,10 @@ namespace CheckerWaitersApp
             });
 
 
-            MainPage = new CreateOrderView();
+            //   MainPage = new CreateOrderView();
+            MainPage = new NavigationPage(new MainPage())
+            {
+            };
 
         }
 

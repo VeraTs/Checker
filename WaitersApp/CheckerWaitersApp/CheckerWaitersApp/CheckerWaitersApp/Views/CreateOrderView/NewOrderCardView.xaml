@@ -13,47 +13,38 @@
                CornerRadius="0"
                Padding="0" 
                BackgroundColor="Transparent"
-               BorderColor="Gray">
-            <StackLayout BackgroundColor="Transparent">
+               BorderColor="Black">
+            <StackLayout BackgroundColor="GhostWhite">
                 <Grid x:Name ="Grid"
-                      VerticalOptions="CenterAndExpand"  
+                      VerticalOptions="Fill"  
                       Padding="0"  Margin="0" 
                       HorizontalOptions="Fill"  
                       BackgroundColor="Transparent">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=".2*"/>
-                        <RowDefinition Height=".1*"/>
+                        <RowDefinition Height=".122*"/>
+                        <RowDefinition Height=".12*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
+                    
                     <BoxView Grid.Row="0"
-                             Color="CadetBlue"  
+                             Color="PowderBlue"  
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="Fill"/>
                    
                     <Label Grid.Row ="0" 
-                           Text ="  Order"
+                           Text ="Order"
                            x:Name="LabelDishes"
                            FontAttributes ="Bold"
-                           FontSize="Header"
+                           FontSize="80"
+                           TextColor="Black"
                            FontFamily ="FAS"
                            HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                    <Button Grid.Row="0"
-                            Text="Clear"
-                            FontFamily="FAS"
-                            FontSize="Medium"
-                            FontAttributes="Bold"
-                            HorizontalOptions="Start"
-                            BackgroundColor="Brown"
-                            effects:TouchEffect.LongPressCommand="{Binding LongPressClearCommand}"
-                            effects:TouchEffect.LongPressDuration="2000"
-                            effects:TouchEffect.PressedBackgroundColor="CadetBlue"
-                            effects:TouchEffect.HoveredBackgroundColor="Brown"/>
+                           VerticalOptions="Start"/>
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="End"
                              HeightRequest="2"
-                             Margin="-5,0,-5,0" 
+                             Margin="0,0,0,0" 
                              CornerRadius="20"/>
 
                     <Grid Grid.Row="1">
@@ -69,8 +60,10 @@
                                BorderColor="Gray"/>
                         <Entry Grid.Column="0" 
                                x:Name="TableEntry"
-                               Placeholder="Enter Table Number"
+                               Placeholder=" Enter Table Number"
                                Keyboard="Numeric"
+                               TextColor="Black"
+                               FontSize="25"
                                PropertyChanged="TableEntry_OnPropertyChanged"
                                Text="{Binding EntryValue}">
                             <Entry.Behaviors>
@@ -81,15 +74,14 @@
                                HasShadow="True" 
                                Padding="0" 
                                BackgroundColor="Transparent"
-                               BorderColor="Gray"/>
+                               BorderColor="Black"/>
                         <Picker Grid.Column="1" 
                                 ItemsSource="{Binding DishTypesStrings}"
-                                x:Name="TypePicker"
+                                x:Name="TypePicker" 
                                 PropertyChanged="TypePicker_OnPropertyChanged"/>
                     </Grid>
 
                     <Grid Grid.Row="2"
-                          Margin="0,0,0,2"
                           IsClippedToBounds="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -102,92 +94,104 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="3*"/>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height=".3*"/>
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Grid.Column="0"
+                            <Grid Grid.Row="0" Grid.Column="0" 
                                   Grid.ColumnSpan="2"
                                   Padding="2">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width=".7*"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
-                                    <RowDefinition Height=".5*"/>
-                                    <RowDefinition Height=".01*"/>
+                                    <RowDefinition Height="3*"/>
                                 </Grid.RowDefinitions>
-
+                                <Frame Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="4" IsClippedToBounds="True"  
+                                       HasShadow="True" 
+                                       Padding="0" 
+                                       BackgroundColor="LightSteelBlue" 
+                                       BorderColor="Gray"/>
                                 <Label Grid.Row="0" Grid.Column="0"
-                                       Text="Total Items :"
+                                       Text=" Total Items :"
                                        FontAttributes ="Bold"
-                                       VerticalOptions="Start"
+                                       TextColor="Black"
+                                       VerticalOptions="CenterAndExpand"
                                        HorizontalOptions="Start"
-                                       FontSize="Title"
+                                       FontSize="30"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Text="{Binding ToOrderCollection.Count}"
                                        FontAttributes ="Bold"
-                                       VerticalOptions="Start"
+                                       TextColor="Black"
+                                       VerticalOptions="CenterAndExpand"
                                        HorizontalOptions="Center"
-                                       FontSize="Title"
+                                       FontSize="30"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="1" Grid.Column="0"
-                                       Text="Table :"
+                                       Text=" Table :"
                                        FontAttributes ="Bold"
+                                       TextColor="Black"
                                        VerticalOptions="Start"
                                        HorizontalOptions="Start"
-                                       FontSize="Title"
+                                       FontSize="30"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="1" Grid.Column="1"
                                        x:Name="TableNumLabel"
-                                       Text="None"
+                                       Text="0"
                                        FontAttributes ="Bold"
+                                       TextColor="Black"
                                        VerticalOptions="Start"
                                        HorizontalOptions="Center"
-                                       FontSize="Title"
+                                       FontSize="30"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="2" Grid.Column="0"
                                        x:Name="OrderTypeLabel"
-                                       Text="Order Type :"
+                                       Text=" Order Type :"
                                        FontAttributes ="Bold"
-                                       VerticalOptions="Start"
+                                       VerticalOptions="Center"
                                        HorizontalOptions="Start"
-                                       FontSize="Title"
+                                       TextColor="Black"
+                                       FontSize="30"
                                        FontFamily ="FAS"/>
-                                <Label Grid.Row="2" Grid.Column="1"
+                                <Label Grid.Row="3" Grid.Column="0"
                                        x:Name="TypeLabel"
                                        Text="Unknown"
                                        FontAttributes ="Bold"
                                        VerticalOptions="Start"
-                                       HorizontalOptions="Center"
-                                       FontSize="Medium"
+                                       TextColor="Black"
+                                       HorizontalOptions="End"
+                                       FontSize="30"
                                        FontFamily ="FAS"/>
-                                <Frame Grid.Row="3" 
-                                       Grid.Column="0"
-                                       Grid.RowSpan="2"
-                                       Grid.ColumnSpan="2"
-                                       IsClippedToBounds="True"  
-                                       HasShadow="True" 
-                                       CornerRadius="0"
-                                       Padding="0" 
-                                       BackgroundColor="Brown"  BorderColor="Gray">
-                                <Button
+                              
+                               
+                            </Grid>
+
+                            <Button Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2"
                                     Text="Send Order"
                                     FontFamily="FAS"
-                                    FontSize="Medium"
+                                    FontSize="50"
                                     FontAttributes="Bold"
-                                    HeightRequest="10"
+                                    VerticalOptions="End"
                                     CornerRadius="5"
                                     BackgroundColor="LightGreen"
                                     effects:TouchEffect.LongPressCommand="{Binding LongPressOrderCommand}"
                                     effects:TouchEffect.LongPressDuration="2000"
                                     effects:TouchEffect.PressedBackgroundColor="CadetBlue"
                                     effects:TouchEffect.HoveredBackgroundColor="LightGreen"/>
-                                </Frame>
-                            </Grid>
+                            <ImageButton x:Name="trashButton" 
+                                Grid.Row="1"  Grid.Column="0" Grid.ColumnSpan="2"
+                                     Source="iconTrashClose.png"
+                                BorderColor="Black" BorderWidth="1"
+                                     Aspect="AspectFit"
+                                VerticalOptions="Start"
+                                     HorizontalOptions="EndAndExpand"
+                                     effects:TouchEffect.LongPressCommand="{Binding LongPressClearCommand}"
+                                     effects:TouchEffect.LongPressDuration="2000"
+                                Clicked="ImageButton_OnClicked"/>
                         </Grid>
                         <CollectionView Grid.Row="0" Grid.Column="0"
                                         x:Name="OrderedDishesView"

@@ -9,42 +9,48 @@
         <Frame IsClippedToBounds="True"  
                HasShadow="True" 
                CornerRadius="0"
-               Padding="0" 
+               Padding="1" 
                BackgroundColor="Transparent"
-               BorderColor="Gray">
-            <StackLayout BackgroundColor="Transparent">
+               BorderColor="Black">
+            <StackLayout BackgroundColor="WhiteSmoke">
                 <Grid x:Name ="Grid"
-                        VerticalOptions="CenterAndExpand"  
+                        VerticalOptions="Fill"  
                         Padding="0"  Margin="0" 
                         HorizontalOptions="Fill"  
                         BackgroundColor="Transparent">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=".2*"/>
+                        <RowDefinition Height=".12*"/>
                         <RowDefinition Height=".1*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width=".6*"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width=".2*"/>
+                        <ColumnDefinition Width=".01*"/>
                     </Grid.ColumnDefinitions>
 
                     <BoxView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" 
-                             Color="CornflowerBlue"  
+                             Color="Azure"  
                              Margin="-6,0,-6,0"
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"/>
 
-                    <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
+                    <Label Grid.Column="1" Grid.Row="0" 
                            Text ="Menu "
                            x:Name="m_LabelDishes"
                            FontAttributes ="Bold"
-                           FontSize="Header"
+                           FontSize="70"
+                           TextColor="Black"
                            FontFamily ="FAS"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
+                           HorizontalOptions="Start"
+                           VerticalOptions="Start"/>
+                    <ImageButton Grid.Column="0" Grid.Row="0"
+                            CornerRadius="30" Aspect="AspectFill" BackgroundColor="Transparent" WidthRequest="50" HeightRequest="60"
+                            VerticalOptions="Start" HorizontalOptions="Start" 
+                            Source="iconLeft.png" 
+                            Clicked="ImageButton_OnClicked"/>
 
-                    <SearchBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+                    <SearchBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BackgroundColor="White">
                     
 
 
@@ -52,56 +58,65 @@
 
                     <Frame  Grid.Row="2" Grid.Column="0"
                             HasShadow="True" 
-                            CornerRadius="0"
                             Padding="0" 
                             BackgroundColor="Transparent"
                             BorderColor="Gray">
                         <StackLayout BackgroundColor="Azure">
                             <Label Text="Categories"
                                    FontFamily="FAS"
-                                   FontSize="Title"
+                                   TextColor="Black"
+                                   FontSize="30"
                                    FontAttributes="Bold"
-                                   Margin="1"
-                                   HorizontalOptions="Center"
-                                   HeightRequest="50"/>
+                                   Margin="10"
+                                   HorizontalOptions="Center"/>
                             <Button Text="Starters"
                                     FontFamily="FAS"
-                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    FontSize="25"
                                     FontAttributes="Bold"
-                                    HeightRequest="100"
+                                    HeightRequest="115"
+                                    Margin="0,30,0,0"
                                     CornerRadius="5"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="StartersButton_OnClicked"/>
                             <Button Text="Main"
                                     FontFamily="FAS"
-                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    FontSize="25"
                                     FontAttributes="Bold"
-                                    HeightRequest="100"
+                                    HeightRequest="115"
                                     CornerRadius="5"
+                                    Margin="0,5,0,0"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="MainsButton_OnClicked"/>
                             <Button Text="Desserts"
                                     FontFamily="FAS"
-                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    FontSize="25"
                                     FontAttributes="Bold"
-                                    HeightRequest="100"
+                                    HeightRequest="115"
                                     CornerRadius="5"
+                                    Margin="0,5,0,0"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="DessertsButton_OnClicked"/>
                             <Button Text="Drinks"
                                     FontFamily="FAS"
-                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    FontSize="25"
                                     FontAttributes="Bold"
                                     CornerRadius="5"
-                                    HeightRequest="100"
+                                    Margin="0,5,0,0"
+                                    HeightRequest="115"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="DrinksButton_OnClicked"/>
                             <Button Text="All"
                                     FontFamily="FAS"
-                                    FontSize="Medium"
+                                    TextColor="Black"
+                                    FontSize="25"
                                     FontAttributes="Bold"
                                     CornerRadius="5"
-                                    HeightRequest="120"
+                                    Margin="0,5,0,0"
+                                    HeightRequest="115"
                                     BackgroundColor="LightSkyBlue"
                                     Clicked="AllDishesButton_OnClicked"/>
                         </StackLayout>
@@ -116,7 +131,7 @@
                              CornerRadius="20"/>
                     <StackLayout Grid.Column="1" Grid.Row="2"
                                  Margin="0,0,0,2"
-                                 IsClippedToBounds="True">
+                                 IsClippedToBounds="True" BackgroundColor="WhiteSmoke">
 
                         <CollectionView x:Name="DishesView"
                                         Margin="5" 

@@ -199,7 +199,6 @@ namespace CheckerWaitersApp.ViewModels
             }
         }
         public List<string> DishTypesStrings { get; private set; }
-
         public void ClearOrderCollection()
         {
             ToOrderCollection.Clear();

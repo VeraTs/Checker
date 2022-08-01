@@ -12,7 +12,7 @@ namespace CheckerWaitersApp.Views.CreateOrderView
     {
         private CreateOrderViewModel m_vm = new CreateOrderViewModel();
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
-        private StackLayout m_LastTappedLayout;
+      
         public DishesCardView()
         {
             InitializeComponent();
@@ -83,6 +83,11 @@ namespace CheckerWaitersApp.Views.CreateOrderView
         private void AllDishesButton_OnClicked(object sender, EventArgs e)
         {
             ViewDishes();
+        }
+
+        private async void ImageButton_OnClicked(object sender, EventArgs e)
+        {
+            await Application.Current.MainPage.Navigation.PopAsync();
         }
     }
 }

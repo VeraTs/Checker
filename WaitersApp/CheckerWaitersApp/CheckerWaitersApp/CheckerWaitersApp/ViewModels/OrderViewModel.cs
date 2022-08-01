@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Models;
@@ -16,6 +17,7 @@ namespace CheckerWaitersApp.ViewModels
         {
             get => Order.status; set => Order.status = value;
         }
+        public string OrderStateString => Order.status.ToString();
 
         public eOrderType OrderType
         {
@@ -23,7 +25,8 @@ namespace CheckerWaitersApp.ViewModels
             set => Order.orderType = value;
         }
         public string Counter => "Total Items :" + Order.items.Count;
-        public string Cost => "Price :" + Order.totalCost;
+        public string Cost => "Price :" + Order.totalCost.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
+
         public string CreatedTime => Order.createdDate.ToShortTimeString();
 
         public ObservableCollection<OrderItem> Items { get; private set; }
@@ -35,8 +38,8 @@ namespace CheckerWaitersApp.ViewModels
         {
             Order = new Order();
             Order = i_Model;
-            TableNumber = "(Table :" + i_Model.table.ToString() +")";
-            OrderID = "Order #" + Order.id.ToString() +"   ";
+            TableNumber = "Table :" + i_Model.table.ToString();
+            OrderID = "Order #" + Order.id.ToString();
             OrderHeader = OrderID + TableNumber;
             OrderState = i_Model.status;
             

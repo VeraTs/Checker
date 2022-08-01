@@ -3,31 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CheckerWaitersApp.Views.OrdersViews.OrdersHeaderCardView">
   <ContentView.Content>
-        <Frame IsClippedToBounds="True"  
-               HasShadow="True" 
-               CornerRadius="0"
-               Padding="0" 
-               BackgroundColor="Transparent" 
-               BorderColor="Transparent">
-            <StackLayout BackgroundColor="Transparent">
+        <StackLayout BackgroundColor="Transparent"   VerticalOptions="Fill"  
+                     HorizontalOptions="Fill"  >
                 <Grid x:Name ="Grid"
-                      Padding="0"
-                      Margin="0" 
-                      VerticalOptions="FillAndExpand"  
-                      HorizontalOptions="FillAndExpand"  
+                      VerticalOptions="Fill"  
+                      HorizontalOptions="Fill"  
                       BackgroundColor="Transparent">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <BoxView Grid.Row="0"
-                             Color="CornflowerBlue"  
+                             Color="Honeydew"  
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"/>
 
                     <Label Grid.Row ="0" 
-                           Text =" All Orders"
+                           Text =" Open Orders"
                            FontAttributes ="Bold"
-                           FontSize="Header"
+                           FontSize="80"
+                           TextColor="Black"
                            FontFamily ="FAS"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"/>
@@ -41,6 +35,5 @@
                              CornerRadius="20"/>
                 </Grid>
                     </StackLayout>
-            </Frame>
-    </ContentView.Content>
+  </ContentView.Content>
 </ContentView>
