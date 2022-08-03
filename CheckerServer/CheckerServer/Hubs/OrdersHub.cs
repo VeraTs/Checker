@@ -9,9 +9,11 @@ namespace CheckerServer.Hubs
     public class OrdersHub : Hub
     {
         private readonly CheckerDBContext _context;
+        public IServiceProvider? Services { get; }
 
-        public OrdersHub(CheckerDBContext context)
+        public OrdersHub(IServiceProvider services, CheckerDBContext context)
         {
+            Services = services;
             _context = context;
         }
 
@@ -114,6 +116,17 @@ namespace CheckerServer.Hubs
                     sum = sum - order.RemainsToPay;
                     order.RemainsToPay = 0;
                     await Clients.Caller.SendAsync("PaymentMadeFull", order, sum);
+                    if (Services != null && await _context.SaveChangesAsync() > 0)
+                    {
+                        // yay - success
+                        // now just update KitchenManager
+                        KitchenManager manager = Services.GetService<KitchenManager>();
+                        await manager.CloseOrder(orderId);
+                    }
+                    else
+                    {
+                        await Clients.Caller.SendAsync("DBError", "Error in updating DB, try again later");
+                    }
                 } else
                 {
                     order.RemainsToPay -= sum;
