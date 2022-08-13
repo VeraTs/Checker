@@ -29,7 +29,18 @@ namespace CheckerWaitersApp.ViewModels
                 Orders.AddNewOrder(order);
 
             });
-            
+
+            App.HubConn.On<Order, float>("PaymentMadeFull" ,(order , sum) =>
+            {
+                Orders.RemovePaidOrder(order);
+            });
+
+            App.HubConn.On<Order, float>("PartialPaymentMade", (order, sum) =>
+            {
+                Orders.UpdatePartialPay(order, order.remainsToPay);
+            });
+
+
             DishTypesStrings = new List<string>();
             var typesList = AllDishTypesList();
             foreach (var type in typesList){ DishTypesStrings.Add(OrderTypeToString(type));}
@@ -75,9 +86,9 @@ namespace CheckerWaitersApp.ViewModels
         {
             var list = new List<eOrderType>
             {
-                eOrderType.FIFO,
                 eOrderType.AllTogether,
-                eOrderType.Staggered
+                eOrderType.Staggered,
+                eOrderType.FIFO
             };
             return list;
         }

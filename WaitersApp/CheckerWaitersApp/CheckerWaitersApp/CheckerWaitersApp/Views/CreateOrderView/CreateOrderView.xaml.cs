@@ -11,8 +11,9 @@ namespace CheckerWaitersApp.Views.CreateOrderView
         private readonly CreateOrderViewModel m_DishesViewModel;
         public CreateOrderView()
         {
-            CreateOrderViewModel m_DishesViewModel = new CreateOrderViewModel();
+            CreateOrderViewModel m_DishesViewModel;
             InitializeComponent();
+            m_DishesViewModel = this.BindingContext as CreateOrderViewModel;
             DishesCardView.SetViewModel(m_DishesViewModel);
             OrderToCreateCardView.SetViewModel(m_DishesViewModel);
             AllOrdersCardView.SetViewModel(m_DishesViewModel.Orders);

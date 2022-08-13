@@ -256,6 +256,15 @@ namespace CheckerServer.utils
             return updatedLines;
         }
 
+        internal void RemoveOrder(Order order)
+        {
+            OrderPyramid? op = r_RestaurantOrderQueuesList[order.RestaurantId].Find(p => p.Id == order.ID);
+            if (op != null)
+            {
+                r_RestaurantOrderQueuesList[order.RestaurantId].Remove(op);
+            }
+        }
+
         // loads new orders from dbContext
         internal int LoadNewOrders()
         {

@@ -20,14 +20,14 @@ namespace CheckerUI.ViewModels
 
             model = i_model;
             LineName = model.name;
-            model.Dishes = new List<Dish>();
+            model.dishes = new List<Dish>();
             setColorState();
         }
 
 
         private void setColorState()
         {
-            switch (model.State)
+            switch (model.state)
             {
                 case eLineState.Open:
                     {
@@ -71,10 +71,10 @@ namespace CheckerUI.ViewModels
 
         public string MaximumParallelism
         {
-            get => model.Limit.ToString();
+            get => model.limit.ToString();
             set
             {
-                model.Limit = int.Parse(value);
+                model.limit = int.Parse(value);
                 OnPropertyChanged(nameof(MaximumParallelism));
             }
         }
@@ -83,10 +83,10 @@ namespace CheckerUI.ViewModels
 
         public eLineState LineStateString
         {
-            get => model.State;
+            get => model.state;
             set
             {
-                model.State = value;
+                model.state = value;
                 OnPropertyChanged(nameof(LineStateString));
             }
         }

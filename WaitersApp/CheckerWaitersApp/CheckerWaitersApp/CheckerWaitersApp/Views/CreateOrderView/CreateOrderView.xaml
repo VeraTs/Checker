@@ -37,16 +37,13 @@
                             <RowDefinition Height=".1*"/>
                             <RowDefinition Height="5*"/>
                         </Grid.RowDefinitions>
-                        <Frame  Grid.Row="0" IsClippedToBounds="True"  
-                                HasShadow="True" 
-                                CornerRadius="0"
-                                BorderColor="Black">
-                            <ordersViews:OrdersHeaderCardView IsClippedToBounds="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                        </Frame>
+                       
+                            <ordersViews:OrdersHeaderCardView Grid.Row="0" IsClippedToBounds="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                       
                         <Frame Grid.Row="2" IsClippedToBounds="True"  
                                HasShadow="True" 
                                CornerRadius="0"
-                               BorderColor="Black" Margin="-1,-30,0,0">
+                               BorderColor="Black" Margin="-1,-30,0,0" BackgroundColor="WhiteSmoke">
                             <ordersViews:AllOrdersCardView Grid.Row="2" IsClippedToBounds="True" 
                                                            VerticalOptions="FillAndExpand"  
                                                            HorizontalOptions="FillAndExpand"

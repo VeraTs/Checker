@@ -8,11 +8,11 @@ namespace CheckerUI.Models
     public class RestMenu : BaseDBItem
     {
         [ForeignKey("Restaurant")]
-        public int RestaurantId { get; set; }
+        public int restaurantId { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         // practicals
-        public List<Dish> Dishes { get; set; } = new List<Dish>();
+        public List<Dish> dishes { get; set; } = new List<Dish>();
     }
 }

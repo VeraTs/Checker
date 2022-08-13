@@ -9,9 +9,11 @@ namespace CheckerServer.Hubs
     public class OrdersHub : Hub
     {
         private readonly CheckerDBContext _context;
+        public IServiceProvider? Services { get; }
 
-        public OrdersHub(CheckerDBContext context)
+        public OrdersHub(IServiceProvider services, CheckerDBContext context)
         {
+            Services = services;
             _context = context;
         }
 
@@ -21,7 +23,7 @@ namespace CheckerServer.Hubs
             List<Order> orders = await _context.Orders.Include("Items").ToListAsync();
 
             await Clients.Caller.SendAsync("ReceiveOrders", orders);
-            
+
             /*foreach(Order order in orders)
             {
                 await Clients.Caller.SendAsync("ReceiveOrder", order);
@@ -38,14 +40,14 @@ namespace CheckerServer.Hubs
                 await _context.Orders.AddAsync(order);
                 success = await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Clients.Caller.SendAsync("DBError", ex.Message);
             }
-            
-            if(success > 0)
+
+            if (success > 0)
             {
-                foreach(OrderItem item in items)
+                foreach (OrderItem item in items)
                 {
                     item.OrderId = order.ID;
                     item.Dish = null;
@@ -56,7 +58,7 @@ namespace CheckerServer.Hubs
                     await _context.OrderItems.AddRangeAsync(items);
                     success = await _context.SaveChangesAsync();
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     Console.WriteLine(exception.Message);
                 }
@@ -64,13 +66,14 @@ namespace CheckerServer.Hubs
                 Order dbOrder = _context.Orders.Include("Items.Dish").FirstOrDefault(o => o.ID == order.ID);
 
                 await Clients.All.SendAsync("ReceiveOrder", dbOrder);
-            } else
+            }
+            else
             {
                 await Clients.Caller.SendAsync("DBError", "Error in adding order");
             }
         }
 
-        public async Task AddOrderItem(OrderItem item)  // orderITem should contain the order id propertly.
+        public async Task AddOrderItem(OrderItem item)  // orderItem should contain the order id propertly.
         {
             Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
             int success = -1;
@@ -79,13 +82,15 @@ namespace CheckerServer.Hubs
                 success = DBSetHelper.AddHelper<OrderItem>(_context, item, _context.OrderItems).Result.Value;
             }
 
-            if(success <0)
+            if (success < 0)
             {
                 await Clients.Caller.SendAsync("DBError", "No Order with the id " + item.OrderId + " is registered");
-            } else if(success == 0)
+            }
+            else if (success == 0)
             {
                 await Clients.Caller.SendAsync("DBError", "Could not add Order Item");
-            }else
+            }
+            else
             {
                 // successfull addition
                 await Clients.Caller.SendAsync("DBSuccess", "Added Order Item successfuly.");
@@ -101,11 +106,51 @@ namespace CheckerServer.Hubs
             }
         }
 
+        // for closing order by waiter: given a sum payes it (to fully or partially pay for the order),
+        // after successful payment is made, waiter is immediately informed, and after, all waiters get update of payment.
+        public async Task PayForOrder(int orderId, float sum)
+        {
+            bool isOrder = await _context.Orders.AnyAsync(o => o.ID == orderId);
+            if (isOrder)
+            {
+                Order order = await _context.Orders.FirstAsync(o => o.ID == orderId);
+                if (sum >= order.RemainsToPay)
+                {
+                    sum = sum - order.RemainsToPay;
+                    order.RemainsToPay = 0;
+                    await Clients.Caller.SendAsync("PaymentMadeFull", order, sum);
+                    if (Services != null && await _context.SaveChangesAsync() > 0)
+                    {
+                        // yay - success
+                        // now just update KitchenManager
+                        KitchenManager manager = Services.GetService<KitchenManager>();
+                        await manager.CloseOrder(orderId);
+                    }
+                    else
+                    {
+                        await Clients.Caller.SendAsync("DBError", "Error in updating DB, try again later");
+                    }
+                }
+                else
+                {
+                    order.RemainsToPay -= sum;
+                    await Clients.Caller.SendAsync("PartialPaymentMade", order, sum);
+                }
+
+                await _context.SaveChangesAsync();
+                   // await GetAllOrders();
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("DBError", "No order with id " + orderId + " exists");
+            }
+        }
+
         // deprecated
         public async Task GetAllOrderItemsForLine(Line line)
         {
             // get all orderItems that are registered as AtLine for this line
-            List<OrderItem> items  = _context.OrderItems
+            List<OrderItem> items = _context.OrderItems
                 .Where(oi => oi.Status == eItemStatus.AtLine)
                 .Where(oi => oi.Dish.LineId == line.ID)
                 .ToListAsync().Result;
@@ -123,27 +168,30 @@ namespace CheckerServer.Hubs
         public async Task SendItemToKitchen(int itemId)
         {
             OrderItem actualItem = _context.OrderItems.FirstOrDefaultAsync(oi => oi.ID == itemId).Result;
-            if(actualItem == null)
+            if (actualItem == null)
             {
                 await Clients.Caller.SendAsync("SignalRError", "No such Order Item");
-            } else
+            }
+            else
             {
                 // check if item is capable of being sent to kitchen
-                if(actualItem.Status != eItemStatus.Ordered)
+                if (actualItem.Status != eItemStatus.Ordered)
                 {
                     await Clients.Caller.SendAsync("SignalRError", "Couldn't send item to kitchen - it was already sent to kitchen");
-                } else
+                }
+                else
                 {
                     // send it to the kitchen!
                     actualItem.Status = eItemStatus.AtLine;
                     actualItem.LineStatus = eLineItemStatus.ToDo;
                     // saving it
                     int success = await _context.SaveChangesAsync();
-                    if(success > 0)
+                    if (success > 0)
                     {
                         // yay, succeeded
                         await Clients.Caller.SendAsync("ItemForKitchen", actualItem);
-                    } else
+                    }
+                    else
                     {
                         // oops, failure
                         await Clients.Caller.SendAsync("SignalRError", "Couldn't Alter status of item with ID " + itemId);
@@ -158,7 +206,8 @@ namespace CheckerServer.Hubs
             if (item == null)
             {
                 await Clients.Caller.SendAsync("SignalRError", "Couldn't Alter status of null item");
-            } else
+            }
+            else
             {
                 OrderItem actualItem = _context.OrderItems.FirstOrDefaultAsync(oi => oi.ID == item.ID).Result;
                 if (item == null)

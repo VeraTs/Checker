@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using CheckerUI.Models;
 using CheckerUI.Services;
-using CheckerUI.ViewModels;
 using CheckerUI.Views;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace CheckerUI
 {

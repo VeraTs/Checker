@@ -11,13 +11,13 @@ namespace CheckerUI.Models
     {
         [Required]
         [ForeignKey("Id")]
-        public Ingredient Ingredient { get; set; }
+        public Ingredient ingredient { get; set; }
         [Required]
         [ForeignKey("DishId")]
-        public Dish Dish { get; set; }
+        public Dish dish { get; set; }
         [Required]
         [ForeignKey("Type")]
-        public Measurement Measurement { get; set; }
-        public int Amount { get; set; } = 0;
+        public Measurement measurement { get; set; }
+        public int amount { get; set; } = 0;
     }
 }

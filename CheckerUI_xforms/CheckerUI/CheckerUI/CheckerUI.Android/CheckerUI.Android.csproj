@@ -66,26 +66,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Lottie_order_received.json" />
-    <AndroidAsset Include="Assets\check_Lottie.json" />
-    <AndroidAsset Include="Assets\fire_Lottie.json" />
-    <AndroidAsset Include="Assets\loading_Lottie.json" />
-    <AndroidAsset Include="Assets\newDish_Lottie.json" />
-    <AndroidAsset Include="Assets\plate_Lottie.json" />
-    <AndroidAsset Include="Assets\playButton_Lottie.json" />
-    <AndroidAsset Include="Assets\workingChef_Lottie.json" />
-    <AndroidAsset Include="Assets\burgerCookingLottie.json" />
-    <AndroidAsset Include="Assets\chef_Lottie.json" />
-    <AndroidAsset Include="Assets\coldCooking_Lottie.json" />
-    <AndroidAsset Include="Assets\HotCooking_Lottie.json" />
-    <AndroidAsset Include="Assets\pizzaCooking_Lottie.json" />
-    <AndroidAsset Include="Assets\excellent_Lottie.json" />
-    <AndroidAsset Include="Assets\reddot_Lottie.json" />
     <None Include="..\..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
     <None Include="Resources\AboutResources.txt" />
-    <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -114,46 +98,10 @@
     <AndroidResource Include="Resources\drawable\imageBurger.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\CheckTitle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\CheckBox.png" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon_Burger.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Fish.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Pizza.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Search.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon_Done.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Stop.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Hold.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Start.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_checked.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Logo.PNG" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_OnFire.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_Available.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon_Locked.png" />
@@ -163,12 +111,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon_LockedNew.jpeg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\icon_OnFireNew.jpeg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Checker_Logo.PNG" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon_DoneNew.PNG" />
@@ -201,10 +143,19 @@
     <AndroidResource Include="Resources\drawable\newFlamesW.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\FlamesWhite.png" />
+    <AndroidResource Include="Resources\drawable\Cover.jpeg" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Cover.jpeg" />
+    <AndroidResource Include="Resources\drawable\FullCover.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\PartialCover.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\CheckerLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\LOGO.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

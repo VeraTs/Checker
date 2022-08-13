@@ -94,6 +94,21 @@ namespace CheckerServer.Models
                 });
         }
 
+        internal async Task CloseOrder(int orderId)
+        {
+            using (var scope = Services.CreateScope())
+            {
+                using (var context = new CheckerDBContext(
+                    scope.ServiceProvider.GetRequiredService<
+                    DbContextOptions<CheckerDBContext>>()))
+                {
+                    Order? order = await context.Orders.FirstAsync(o => o.ID == orderId);
+                    r_KitchenUtils.UpdateContext(context);
+                    r_KitchenUtils.RemoveOrder(order);
+                }
+            }
+        }
+
         internal void UpdateContext(CheckerDBContext context)
         {
             lock (this)

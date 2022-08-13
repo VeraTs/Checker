@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CheckerWaitersApp.Models;
 using System.Text.Json;
+using Microsoft.AspNetCore.SignalR.Client;
 
 
 namespace CheckerWaitersApp.Services
@@ -11,7 +13,8 @@ namespace CheckerWaitersApp.Services
     public class OrdersDataStore : IDataStore<Order>
     {
         public List<Order> orders { get; set; }
-
+        public int Checkout_orderId { get; set; } = 0;
+        public float Checkout_price { get; set; } = 0;
         public OrdersDataStore()
         {
         }
@@ -20,12 +23,34 @@ namespace CheckerWaitersApp.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteItemAsync(string id)
+        public async Task<bool> DeleteItemAsync(string id)
         {
-            throw new NotImplementedException();
+            if (App.HubConn.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await App.HubConn.StartAsync();     // start async connection to SignalR Hub at server
+
+                }
+                catch (System.Exception ex)
+                {
+                    await App.Current.MainPage.DisplayAlert("Server Close Order Error!", ex.Message, "OK");
+                }
+            }
+
+            try
+            {
+                await App.HubConn.InvokeAsync("PayForOrder", Checkout_orderId, Checkout_price);
+            }
+            catch (System.Exception ex)
+            {
+                await App.Current.MainPage.DisplayAlert("Server Close Order !", ex.Message, "OK");
+            }
+
+            return true;
         }
 
-        public Task<Order> GetItemAsync(string id)
+        public  Task<Order> GetItemAsync(string id)
         {
             throw new NotImplementedException();
         }

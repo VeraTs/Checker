@@ -11,7 +11,7 @@ namespace CheckerWaitersApp.Views.CreateOrderView
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewOrderCardView : ContentView
     {
-        private CreateOrderViewModel m_vm = new CreateOrderViewModel();
+        private CreateOrderViewModel m_vm;
         public NewOrderCardView()
         {
             InitializeComponent();

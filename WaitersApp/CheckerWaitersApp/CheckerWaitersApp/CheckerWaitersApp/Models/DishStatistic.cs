@@ -6,12 +6,12 @@ namespace CheckerWaitersApp.Models
 {
     public class DishStatistic : BaseDBItem
     {
-        public Dish Dish { get; set; }
+        public Dish dish { get; set; }
         [ForeignKey("Dish")]
-        public int DishId { get; set; }
+        public int dishId { get; set; }
         [Required]
-        public DateTime Start { get; set; }
+        public DateTime start { get; set; }
         [Required]
-        public DateTime Finish { get; set; }
+        public DateTime finish { get; set; }
     }
 }

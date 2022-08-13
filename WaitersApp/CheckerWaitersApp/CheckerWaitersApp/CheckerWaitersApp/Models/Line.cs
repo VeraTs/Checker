@@ -9,16 +9,16 @@ namespace CheckerWaitersApp.Models
     public class Line : BaseDBItem
     {
         [Required]
-        public string Name { get; set; }
+        public string name { get; set; }
         [ForeignKey("ServingArea")]
-        public int ServingAreaId { get; set; } // id of serving area related to this line
+        public int servingAreaId { get; set; } // id of serving area related to this line
 
-        public int Limit { get; set; } = -1; // -1 means no limit
+        public int limit { get; set; } = -1; // -1 means no limit
 
-        public eLineState State { get; set; } = eLineState.Closed; // starts off closed, changes to open upon user request
+        public eLineState state { get; set; } = eLineState.Closed; // starts off closed, changes to open upon user request
 
-        public List<Dish> Dishes { get; set; } = new List<Dish>();  // dishes made in this Line
+        public List<Dish> dishes { get; set; } = new List<Dish>();  // dishes made in this Line
 
-        public List<Maker> Makers { get; set; } = new List<Maker>();    // makers that live in this line
+        public List<Maker> makers { get; set; } = new List<Maker>();    // makers that live in this line
     }
 }

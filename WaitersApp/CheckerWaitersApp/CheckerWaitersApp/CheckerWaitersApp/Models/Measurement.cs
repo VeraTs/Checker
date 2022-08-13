@@ -5,6 +5,6 @@ namespace CheckerWaitersApp.Models
     public class Measurement
     {
         [Key]
-        public string Type { get; set; }
+        public string type { get; set; }
     }
 }

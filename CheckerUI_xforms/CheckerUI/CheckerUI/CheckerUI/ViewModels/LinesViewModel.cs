@@ -29,21 +29,21 @@ namespace CheckerUI.ViewModels
                     var lineVM = m_LinesList.First(line => line.LineID == dto.lineId);
                     if (lineVM.LineID > 0)
                     {
-                        foreach (var orderItem in from orderItem in dto.LockedItems let currentID = orderItem.dishId select orderItem)
+                        foreach (var orderItem in from orderItem in dto.lockedItems let currentID = orderItem.dishId select orderItem)
                         {
                             // orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
                             orderItem.dish = mDishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
 
-                        foreach (var orderItem in from orderItem in dto.ToDoItems let currentID = orderItem.dishId select orderItem)
+                        foreach (var orderItem in from orderItem in dto.toDoItems let currentID = orderItem.dishId select orderItem)
                         {
                             // orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
                             orderItem.dish = mDishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
 
-                        foreach (var orderItem in from orderItem in dto.DoingItems let currentID = orderItem.dishId select orderItem)
+                        foreach (var orderItem in from orderItem in dto.doingItems let currentID = orderItem.dishId select orderItem)
                         {
                             //orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
                             orderItem.dish = mDishesDictionary[orderItem.dishId];

@@ -10,7 +10,7 @@ namespace CheckerWaitersApp.Views.CreateOrderView
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DishesCardView : ContentView
     {
-        private CreateOrderViewModel m_vm = new CreateOrderViewModel();
+        private CreateOrderViewModel m_vm;
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
       
         public DishesCardView()

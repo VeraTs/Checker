@@ -8,27 +8,27 @@ namespace CheckerUI.Models
     public class Restaurant : BaseDBItem
     {
         [Required]
-        public string Name { get; set; }
+        public string name { get; set; }
         [Required]
-        private string Email { get; set; }
+        private string email { get; set; }
         [Required]
-        private string Password { get; set; }
+        private string password { get; set; }
 
         // fluff
-        public string Phone { get; set; }
-        public string ContactName { get; set; }
-        public int Balance { get; set; } = 0;
+        public string phone { get; set; }
+        public string contactName { get; set; }
+        public int balance { get; set; } = 0;
 
         // -------- Details of Physical representation of Restaurant --------
 
         // menus!
-        public List<RestMenu> Menus { get; set; } = new List<RestMenu>();
+        public List<RestMenu> menus { get; set; } = new List<RestMenu>();
 
         // Line = Hot Line, Oven, Cold line, etc.
-        public List<Line> Lines { get; set; } = new List<Line>();
+        public List<Line> lines { get; set; } = new List<Line>();
 
         // Serving areas
-        public List<ServingArea> ServingAreas { get; set; } = new List<ServingArea>();
+        public List<ServingArea> servingAreas { get; set; } = new List<ServingArea>();
 
     }
 }

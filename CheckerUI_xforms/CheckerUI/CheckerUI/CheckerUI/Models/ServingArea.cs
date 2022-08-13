@@ -9,14 +9,14 @@ namespace CheckerUI.Models
     {
         // how many distinct zones there are in the servbing area to place dishes
         [ForeignKey("Restaurant")]
-        public int RestaurantId { get; set; }
+        public int restaurantId { get; set; }
         [Required]
-        public int ZoneNum { get; set; }
+        public int zoneNum { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string name { get; set; }
         // for each zone depicts which orderitem resides there
         private Dictionary<int, OrderItem> zones = new Dictionary<int, OrderItem>();
 
-        public List<Line> Lines { get; set; } = new List<Line>();
+        public List<Line> lines { get; set; } = new List<Line>();
     }
 }

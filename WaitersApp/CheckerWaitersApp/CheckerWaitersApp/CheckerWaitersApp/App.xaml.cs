@@ -1,16 +1,12 @@
-﻿
-using CheckerWaitersApp.Services;
-using CheckerWaitersApp.Views.CreateOrderView;
+﻿using CheckerWaitersApp.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading.Tasks;
 using CheckerWaitersApp.Models;
 using CheckerWaitersApp.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-
 
 namespace CheckerWaitersApp
 {
@@ -79,12 +75,9 @@ namespace CheckerWaitersApp
                 Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
             });
 
-
-            //   MainPage = new CreateOrderView();
             MainPage = new NavigationPage(new MainPage())
             {
             };
-
         }
 
         protected override void OnStart()
@@ -98,8 +91,5 @@ namespace CheckerWaitersApp
         protected override void OnResume()
         {
         }
-
-
-
     }
 }

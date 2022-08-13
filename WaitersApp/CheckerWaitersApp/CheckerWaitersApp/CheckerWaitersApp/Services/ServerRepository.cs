@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CheckerWaitersApp.Models;
 
+
 namespace CheckerWaitersApp.Services
 {
     public class ServerRepository

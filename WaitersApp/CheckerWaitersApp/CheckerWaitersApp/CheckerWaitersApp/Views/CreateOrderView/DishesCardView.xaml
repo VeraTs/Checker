@@ -60,7 +60,7 @@
                             HasShadow="True" 
                             Padding="0" 
                             BackgroundColor="Transparent"
-                            BorderColor="Gray">
+                            BorderColor="Black">
                         <StackLayout BackgroundColor="Azure">
                             <Label Text="Categories"
                                    FontFamily="FAS"

@@ -5,8 +5,8 @@ namespace CheckerWaitersApp.Models
     public class Ingredient : BaseDBItem
     {
         [Required]
-        public string Name { get; set; }
-        public int InStock { get; set; }
-        public Measurement Measurement { get; set; }
+        public string name { get; set; }
+        public int inStock { get; set; }
+        public Measurement measurement { get; set; }
     }
 }

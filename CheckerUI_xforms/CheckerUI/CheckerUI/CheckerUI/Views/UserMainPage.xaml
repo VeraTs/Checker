@@ -2,12 +2,12 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:CheckerUI.ViewModels" 
-             x:Class="CheckerUI.Views.UserMainPage" Title="Options">
+             x:Class="CheckerUI.Views.UserMainPage" Title="Options" BackgroundImageSource="PartialCover">
     <ContentPage.BindingContext>
         <viewmodels:UserMainPageViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout BackgroundColor="Transparent">
             <CarouselView ItemsSource="{Binding Pages}" PeekAreaInsets="200"
                           IsScrollAnimated="True"  IndicatorView="indicatorView" >
                 <CarouselView.ItemsLayout>

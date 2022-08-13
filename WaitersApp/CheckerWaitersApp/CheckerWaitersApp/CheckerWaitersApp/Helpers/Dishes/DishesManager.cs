@@ -41,9 +41,9 @@ namespace CheckerWaitersApp.Helpers.Dishes
         {
             var list = new List<eOrderType>
             {
-                eOrderType.FIFO,
                 eOrderType.AllTogether,
-                eOrderType.Staggered
+                eOrderType.Staggered,
+                eOrderType.FIFO,
             };
             return list;
         }
