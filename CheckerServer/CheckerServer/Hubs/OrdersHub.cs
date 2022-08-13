@@ -23,11 +23,6 @@ namespace CheckerServer.Hubs
             List<Order> orders = await _context.Orders.Include("Items").ToListAsync();
 
             await Clients.Caller.SendAsync("ReceiveOrders", orders);
-            
-            /*foreach(Order order in orders)
-            {
-                await Clients.Caller.SendAsync("ReceiveOrder", order);
-            }*/
         }
 
         public async Task AddOrder(Order order)
@@ -108,6 +103,7 @@ namespace CheckerServer.Hubs
         public async Task PayForOrder(int orderId, float sum)
         {
             bool isOrder = await _context.Orders.AnyAsync(o => o.ID == orderId);
+			// change so that if payment is smade every waiter gets an update
             if (isOrder)
             {
                 Order order = await _context.Orders.FirstAsync(o => o.ID == orderId);
@@ -115,6 +111,7 @@ namespace CheckerServer.Hubs
                 {
                     sum = sum - order.RemainsToPay;
                     order.RemainsToPay = 0;
+                    order.Status = eOrderStatus.Done;
                     await Clients.Caller.SendAsync("PaymentMadeFull", order, sum);
                     if (Services != null && await _context.SaveChangesAsync() > 0)
                     {
@@ -134,7 +131,6 @@ namespace CheckerServer.Hubs
                 }
 
                 await _context.SaveChangesAsync();
-                await GetAllOrders();
             }else
             {
                 await Clients.Caller.SendAsync("DBError", "No order with id " + orderId + " exists");
