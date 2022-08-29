@@ -10,8 +10,11 @@
         <Frame IsClippedToBounds="True"  
                HasShadow="True" 
                CornerRadius="20"
-               Padding="0" 
-               BackgroundColor="White" BorderColor="Gray">
+               HeightRequest="600"
+               WidthRequest="350"
+              Margin="10"
+               Padding="0"
+               BackgroundColor="White"  BorderColor="Gray">
 
             <StackLayout Orientation="Horizontal">
 
@@ -21,8 +24,8 @@
                           HorizontalOptions="FillAndExpand"  
                           BackgroundColor="Transparent">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=".1*"/>
-                        <RowDefinition Height=".1*"/>
+                        <RowDefinition Height=".15*"/>
+                        <RowDefinition Height=".15*"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height=".8*"/>
                     </Grid.RowDefinitions>
@@ -31,18 +34,18 @@
                                 Grid.Row="0"  
                                 HorizontalTextAlignment="Start"  
                                 VerticalTextAlignment="Center"  
-                                FontSize="Body"
+                                FontSize="40"
                                 LineBreakMode="TailTruncation"/>
                     <Label Text="{Binding RemainingItems}"
                                Grid.Row="1" Margin="3"
                                HorizontalTextAlignment="Start"  
                                VerticalTextAlignment="Center"  
-                               FontSize="Body"
+                               FontSize="40"
                                LineBreakMode="TailTruncation"/>
                     <BoxView Grid.Row="2" Color="CadetBlue" 
                                  Margin="-7,0,-1,0"
                                  HorizontalOptions="FillAndExpand"  
-                                 HeightRequest="2"/>
+                                 HeightRequest="10"/>
                     <StackLayout Grid.Row="3" Margin="0,0,0,5" IsClippedToBounds="True">
                         <CollectionView x:Name = "m_ItemsCollection" 
                                             ItemsSource="{Binding Items}" Margin="1"
@@ -59,8 +62,8 @@
                                         </StackLayout.GestureRecognizers>
                                         <views:OrderItemCardView  
                                             Margin="1"
-                                            VerticalOptions="StartAndExpand"
-                                            HorizontalOptions="StartAndExpand"
+                                            VerticalOptions="CenterAndExpand"
+                                            HorizontalOptions="CenterAndExpand"
                                             Padding="0"/>
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup Name="CommonStates">

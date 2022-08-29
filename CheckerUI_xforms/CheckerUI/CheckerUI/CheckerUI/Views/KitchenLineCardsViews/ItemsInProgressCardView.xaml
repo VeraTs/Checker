@@ -10,9 +10,9 @@
                HasShadow="True" 
                CornerRadius="0"
                Padding="0" 
-               BackgroundColor="Transparent" BorderColor="Gray">
+               BackgroundColor="AntiqueWhite" BorderColor="Gray">
             <StackLayout Orientation="Horizontal" BackgroundColor="Transparent">
-                <BoxView BackgroundColor="LightGoldenrodYellow"  WidthRequest="16"/>
+                <BoxView BackgroundColor="LightBlue"  WidthRequest="16"/>
                 <Grid VerticalOptions="CenterAndExpand"  
                       Padding="0"  Margin="1" 
                       HorizontalOptions="FillAndExpand"  
@@ -22,28 +22,51 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <BoxView Grid.Row="0" BackgroundColor="LightGoldenrodYellow" Margin="-8,0,-8,-5"/>
-                    <Label Grid.Row ="0" 
-                           Text ="Doing"
-                           FontAttributes ="Bold"
-                           FontSize="70"
-                           FontFamily ="FAS"
-                           HorizontalOptions="CenterAndExpand"
-                           VerticalOptions="CenterAndExpand"/>
-                    <Label Grid.Row ="0"
-                           Text ="{Binding DoingCapacity}"
-                           FontAttributes ="Bold"
-                           FontSize="Large"
-                           FontFamily ="FAS"
-                           HorizontalOptions="End"
-                           VerticalOptions="Fill"/>
-                    <Button Grid.Row="0"
-                            HorizontalOptions="Start"
-                            VerticalOptions="StartAndExpand"
-                            FontFamily="FAS"
-                            Text="{x:StaticResource IconX}"
-                            FontSize="Title"
-                            Command="{Binding ReturnCommand}"/>
+                    <BoxView Grid.Row="0" BackgroundColor="LightBlue" Margin="-8,0,-8,-5"/>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label  Grid.Column ="1"
+                                Text ="On Fire"
+                                FontAttributes ="Bold"
+                                FontSize="70"
+                                TextColor="Black"
+                                FontFamily ="FAS"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Fill"/>
+                        <Grid Grid.Column="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                           
+                        <Label  Grid.Column ="1"
+                                Text ="Capacity: "
+                                FontAttributes ="Bold"
+                                FontSize="40"
+                                FontFamily ="FAS"
+                                HorizontalOptions="CenterAndExpand"
+                                VerticalOptions="Fill"/>
+                            <Label Grid.Column ="1"
+                                   Text ="{Binding  InProgressItemsCollection.Count}"
+                                   FontAttributes ="Bold"
+                                   FontSize="40"
+                                   FontFamily ="FAS"
+                                   HorizontalOptions="EndAndExpand"
+                                   VerticalOptions="Fill"/>
+                        </Grid>
+                        <Button Grid.Column="0"
+                                HorizontalOptions="Start"
+                                VerticalOptions="StartAndExpand"
+                                FontFamily="FAS"
+                                Text="{x:StaticResource IconX}"
+                                FontSize="Title"
+                                Command="{Binding ReturnCommand}"/>
+                    </Grid>
+                   
                     <BoxView Grid.Row="1" Color="DarkGray" 
                              Margin="-8,-1,-8,0"
                              HeightRequest="1"
@@ -89,7 +112,7 @@
                         </CollectionView>
                     </StackLayout>
                 </Grid>
-                <BoxView BackgroundColor="LightGoldenrodYellow" WidthRequest="16" Margin="1,0,0,1"/>
+                <BoxView BackgroundColor="LightBlue" WidthRequest="16" Margin="1,0,0,1"/>
             </StackLayout>
         </Frame>
     </ContentView.Content>

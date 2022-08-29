@@ -23,7 +23,7 @@ namespace CheckerUI.ViewModels
 
         public UserMainPageViewModel()
         {
-            linesPage = new LinesPage();
+            
             updateVm = new UpdateKitchenViewModel();
             updatePage = new UpdateKitchenPage
             {
@@ -37,6 +37,7 @@ namespace CheckerUI.ViewModels
             ordersView = new OrdersView();
             MyKitchenCommand = new Command(async () =>
             {
+                linesPage = new LinesPage();
                 await Application.Current.MainPage.Navigation.PushAsync(linesPage);
             });
             UpdateKitchenCommand = new Command(async () =>
@@ -45,6 +46,7 @@ namespace CheckerUI.ViewModels
             });
             MangeKitchenCommand = new Command(async () =>
             {
+               
                 await Application.Current.MainPage.Navigation.PushAsync(mangeKitchenPage);
             });
             OrdersViewCommand = new Command(async () =>

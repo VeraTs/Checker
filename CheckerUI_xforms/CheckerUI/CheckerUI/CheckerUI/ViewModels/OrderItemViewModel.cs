@@ -21,9 +21,9 @@ namespace CheckerUI.ViewModels
             m_orderItem = i_item;
             m_orderItem.dish = i_item.dish;
             OrderItemLineStatus = i_item.lineStatus;
-            OderItemID = i_item.id; // to fix
+            OderItemID = i_item.id;
             OrderItemName = i_item.dish.name;
-            OrderItemDescription = i_item.changes;
+            OrderItemDescription = "Note :" + i_item.changes;
             FirstTimeToShowString = OrderItemTimeCreate;
         }
 
@@ -39,6 +39,7 @@ namespace CheckerUI.ViewModels
             get => m_orderItem.id;
             set => m_orderItem.id = value;
         }
+        public int Table { get; set; } = 0;
 
         public eLineItemStatus OrderItemLineStatus
         {
@@ -62,7 +63,7 @@ namespace CheckerUI.ViewModels
         public eDishType OrderItemType => m_orderItem.dish.type;
         public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
         public string OrderItemTimeCreate => "Created: " + m_orderItem.createdDate.ToString("hh:mm tt");
-        public string OrderItemTimeStartedString => "Started: " + m_orderItem.startDate.ToString(" hh: mm tt");
+        public string OrderItemTimeStartedString => "Started: " + m_orderItem.startDate.ToString("hh: mm tt");
 
         public string OrderItemTimeDoneString => "Done: " + m_orderItem.doneDate.ToString("hh:mm tt");
 

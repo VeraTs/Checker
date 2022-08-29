@@ -24,12 +24,7 @@ namespace CheckerUI.ViewModels
                 if (checkUserDetails())
                 {
                     var user = await loadUserDetails();
-                   
-                    var loggedPage = new UserMainPage
-                    {
-                      
-                    };
-                    await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
+                    await Application.Current.MainPage.Navigation.PushAsync(new UserMainPage());
                 }
                 else
                 {

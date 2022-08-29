@@ -25,14 +25,15 @@
                             <Label 
                             Text="{Binding OrderItemName}" 
                             FontFamily="FAS" 
-                            FontSize="Large"
+                            FontSize="40"
                             TextColor="Black"
                             VerticalOptions="Center" HorizontalOptions="Center"
                             Margin="2"/>
                             <Label  
                             Text="{Binding  OrderItemType}"
                             VerticalOptions="Center" HorizontalOptions="Center"
-                            FontFamily="FAS" 
+                            FontFamily="FAS"
+                            FontSize="30"
                             Margin="2"/>
                         </StackLayout>
                     </StackLayout>
@@ -41,17 +42,14 @@
                 <StackLayout Orientation="Horizontal">
                     <BoxView Color="{Binding OrderStatusColor}" WidthRequest="10"></BoxView>
                     <StackLayout Orientation="Vertical">
-
-                        <Label  HorizontalOptions="Start"
-                                Text="{Binding OrderStatusString}"/>
                         <Label HorizontalOptions="Start"
-                       Text="{Binding FirstTimeToShowString}" FontFamily="FAS" />
-                        <Label HorizontalOptions="Start"
+                               Text="{Binding FirstTimeToShowString}" FontSize="25" FontFamily="FAS" />
+                        <Label HorizontalOptions="Start" FontSize="25"
                        Text="{Binding OrderItemTimeStartedString}" FontFamily="FAS"/>
 
                         <Label 
-                    HorizontalOptions="Start"
-                       Text="{Binding OrderItemDescription}" FontFamily="FAS"  FontSize="Large"
+                    HorizontalOptions="Start" 
+                       Text="{Binding OrderItemDescription}" FontFamily="FAS"  FontSize="30"
                     TextColor="Black"/>
                     </StackLayout>
 

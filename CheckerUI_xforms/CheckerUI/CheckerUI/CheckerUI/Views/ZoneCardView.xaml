@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
+             xmlns:views="clr-namespace:CheckerUI.Views;assembly=CheckerUI"
+             x:Class="CheckerUI.Views.ZoneCardView" x:DataType="models:ServingZone">
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+               HasShadow="True"
+               Padding="0" 
+               CornerRadius="10"
+               WidthRequest="337"
+               Margin="1"
+               BackgroundColor="White" BorderColor="Black">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".4*"/>
+                    <RowDefinition Height=".05*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <BoxView Grid.Row="1" Color="Black"/>
+                <Label Grid.Row="0" Text="{Binding id}"
+                       FontSize="30"
+                       TextColor="Black"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
+                <views:OrderItemCardView Grid.Row="2"  
+                    Margin="1"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="CenterAndExpand"
+                    Padding="0"/>
+                <Label Grid.Row="3" Text="{Binding item.Table}" FontSize="30"></Label>
+            </Grid>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

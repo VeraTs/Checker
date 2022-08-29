@@ -7,24 +7,24 @@ namespace CheckerUI.Services
     {
         public static LinesDataStore LinesStore { get; private set; }
         public static DishDataStore DishesStore { get; private set; }
-       // public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
-      //  public static OrdersDataStore OrdersStore { get; private set; }
+        public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
+        public static OrdersDataStore OrdersStore { get; private set; }
         public List<Dish> Dishes { get; private set; }
         public Dictionary<int, Dish> DishesDictionary { get; private set; } = new Dictionary<int, Dish>();
         public List<Line> lines { get; private set; }
-    //    public List<OrderItem> OrderedItems { get; private set; }
-    //    public List<Order> Orders { get; private set; }
+        public List<OrderItem> OrderedItems { get; private set; }
+        public List<Order> Orders { get; private set; }
 
         public ServerRepository()
         {
             DishesStore = new DishDataStore();
             LinesStore = new LinesDataStore();
-          //  AllOrdersItemsStore = new OrderItemDataStore();
-          //  OrdersStore = new OrdersDataStore();
+            AllOrdersItemsStore = new OrderItemDataStore();
+            OrdersStore = new OrdersDataStore();
             Dishes = new List<Dish>();
             lines = new List<Line>();
-          //  Orders = new List<Order>();
-           // OrderedItems = new List<OrderItem>();
+            Orders = new List<Order>();
+            OrderedItems = new List<OrderItem>();
         }
 
         public async void LoadData()
@@ -34,14 +34,14 @@ namespace CheckerUI.Services
             DishesDictionary = DishesStore.DishesDict;
             await LinesStore.GetItemsAsync();
             lines = LinesStore.lines;
-           // await AllOrdersItemsStore.GetItemsAsync();
-          //  OrderedItems = AllOrdersItemsStore.items;
-           // await OrdersStore.GetItemsAsync();
-           // Orders = OrdersStore.orders;
+            await AllOrdersItemsStore.GetItemsAsync();
+            OrderedItems = AllOrdersItemsStore.items;
+            await OrdersStore.GetItemsAsync();
+            Orders = OrdersStore.orders;
             Dishes = DishesStore.dishes;
             lines = LinesStore.lines;
-           // OrderedItems = AllOrdersItemsStore.items;
-            //Orders = OrdersStore.orders;
+            OrderedItems = AllOrdersItemsStore.items;
+            Orders = OrdersStore.orders;
         }
     }
 }

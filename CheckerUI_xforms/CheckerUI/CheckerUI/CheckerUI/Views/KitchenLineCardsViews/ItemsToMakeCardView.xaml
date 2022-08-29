@@ -10,7 +10,7 @@
                HasShadow="True" 
                CornerRadius="0"
                Padding="0" 
-               BackgroundColor="Transparent" BorderColor="Gray">
+               BackgroundColor="WhiteSmoke" BorderColor="Black">
             <StackLayout Orientation="Horizontal" BackgroundColor="Transparent">
                 <BoxView BackgroundColor="Coral" WidthRequest="10"/>
                 <Grid x:Name ="m_Grid"
@@ -26,20 +26,35 @@
                              Margin="-6,0,-6,0"
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="FillAndExpand"/>
-                    <Label Grid.Row ="0"
-                           Text ="To Do"
-                           FontAttributes ="Bold"
-                           FontSize="60"
-                           FontFamily ="FAS"
-                           HorizontalOptions="CenterAndExpand"
-                           VerticalOptions="FillAndExpand"/>
-                    <Label Grid.Row ="0"
-                           Text ="{Binding ToDoCapacity}"
-                           FontAttributes ="Bold"
-                           FontSize="Large"
-                           FontFamily ="FAS"
-                           HorizontalOptions="End"
-                           VerticalOptions="Fill"/>
+                  <Grid Grid.Row="0">
+                      <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                      <Label  Grid.Column ="1"
+                              Text ="To Do "
+                              FontAttributes ="Bold"
+                              FontSize="45"
+                              FontFamily ="FAS"
+                              HorizontalOptions="StartAndExpand"
+                              VerticalOptions="Fill"/>
+                        <Label  Grid.Column ="2"
+                                Text ="Capacity: "
+                                FontAttributes ="Bold"
+                                FontSize="30"
+                                FontFamily ="FAS"
+                                HorizontalOptions="CenterAndExpand"
+                                VerticalOptions="Fill"/>
+                        <Label Grid.Column ="2"
+                             Text ="{Binding ToMakeItemsCollection.Count}"
+                             FontAttributes ="Bold"
+                             FontSize="30"
+                             FontFamily ="FAS"
+                             HorizontalOptions="End"
+                             VerticalOptions="Fill"/>
+                    </Grid>
+
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="End" HeightRequest="2"

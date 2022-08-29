@@ -1,4 +1,4 @@
-﻿using CheckerUI.Helpers.OrdersHelpers;
+﻿using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -10,7 +10,7 @@ namespace CheckerUI.Views
         public OrdersView()
         {
             InitializeComponent();
-            var manager = new OrdersManager();
+            var manager = new OrdersViewModel();
             this.BindingContext = manager;
         }
     }

@@ -9,26 +9,27 @@
                HasShadow="True"
                Padding="0" 
                CornerRadius="10"
+               HeightRequest="350"
                Margin="1"
-               BackgroundColor="Transparent" BorderColor="Gray">
+               BackgroundColor="White" BorderColor="Black">
             <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
 
-                <BoxView Color="{Binding OrderStatusColor}"
+                <BoxView Color="CadetBlue"
                          WidthRequest="10" 
                          Margin="1"></BoxView>
 
-                <StackLayout Orientation="Vertical" Margin="0,0,0,0" IsClippedToBounds="True">
+                <StackLayout Orientation="Vertical" Margin="0,0,0,0" IsClippedToBounds="True" WidthRequest="250">
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="2*"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0"
                             Text="{Binding OrderItemName}" 
                             FontFamily="FAS" 
-                            FontSize="Large"
+                            FontSize="40"
                             TextColor="Black"
                             VerticalOptions="Center" HorizontalOptions="Center"
                             Margin="2"/>
@@ -36,26 +37,26 @@
                                     IsClippedToBounds="True" BackgroundColor="Transparent" WidthRequest="130">
                             <StackLayout>
                                 <Label Text="{Binding  OrderItemType}"
-                                       VerticalOptions="Center" HorizontalOptions="Center"
+                                       HorizontalOptions="Center"
                                        FontFamily="FAS" 
-                                       TextColor="Black"
+                                       FontSize="30"
+                                       TextColor="DimGray"
                                        Margin="2"/>
-                                <Label HorizontalOptions="Center"
-                                       Text="{Binding OrderStatusString}"/>
-                                <Label HorizontalOptions="Start"
+                             
+                                <Label HorizontalOptions="Start" FontSize="25"
                                        Text="{Binding FirstTimeToShowString}" 
                                        FontFamily="FAS"/>
-                                <Label HorizontalOptions="Start"
+                                <Label HorizontalOptions="Start" FontSize="25"
                                        Text="{Binding OrderItemTimeStartedString}"
                                        FontFamily="FAS"/>
-                                <Label HorizontalOptions="Start"
+                                <Label HorizontalOptions="Start" 
                                        Text="{Binding OrderItemDescription}" 
-                                       FontFamily="FAS" FontSize="Large" TextColor="Black"/>
+                                       FontFamily="FAS" FontSize="25" TextColor="Black"/>
                             </StackLayout>
                         </ScrollView>
                     </Grid>
                 </StackLayout>
-                <BoxView Color="{Binding OrderStatusColor}" WidthRequest="10" Margin="1"></BoxView>
+                <BoxView Color="CadetBlue"  WidthRequest="10" Margin="1"></BoxView>
             </StackLayout>
         </Frame>
     </ContentView.Content>
