@@ -35,8 +35,9 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<IEnumerable<Restaurant>>> get()
         {
             var res = await r_Set
+                .Include("ServingAreas")
+                .Include("Lines")
                 .Include("Menus.Dishes")
-                .Include("ServingAreas.Lines")
                 .ToListAsync();
 
             return res;
@@ -47,7 +48,6 @@ namespace CheckerServer.Controllers
             var res = await r_Set
                 .Include("Lines")
                 .Include("Menus.Dishes")
-                .Include("ServingAreas.Lines")
                 .FirstOrDefaultAsync(d => d.ID == id);
 
             return res;
