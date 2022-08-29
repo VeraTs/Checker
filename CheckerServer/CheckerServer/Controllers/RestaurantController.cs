@@ -46,6 +46,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<Restaurant>> getSpecific(int id)
         {
             var res = await r_Set
+                .Include("ServingAreas")
                 .Include("Lines")
                 .Include("Menus.Dishes")
                 .FirstOrDefaultAsync(d => d.ID == id);
