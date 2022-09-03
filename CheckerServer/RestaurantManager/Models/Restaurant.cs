@@ -1,14 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CheckerServer.Models
+namespace RestaurantManager.Models
 {
     public class Restaurant : BaseDBItem
     {
         [Required]
         public string Name { get; set; }
-        [ForeignKey("User")]
-        public String OwnerEmail { get; set; }
+        [Required]
+        private string Email { get; set; }
+        [Required]
+        private string Password { get; set; }
 
         // fluff
         public string Phone { get; set; }

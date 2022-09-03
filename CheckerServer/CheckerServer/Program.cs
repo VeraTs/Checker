@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.InMemory;
 using CheckerServer.Hubs;
 using CheckerServer.Models;
+using CheckerServer.utils;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,15 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<KitchenManager>();
+builder.Services.AddSingleton<RestaurantManager>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie( options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/Forbidden";
+    });
 
 builder.Host.ConfigureServices(services => { services.AddHostedService<KitchenManager>(provider => provider.GetService<KitchenManager>()); });
 
@@ -41,6 +52,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseRouting();
 

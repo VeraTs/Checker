@@ -18,10 +18,24 @@ namespace CheckerServer.Controllers
             r_Set = set;
         }
 
+        // recognizing user and restaurant for him
+        internal virtual async Task<Restaurant> legitimateUser()
+        {
+            String restEmail = HttpContext.User.Identity.Name.ToString();
+            Restaurant? userRestaurant = null;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+               userRestaurant = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.OwnerEmail == HttpContext.User.Identity.Name.ToString());
+            }
+
+            return userRestaurant;
+        }
+
         // getting all instances of this entity type. 
         // for more specified Includes and terms, please override.
         internal virtual async Task<ActionResult<IEnumerable<T>>> get()
         {
+            Restaurant? restaurant = await legitimateUser();
             var res = await r_Set.ToListAsync();
             return res;
         }
