@@ -2,7 +2,6 @@
 using CheckerServer.Models;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace CheckerServer.Controllers
 {
     [Route("Ingredients")]
@@ -12,6 +11,16 @@ namespace CheckerServer.Controllers
         public IngredientController(CheckerDBContext context)
             : base(context, context.Ingredients)
         { }
+
+        protected override Task<Ingredient> createAuthenticatedUserItem(Ingredient item)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Task<Ingredient> getItemForAuthentitcatedUser(int id)
+        {
+            throw new NotImplementedException();
+        }
 
         protected override void updateItem(Ingredient existingItem, Ingredient updatedItem)
         {
