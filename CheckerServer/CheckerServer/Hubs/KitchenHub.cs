@@ -77,6 +77,14 @@ namespace CheckerServer.Hubs
             if (item != null)
             {
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+                Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
+                Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
+                OrdersHub orderhub = Services.GetService<OrdersHub>();
+                if(orderhub != null)
+                {
+                    int spot = await orderhub.ItemToBeServed(item, rest);
+                    await Clients.Caller.SendAsync("PlaceItem", item, spot);
+                }
             }
             else
             {
