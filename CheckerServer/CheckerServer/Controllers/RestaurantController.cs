@@ -63,7 +63,36 @@ namespace CheckerServer.Controllers
             return res;
         }
 
-        public async Task<ActionResult<Restaurant>> Add(Restaurant item)
+
+        [HttpPost]
+        [Route("login")]
+        /*public async Task<ActionResult<Restaurant>> userLogin([FromBody] User i_user)
+        {
+            if (ModelState.IsValid)
+            {
+                // Use Input.Email and Input.Password to authenticate the user
+                // with your custom authentication logic.
+                //
+                // For demonstration purposes, the sample validates the user
+                // on the email address maria.rodriguez@contoso.com with 
+                // any password that passes model validation.
+
+                User? dbUser = r_DbContext.Users.Where(u => u.Email == i_user.Email && u.Password == HashTool.hashPassword(i_user.Password)).FirstOrDefault();
+
+                if (dbUser == null || String.IsNullOrEmpty(dbUser.Email))
+                {
+                    return BadRequest("UserName or Password is incorrect");
+                }
+                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals(i_user.Email));
+                return rest;
+            }
+
+            return BadRequest();
+        }*/
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult<Restaurant>> userRegisteration(Restaurant item)
         {
             if (ModelState.IsValid && item != null)
             {
