@@ -19,22 +19,22 @@ namespace CheckerServer.Models
         public eLineItemStatus LineStatus { get; set; } = eLineItemStatus.Locked;
 
         //statistics 
-        public DateTime Start { get; set; }
+        public DateTime DishStart { get; set; }
 
-        public DateTime Finish { get; set; }
+        public DateTime DishFinish { get; set; }
 
         public int dishCount(int i_Month)
         {
             if (DateTime.Now.Month != i_Month)
             {
-                this.Dish.LastMonthSales = this.Dish.LastMonthSales;
-                this.Dish.ThisMonthSales = 0;
-                this.Dish.AvrageMonthSales = 0;
+                this.Dish.LastMonthSalesDish = this.Dish.LastMonthSalesDish;
+                this.Dish.ThisMonthSalesDish = 0;
+                this.Dish.AvrageMonthSalesDish = 0;
             }
-            long elapsedTicks = Finish.Ticks - Start.Ticks;
+            long elapsedTicks = DishFinish.Ticks - DishStart.Ticks;
             TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
             double doneTime = elapsedSpan.TotalMinutes;
-            this.Dish.AvrageMonthSales = (this.Dish.AvrageMonthSales * this.Dish.ThisMonthSales + (int)doneTime) / (this.Dish.ThisMonthSales + 1);
+            this.Dish.AvrageMonthSalesDish = (this.Dish.AvrageMonthSalesDish * this.Dish.ThisMonthSalesDish + (int)doneTime) / (this.Dish.ThisMonthSalesDish + 1);
             return DateTime.Now.Month;
         }
     }

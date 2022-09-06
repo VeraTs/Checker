@@ -24,8 +24,8 @@ namespace CheckerServer.Models
         public eDishType Type { get; set; }
 
         //statistics
-        public int ThisMonthSales { get; set; }
-        public int LastMonthSales { get; set; }
-        public int AvrageMonthSales { get; set; }
+        public int ThisMonthSalesDish { get; set; } = -1;
+        public int LastMonthSalesDish { get; set; } = -1;
+        public int AvrageMonthSalesDish { get; set; } = -1;
     }
 }

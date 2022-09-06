@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CheckerServer.Migrations
 {
     [DbContext(typeof(CheckerDBContext))]
-    [Migration("20220904152838_myMigrationName")]
-    partial class myMigrationName
+    [Migration("20220906173626_UserStatisticMigration")]
+    partial class UserStatisticMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,7 @@ namespace CheckerServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<int>("AvrageMonthSales")
+                    b.Property<int>("AvrageMonthSalesDish")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -42,7 +42,7 @@ namespace CheckerServer.Migrations
                     b.Property<float>("EstMakeTime")
                         .HasColumnType("real");
 
-                    b.Property<int>("LastMonthSales")
+                    b.Property<int>("LastMonthSalesDish")
                         .HasColumnType("int");
 
                     b.Property<int>("LineId")
@@ -64,7 +64,7 @@ namespace CheckerServer.Migrations
                     b.Property<int>("RestMenuId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ThisMonthSales")
+                    b.Property<int>("ThisMonthSalesDish")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -237,11 +237,14 @@ namespace CheckerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DishFinish")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("DishId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("Finish")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("DishStart")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("LineStatus")
                         .HasColumnType("int");
@@ -251,9 +254,6 @@ namespace CheckerServer.Migrations
 
                     b.Property<int>("ServingAreaZone")
                         .HasColumnType("int");
-
-                    b.Property<TimeSpan>("Start")
-                        .HasColumnType("time");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -282,7 +282,15 @@ namespace CheckerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
