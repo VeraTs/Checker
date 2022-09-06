@@ -4,6 +4,14 @@ using CheckerServer.Data;
 using Microsoft.EntityFrameworkCore;
 using CheckerServer.utils;
 using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+using System.Threading;
+using System.ComponentModel;
+using FluentEmail.Smtp;
+using FluentEmail.Core;
 
 namespace CheckerServer.Controllers
 {
@@ -70,6 +78,7 @@ namespace CheckerServer.Controllers
                     if (res > 0)
                     {
                         // return the added item
+                        sendAnEmailAsync(item.Email, item.Name);
                         return item;
                     }
                     else
@@ -97,6 +106,31 @@ namespace CheckerServer.Controllers
                 }
                 return BadRequest(msg);
             }
+        }
+
+        private async Task sendAnEmailAsync(String i_Email,String i_RestuarantName)
+        {
+            var sender = new SmtpSender(() => new SmtpClient("smtp-mail.outlook.com")
+            {
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                Port = 587,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential()
+                {
+                    UserName = "CheckerApp@outlook.com",
+                    Password = "checker123"
+                }
+            }); ;
+
+            Email.DefaultSender = sender;
+
+            var email = await Email
+                .From("CheckerApp@outlook.com")
+                .To(i_Email, i_RestuarantName)
+                .Subject("Tanks for the registeration")
+                .Body("Welcome to Checker App where the world is greener")
+                .SendAsync();
         }
     }
 }
