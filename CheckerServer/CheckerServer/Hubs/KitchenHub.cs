@@ -62,6 +62,7 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if (item != null)
             {
+                item.Start = DateTime.Now;
                 await moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
             }
             else
@@ -76,6 +77,8 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if (item != null)
             {
+                item.Finish = DateTime.Now;   
+                r_Manager.Month=item.dishCount(r_Manager.Month);
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
             }
             else
