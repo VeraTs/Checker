@@ -2,7 +2,8 @@
 using CheckerServer.Models;
 using CheckerServer.Data;
 using Microsoft.EntityFrameworkCore;
-
+using CheckerServer.utils;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CheckerServer.Controllers
 {
@@ -52,6 +53,50 @@ namespace CheckerServer.Controllers
                 .FirstOrDefaultAsync(d => d.ID == id);
 
             return res;
+        }
+
+        public async Task<ActionResult<Restaurant>> Add(Restaurant item)
+        {
+            if (ModelState.IsValid && item != null)
+            {
+                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals( item.Email));
+                if (rest != null)
+                {
+                    return BadRequest("The Email is already in use");
+                }
+                try
+                {
+                    int res = (await DBSetHelper.AddHelper<Restaurant>(r_DbContext, item, r_Set)).Value;
+                    if (res > 0)
+                    {
+                        // return the added item
+                        return item;
+                    }
+                    else
+                    {
+                        // return null item
+                        return BadRequest("DB error: cannot insert item");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(CRUDutils.onRejectFromDB(item));
+                }
+            }
+            else
+            {
+                String msg = "";
+                if (item == null)
+                {
+                    msg += "Invalid Syntax for Object\n";
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    msg += "Internal error";
+                }
+                return BadRequest(msg);
+            }
         }
     }
 }
