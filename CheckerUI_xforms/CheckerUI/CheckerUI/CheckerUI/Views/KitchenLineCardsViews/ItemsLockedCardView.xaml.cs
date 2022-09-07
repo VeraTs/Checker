@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CheckerUI.Helpers;
-using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
@@ -16,7 +10,7 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemsLockedCardView : ContentView
     {
-        public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
+        public LineViewModel ViewModel { get; set; }
 
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();  
 
@@ -37,11 +31,11 @@ namespace CheckerUI.Views.KitchenLineCardsViews
         {
             var stackLayout = sender as StackLayout;
             var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
-            var item = card.BindingContext as OrderItemView;
-            bool answer = await Application.Current.MainPage.DisplayAlert("Order Locked", "Are You Sure ?", "Yes", "No");
+            var item = card.BindingContext as OrderItemViewModel;
+            var answer = await Application.Current.MainPage.DisplayAlert("Order Locked", "Are You Sure ?", "Yes", "No");
             if (answer)
             {
-                ViewModel.ItemLockedOnDoubleClicked(item);
+               await ViewModel.ItemLockedOnDoubleClicked(item);
             }
         }
     }

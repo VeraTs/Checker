@@ -22,7 +22,10 @@ namespace CheckerServer.Models
         public int Month { get; set; }
         public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext)
         {
+
             Month = DateTime.Now.Month;
+
+
             Services = serviceProvider;
             _hubContext = kitchenHubContext;
             using (var scope = Services.CreateScope())

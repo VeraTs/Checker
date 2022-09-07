@@ -21,5 +21,7 @@ namespace CheckerServer.Data
         public DbSet<ServingArea> ServingAreas { get; set; }
         public DbSet<Maker> Maker { get; set; }
        
+
+        public DbSet<User> Users { get; set; }
     }
 }

@@ -14,6 +14,51 @@ namespace CheckerServer.Controllers
             : base(context, context.Lines)
         { }
 
+        protected override async Task<Line?> createAuthenticatedUserItem(Line item)
+        {
+            Line? line = null;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Restaurant? rest = await getUserRestaurant();
+                if (rest != null)
+                {
+                    if (item.RestaurantId == 0)
+                    {
+                        item.RestaurantId = rest.ID;
+                    }
+
+                    if (item.RestaurantId == rest.ID)
+                    {
+                        line = item;
+                    }
+                }
+            }
+
+            return line;
+        }
+
+        protected override async Task<Line?> getItemForAuthentitcatedUser(int id)
+        {
+            Line? line = null;
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Restaurant? rest = await getUserRestaurant();
+                if (rest != null)
+                {
+                    try
+                    {
+                        line = await r_DbContext.Lines.FirstAsync(l => l.ID == id && l.RestaurantId == rest.ID);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+
+            return line;
+        }
+
         protected override void updateItem(Line existingItem, Line updatedItem)
         {
             if (!string.IsNullOrEmpty(updatedItem.Name))
@@ -38,20 +83,48 @@ namespace CheckerServer.Controllers
 
         override internal async Task<ActionResult<IEnumerable<Line>>> get()
         {
-            var res = await r_Set
-                .Include("Dishes")
-                .ToListAsync();
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Restaurant? rest = await getUserRestaurant();
+                if (rest != null)
+                {
+                    var res = await r_Set
+                        .Where(l => l.RestaurantId == rest.ID)
+                        .Include("Dishes")
+                        .ToListAsync();
 
-            return res;
+                    return res;
+                }
+
+                return BadRequest();
+            }
+            return Forbid();
         }
 
         override internal async Task<ActionResult<Line>> getSpecific(int id)
         {
-            var res = await r_Set
-                .Include("Dishes")
-                .FirstOrDefaultAsync(d => d.ID == id);
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                Restaurant? rest = await getUserRestaurant();
+                if (rest != null)
+                {
+                    try
+                    {
+                        var res = await r_Set
+                        .Include("Dishes")
+                        .FirstAsync(l => l.RestaurantId == rest.ID);
 
-            return res;
+                        return res;
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                return BadRequest();
+            }
+            return Forbid();
         }
-        }
+
     }
+}

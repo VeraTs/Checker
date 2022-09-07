@@ -8,6 +8,11 @@
             <x:String x:Key ="IconStop">&#xf28d;</x:String>
             <x:String x:Key ="IconDone">&#xf00c;</x:String>
             <x:String x:Key ="IconX">&#xf00d;</x:String>
+            <Style TargetType="NavigationPage">
+                <Setter Property="HasNavigationBar" Value="True" />
+                <Setter Property="BarTextColor" Value="Black" />
+                <Setter Property="BarBackgroundColor" Value="Azure" />
+            </Style>
         </ResourceDictionary>
         
     </Application.Resources>

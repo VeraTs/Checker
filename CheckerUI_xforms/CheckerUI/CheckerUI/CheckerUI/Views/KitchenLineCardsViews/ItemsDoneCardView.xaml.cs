@@ -1,6 +1,5 @@
 ﻿using System;
 using CheckerUI.Helpers;
-using CheckerUI.Helpers.Order;
 using CheckerUI.ViewModels;
 using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
@@ -12,12 +11,13 @@ namespace CheckerUI.Views.KitchenLineCardsViews
     public partial class ItemsDoneCardView : ContentView
     {
         private readonly ItemCardHelper r_ItemCardHelper = new ItemCardHelper();
-       
+        public LineViewModel ViewModel { get; set; }
+
         public ItemsDoneCardView()
         {
             InitializeComponent();
         }
-        public BaseLineViewModel ViewModel { get; set; } = new BaseLineViewModel();
+    
         
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
@@ -28,12 +28,12 @@ namespace CheckerUI.Views.KitchenLineCardsViews
             r_ItemCardHelper.OnSingleTap(frame, expander);
         }
 
-        private void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
+        private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
             var card = stackLayout.LogicalChildren[0] as KitchenOrderItemCardView;
-            var item = card.BindingContext as OrderItemView;
-            ViewModel.ItemReadyOnDoubleClick(item);
+            var item = card.BindingContext as OrderItemViewModel;
+            await ViewModel.ItemReadyOnDoubleClick(item);
         }
 
     }

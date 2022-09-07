@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ordersViews="clr-namespace:CheckerWaitersApp.Views.OrdersViews;assembly=CheckerWaitersApp" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels" 
+             x:DataType="viewmodels:OrderViewModel"
+             x:Class="CheckerWaitersApp.Views.OrdersViews.OrderItemsCardView">
+  <ContentView.Content>
+      <Frame HasShadow="True"
+             Padding="0" 
+             CornerRadius="0"
+             Margin="0"
+             BackgroundColor="Azure"  BorderColor="Black">
+          <StackLayout Orientation="Horizontal">
+              <BoxView Color="DarkCyan" WidthRequest="10"/>
+
+              <StackLayout Orientation="Vertical" Margin="10">
+                  <CollectionView x:Name="orderCard"
+                                  ItemsSource = "{Binding  OrderItemsViews}" 
+                                  VerticalScrollBarVisibility="Always"
+                                  HorizontalScrollBarVisibility="Always"
+                                  SelectionMode="None">
+                      <CollectionView.ItemTemplate>
+                          <DataTemplate>
+                              <ordersViews:OrderItemCardView Margin="10"
+                                                             VerticalOptions="Center"
+                                                             HorizontalOptions="Center"
+                                                             Padding="0"/>
+                          </DataTemplate>
+                      </CollectionView.ItemTemplate>
+                  </CollectionView>
+              </StackLayout>
+          </StackLayout>
+      </Frame>
+    </ContentView.Content>
+</ContentView>

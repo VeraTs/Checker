@@ -6,8 +6,8 @@ namespace CheckerUI.Enums
 {
     public enum eLineState
     {
-        chill,
-        busy,
-        overload
+        Closed,
+        Open,
+        Busy
     }
 }

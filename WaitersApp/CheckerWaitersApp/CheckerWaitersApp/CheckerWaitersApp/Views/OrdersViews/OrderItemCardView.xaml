@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
+             xmlns:views="http://xamarin.com/schemas/2020/toolkit"
+             x:DataType="viewmodels:OrderItemViewModel"
+             x:Class="CheckerWaitersApp.Views.OrdersViews.OrderItemCardView">
+    <ContentView.Content>
+        <views:Expander  Margin="0" 
+                         IsClippedToBounds="True">
+                <views:Expander.Header>
+                    <Frame x:Name="OrderItemFrame"
+                           IsClippedToBounds="True"  
+                           HasShadow="True"
+                           Padding="0" 
+                           CornerRadius="10"
+                           Margin="1"
+                           BackgroundColor="Azure"  BorderColor="Black">
+                    <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
+                        <BoxView Color="DarkCyan" WidthRequest="10"/>
+
+                        <Grid IsClippedToBounds="True"
+                              Margin="5">
+                            <Label Text="{Binding  DishName}"
+                                   FontFamily="FAS"
+                                   FontSize="Title"
+                                   FontAttributes="Bold"
+                                   TextColor="Black"
+                                   VerticalTextAlignment="Center"
+                                   HorizontalTextAlignment="Start"/>
+                        </Grid>
+                    </StackLayout>
+                        </Frame>
+                </views:Expander.Header>
+                <Frame IsClippedToBounds="True"  
+                       HasShadow="True"
+                       Padding="0" 
+                       CornerRadius="10"
+                       Margin="1"
+                       BackgroundColor="Azure"  BorderColor="Black">
+                <StackLayout Orientation="Horizontal">
+                    <BoxView Color="DarkCyan" WidthRequest="10"/>
+                    <StackLayout Orientation="Vertical" Margin="10">
+                        <Label Text="{Binding  Note}"
+                               FontFamily="FAS"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               TextColor="Black"
+                               MaxLines="1"/>
+                        <Label Text="{Binding StateString}"
+                               FontFamily="FAS"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               TextColor="CornflowerBlue"
+                               MaxLines="1"/>
+                        <Label Text="{Binding  TypeString}"
+                               FontFamily="FAS"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               TextColor="CadetBlue"
+                               MaxLines="1"/>
+                        <Label Text="{Binding CreatedItemString  }"
+                               FontFamily="FAS"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               TextColor="DarkSeaGreen"
+                               MaxLines="1"/>
+                        <BoxView Color="Transparent" WidthRequest="10"></BoxView>
+                    </StackLayout>
+                </StackLayout>
+                    </Frame>
+            </views:Expander>
+    </ContentView.Content>
+</ContentView>
+
+            
+
+   

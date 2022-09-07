@@ -11,7 +11,7 @@ namespace CheckerUI.ViewModels
         private string m_UserName;
         private string m_Password;
         private bool m_hidePassword = true;
-        public Command EnterCommand { get; }
+        public Command LogInCommand { get; }
         public Command SignUpCommand { get; }
         public Command ExitCommand { get; }
         public string ShowIcon { get; set; }
@@ -19,17 +19,12 @@ namespace CheckerUI.ViewModels
 
         public MainPageViewModel()
         {
-            EnterCommand = new Command(async () =>
+            LogInCommand = new Command(async () =>
             {
                 if (checkUserDetails())
                 {
                     var user = await loadUserDetails();
-                    var loggedVm = new LoggedMainPageViewModel();
-                    var loggedPage = new LoggedMainPage
-                    {
-                        BindingContext = loggedVm
-                    };
-                    await Application.Current.MainPage.Navigation.PushAsync(loggedPage);
+                    await Application.Current.MainPage.Navigation.PushAsync(new UserMainPage());
                 }
                 else
                 {
