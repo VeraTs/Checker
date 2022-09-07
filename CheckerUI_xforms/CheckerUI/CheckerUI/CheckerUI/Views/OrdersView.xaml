@@ -14,27 +14,81 @@
                 <RowDefinition Height=".01*"/>
                 <RowDefinition Height=".8*"/>
             </Grid.RowDefinitions>
-      
-        <StackLayout Orientation="Horizontal" Grid.Row="0" IsClippedToBounds="True">
-            <CollectionView ItemsSource="{Binding  OrdersViews}" 
-                                ItemsUpdatingScrollMode="KeepItemsInView"
-                                ItemsLayout="HorizontalList"
-                                HorizontalScrollBarVisibility="Always">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <views:OrderCardView Margin="1"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
-            <StackLayout Orientation="Horizontal" Grid.Row="2" IsClippedToBounds="True">
-                <CollectionView ItemsSource="{Binding Zones}" 
+
+            <StackLayout Orientation="Horizontal" Grid.Row="0" IsClippedToBounds="True">
+                <CollectionView ItemsSource="{Binding  OrdersViews}" 
                                 ItemsUpdatingScrollMode="KeepItemsInView"
                                 ItemsLayout="HorizontalList"
                                 HorizontalScrollBarVisibility="Always">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <views:ZoneCardView Margin="1"/>
+                            <views:OrderCardView Margin="1"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Grid.Row="2" IsClippedToBounds="True">
+                <CollectionView x:Name="Zones" ItemsSource="{Binding Zones}"
+                                ItemsUpdatingScrollMode="KeepItemsInView"
+                                ItemsLayout="HorizontalList"
+                                HorizontalScrollBarVisibility="Always">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame IsClippedToBounds="True"  
+                                   HasShadow="True"
+                                   Padding="0" 
+                                   CornerRadius="10"
+                                   WidthRequest="337"
+                                   Margin="1"
+                                   BackgroundColor="White" 
+                                   BorderColor="Black">
+                                <StackLayout>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="1"/>
+                                        <TapGestureRecognizer NumberOfTapsRequired="2" />
+                                    </StackLayout.GestureRecognizers>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height=".4*"/>
+                                            <RowDefinition Height=".05*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <BoxView Grid.Row="1" Color="Black"/>
+                                        <Label
+                                            Grid.Row="0" Text="{Binding id}"
+                                            FontSize="30"
+                                            TextColor="Black"
+                                            HorizontalOptions="Center" 
+                                            VerticalOptions="Center" />
+                                        <Label 
+                                            Grid.Row="2"
+                                            Text="{Binding item.OrderItemName}"
+                                            FontFamily="FAS"
+                                            FontSize="30"
+                                            TextColor="Black"
+                                            FontAttributes="Bold"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            MaxLines="1"/>
+                                        <Label 
+                                            Grid.Row="3"
+                                            Text="{Binding item.Table}"
+                                            FontSize="30"/>
+                                    </Grid>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup Name="CommonStates">
+                                            <VisualState Name="Normal"/>
+                                            <VisualState Name="Selected">
+                                                <VisualState.Setters>
+                                                    <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                </VisualState.Setters>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+
+                                </StackLayout>
+                            </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
