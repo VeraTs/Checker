@@ -69,6 +69,11 @@ namespace CheckerServer.Controllers
 
         override internal async Task<ActionResult<IEnumerable<ServingArea>>> get()
         {
+            var res = await r_Set
+                .ToListAsync();
+
+            return res;
+
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Restaurant? rest = await getUserRestaurant();
@@ -89,6 +94,11 @@ namespace CheckerServer.Controllers
 
         override internal async Task<ActionResult<ServingArea>> getSpecific(int id)
         {
+
+            var res = await r_Set
+                .FirstOrDefaultAsync(d => d.ID == id);
+
+            return res;
             if (HttpContext.User.Identity.IsAuthenticated)
             {
                 Restaurant? rest = await getUserRestaurant();

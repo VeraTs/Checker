@@ -98,6 +98,7 @@ namespace CheckerServer.Hubs
             }
         }
 
+
         internal async Task<int> ItemToBeServed(OrderItem orderItem, Restaurant rest)
         {
             int spot = -1;
@@ -176,6 +177,7 @@ namespace CheckerServer.Hubs
                 await Clients.Caller.SendAsync("DBError", "the item is not waiting to be served");
             }
         }
+
 
         // for closing order by waiter: given a sum payes it (to fully or partially pay for the order),
         // after successful payment is made, waiter is immediately informed, and after, all waiters get update of payment.

@@ -5,6 +5,13 @@ namespace CheckerServer.Models
 {
     public class User
     {
+
+        public string UserEmail { get; set; }
+        public string UserPassword { get; set; }
+    }
+}
+
+
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email ID is requierd")]
         [Key]
         public string Email { get; set; }
@@ -17,3 +24,4 @@ namespace CheckerServer.Models
         public int Active { get; set; } = 0;
     }
 }
+

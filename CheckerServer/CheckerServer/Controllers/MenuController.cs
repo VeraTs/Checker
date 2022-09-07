@@ -14,6 +14,7 @@ namespace CheckerServer.Controllers
             : base(context, context.RestMenus) 
         { }
 
+
         protected async override Task<RestMenu?> createAuthenticatedUserItem(RestMenu item)
         {
             RestMenu? menu = null;

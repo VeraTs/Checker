@@ -20,6 +20,8 @@ namespace CheckerServer.Data
                     new Restaurant
                     {
                         Name = "My First Shop!",
+                        Email = "Eliranshimonov@gmail.com",
+                        Password = "123456",
                         ContactName = "John",
                         Phone = "052-446-7089"
                     });

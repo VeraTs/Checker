@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using CheckerServer.Data;
 using CheckerServer.Models;
 using CheckerServer.utils;
@@ -62,6 +62,10 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if (item != null)
             {
+
+                item.DishStart = DateTime.Now;
+
+
                 await moveFromListToList(item, eLineItemStatus.ToDo, eLineItemStatus.Doing, "ToDo", "Doing");
             }
             else
@@ -76,7 +80,12 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if (item != null)
             {
+
+                item.DishFinish = DateTime.Now;   
+                r_Manager.Month=item.dishCount(r_Manager.Month);
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+
+             
                 Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
                 Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
                 OrdersHub orderhub = Services.GetService<OrdersHub>();
@@ -85,6 +94,7 @@ namespace CheckerServer.Hubs
                     int spot = await orderhub.ItemToBeServed(item, rest);
                     await Clients.Caller.SendAsync("PlaceItem", item, spot);
                 }
+
             }
             else
             {

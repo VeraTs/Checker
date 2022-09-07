@@ -20,6 +20,8 @@ namespace CheckerServer.Data
         public DbSet<Line> Lines { get; set; }
         public DbSet<ServingArea> ServingAreas { get; set; }
         public DbSet<Maker> Maker { get; set; }
+       
+
         public DbSet<User> Users { get; set; }
     }
 }
