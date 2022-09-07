@@ -80,6 +80,13 @@ namespace CheckerServer.Hubs
             {
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
                 item.Finish = DateTime.Now;
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+               // r_Manager.Month = item.dishCount(r_Manager.Month);
+                await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+=======
+>>>>>>> Stashed changes
                 r_Manager.Month = item.dishCount(r_Manager.Month);
                 Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
                 Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
@@ -89,6 +96,10 @@ namespace CheckerServer.Hubs
                     int spot = await orderhub.ItemToBeServed(item, rest);
                     await Clients.Caller.SendAsync("PlaceItem", item, spot);
                 }
+<<<<<<< Updated upstream
+=======
+>>>>>>> 0c497ff7c7fedfe827b0e1703572a4c88a72ba48
+>>>>>>> Stashed changes
             }
             else
             {

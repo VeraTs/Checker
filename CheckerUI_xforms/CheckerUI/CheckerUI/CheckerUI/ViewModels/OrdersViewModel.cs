@@ -16,7 +16,7 @@ namespace CheckerUI.ViewModels
         private ObservableCollection<OrderViewModel> m_OrdersViews = new ObservableCollection<OrderViewModel>();
         private readonly Dictionary<int, OrderViewModel> m_Orders = new Dictionary<int, OrderViewModel>();
         private Dictionary<int, Dish> mDishesDictionary;
-        public ServingAreaViewModel servingArea { get; set; }
+        public List<ServingArea> servingArea { get; set; } = new List<ServingArea>();
         public ObservableCollection<ServingZone> Zones { get; set; } = new ObservableCollection<ServingZone>();
         public OrdersViewModel()
         {
@@ -27,21 +27,27 @@ namespace CheckerUI.ViewModels
                 zoneNum = 5,
                 restaurantId = 1, lines = null, id = 1, name = "temp"
             };
-            servingArea = new ServingAreaViewModel(a);
-            foreach (var zone in servingArea.Zones)
+            servingArea = App.Repository.ServingAreas;
+
+            int numOfZones = servingArea[0].zoneNum;
+            for (int i = 0; i < numOfZones; i++)
             {
-                zone.isAvailable = true;
-                Zones.Add(zone);
+                var toAdd = new ServingZone()
+                {
+                    isAvailable = true, id = i, item = null
+                };
+                Zones.Add(toAdd);
             }
-            var orders = App.Repository.Orders;
-            foreach (var order in orders)
-            {
-                var view = new OrderViewModel(order);
-                m_OrdersViews.Add(view);
-                m_Orders.Add(order.id, view);
-                int id = GetFirstAvailableZone();
+            
+            //var orders = App.Repository.Orders;
+            //foreach (var order in orders)
+            //{
+            //    var view = new OrderViewModel(order);
+            //    m_OrdersViews.Add(view);
+            //    m_Orders.Add(order.id, view);
+            //    int id = GetFirstAvailableZone();
                
-            }
+            //}
 
             initEvents();
             
@@ -54,16 +60,18 @@ namespace CheckerUI.ViewModels
         }
         private void initEvents()
         {
-            App.HubConn.On<Order>("ReceiveOrder", (order) =>
+            App.HubConn.On<List<Order>>("ReceiveOrders", (orders) =>
             {
-                Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
-                foreach (var orderItem in order.items)
+                foreach (var order in orders)
                 {
-                    orderItem.dish = mDishesDictionary[orderItem.dishId];
+                    foreach (var orderItem in order.items)
+                    {
+                        orderItem.dish = mDishesDictionary[orderItem.dishId];
+                    }
+                    var view = new OrderViewModel(order);
+                    m_Orders.Add(order.id, view);
+                    m_OrdersViews.Add(view);
                 }
-                var view = new OrderViewModel(order);
-                m_Orders.Add(order.id, view);
-                m_OrdersViews.Add(view);
             });
 
             App.HubConn.On<OrderItem, int>("PlaceItem", (item, spot) =>

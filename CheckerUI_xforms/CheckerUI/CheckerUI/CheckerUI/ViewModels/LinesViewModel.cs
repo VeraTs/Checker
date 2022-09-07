@@ -60,7 +60,7 @@ namespace CheckerUI.ViewModels
                 lineVm.moveItemViewToRightView(item);
             });
 
-            App.HubConn.On<OrderItem, int>("PlaceItem", (item, spot) =>
+            App.HubConn.On<OrderItem, int>("ItemToBeServed", (item, spot) =>
             {
                 var msg = "Please place the dish in Zone number :" + spot;
                 Application.Current.MainPage.DisplayAlert("msg", msg, "OK");
