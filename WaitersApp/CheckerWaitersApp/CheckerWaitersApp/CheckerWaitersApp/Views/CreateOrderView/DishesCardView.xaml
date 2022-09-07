@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
+             xmlns:createOrderView="clr-namespace:CheckerWaitersApp.Views.CreateOrderView;assembly=CheckerWaitersApp"
+             x:DataType="viewmodels:CreateOrderViewModel"
+             x:Class="CheckerWaitersApp.Views.CreateOrderView.DishesCardView">
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+               HasShadow="True" 
+               CornerRadius="0"
+               Padding="1" 
+               BackgroundColor="Transparent"
+               BorderColor="Black">
+            <StackLayout BackgroundColor="WhiteSmoke">
+                <Grid x:Name ="Grid"
+                        VerticalOptions="Fill"  
+                        Padding="0"  Margin="0" 
+                        HorizontalOptions="Fill"  
+                        BackgroundColor="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".12*"/>
+                        <RowDefinition Height=".1*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".6*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width=".01*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <BoxView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" 
+                             Color="Azure"  
+                             Margin="-6,0,-6,0"
+                             HorizontalOptions="FillAndExpand"
+                             VerticalOptions="FillAndExpand"/>
+
+                    <Label Grid.Column="1" Grid.Row="0" 
+                           Text ="Menu "
+                           x:Name="m_LabelDishes"
+                           FontAttributes ="Bold"
+                           FontSize="70"
+                           TextColor="Black"
+                           FontFamily ="FAS"
+                           HorizontalOptions="Start"
+                           VerticalOptions="Start"/>
+                    <ImageButton Grid.Column="0" Grid.Row="0"
+                            CornerRadius="30" Aspect="AspectFill" BackgroundColor="Transparent" WidthRequest="50" HeightRequest="60"
+                            VerticalOptions="Start" HorizontalOptions="Start" 
+                            Source="iconLeft.png" 
+                            Clicked="ImageButton_OnClicked"/>
+
+                    <SearchBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BackgroundColor="White">
+                    
+
+
+                    </SearchBar>
+
+                    <Frame  Grid.Row="2" Grid.Column="0"
+                            HasShadow="True" 
+                            Padding="0" 
+                            BackgroundColor="Transparent"
+                            BorderColor="Black">
+                        <StackLayout BackgroundColor="Azure">
+                            <Label Text="Categories"
+                                   FontFamily="FAS"
+                                   TextColor="Black"
+                                   FontSize="30"
+                                   FontAttributes="Bold"
+                                   Margin="10"
+                                   HorizontalOptions="Center"/>
+                            <Button Text="Starters"
+                                    FontFamily="FAS"
+                                    TextColor="Black"
+                                    FontSize="25"
+                                    FontAttributes="Bold"
+                                    HeightRequest="115"
+                                    Margin="0,30,0,0"
+                                    CornerRadius="5"
+                                    BackgroundColor="LightSkyBlue"
+                                    Clicked="StartersButton_OnClicked"/>
+                            <Button Text="Main"
+                                    FontFamily="FAS"
+                                    TextColor="Black"
+                                    FontSize="25"
+                                    FontAttributes="Bold"
+                                    HeightRequest="115"
+                                    CornerRadius="5"
+                                    Margin="0,5,0,0"
+                                    BackgroundColor="LightSkyBlue"
+                                    Clicked="MainsButton_OnClicked"/>
+                            <Button Text="Desserts"
+                                    FontFamily="FAS"
+                                    TextColor="Black"
+                                    FontSize="25"
+                                    FontAttributes="Bold"
+                                    HeightRequest="115"
+                                    CornerRadius="5"
+                                    Margin="0,5,0,0"
+                                    BackgroundColor="LightSkyBlue"
+                                    Clicked="DessertsButton_OnClicked"/>
+                            <Button Text="Drinks"
+                                    FontFamily="FAS"
+                                    TextColor="Black"
+                                    FontSize="25"
+                                    FontAttributes="Bold"
+                                    CornerRadius="5"
+                                    Margin="0,5,0,0"
+                                    HeightRequest="115"
+                                    BackgroundColor="LightSkyBlue"
+                                    Clicked="DrinksButton_OnClicked"/>
+                            <Button Text="All"
+                                    FontFamily="FAS"
+                                    TextColor="Black"
+                                    FontSize="25"
+                                    FontAttributes="Bold"
+                                    CornerRadius="5"
+                                    Margin="0,5,0,0"
+                                    HeightRequest="115"
+                                    BackgroundColor="LightSkyBlue"
+                                    Clicked="AllDishesButton_OnClicked"/>
+                        </StackLayout>
+                    </Frame>
+
+                    <BoxView Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3"
+                             Color="Black" 
+                             HorizontalOptions="FillAndExpand"
+                             VerticalOptions="End"
+                             HeightRequest="2"
+                             Margin="-5,0,-5,0" 
+                             CornerRadius="20"/>
+                    <StackLayout Grid.Column="1" Grid.Row="2"
+                                 Margin="0,0,0,2"
+                                 IsClippedToBounds="True" BackgroundColor="WhiteSmoke">
+
+                        <CollectionView x:Name="DishesView"
+                                        Margin="5" 
+                                        ItemsSource = "{Binding DishesOnView}" 
+                                        SelectionMode="Single"
+                                        HorizontalScrollBarVisibility="Always"
+                                        ItemsUpdatingScrollMode="KeepItemsInView">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical"  ItemSpacing="10"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout>
+                                        <StackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_OnTapped" />
+                                            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_OnDoubleTapped"/>
+                                        </StackLayout.GestureRecognizers>
+                                        <createOrderView:DishCardView Margin="0"
+                                                                      VerticalOptions="StartAndExpand"
+                                                                      HorizontalOptions="StartAndExpand"
+                                                                      WidthRequest="750"
+                                                                      IsClippedToBounds="True"
+                                                                      Padding="0"/>
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup Name="CommonStates">
+                                                <VisualState Name="Normal"/>
+                                                <VisualState Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Grid>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CheckerUI.ViewModels" 
+             x:Class="CheckerUI.Views.UserMainPage" Title="Options" BackgroundImageSource="PartialCover">
+    <ContentPage.BindingContext>
+        <viewmodels:UserMainPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+       
+            <CarouselView ItemsSource="{Binding Pages}" PeekAreaInsets="10"
+                          IsScrollAnimated="True" Loop="False">
+                <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Vertical" >
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="CurrentItem">
+                                        <VisualState.Setters>
+                                            <Setter Property="Scale"
+                                                    Value="1.1" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="PreviousItem">
+                                        <VisualState.Setters>
+                                            <Setter Property="Opacity"
+                                                    Value="0.5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="NextItem">
+                                        <VisualState.Setters>
+                                            <Setter Property="Opacity"
+                                                    Value="0.5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Frame HasShadow="True"
+                                   BorderColor="Black"
+                                   CornerRadius="5"
+                                   HeightRequest="550"
+                                   WidthRequest="670" Padding="1"
+                                   BackgroundColor="Azure"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="CenterAndExpand">
+                                <StackLayout>
+                                    <Label Text="{Binding  Name}"
+                                           FontAttributes="Bold"
+                                           FontSize="Header"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="Black"/>
+                                    <Label Text="{Binding Description}"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center"
+                                           FontSize="Large"
+                                          TextColor="Black"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <ImageButton Source="{Binding BackgroundImageURL}" 
+                                           Aspect="AspectFill"
+                                           HeightRequest="400"
+                                           WidthRequest="600" Command="{Binding NextPageCommand}" ></ImageButton>
+                                </StackLayout>
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CarouselView.ItemTemplate>
+            </CarouselView>
+    </ContentPage.Content>
+</ContentPage>

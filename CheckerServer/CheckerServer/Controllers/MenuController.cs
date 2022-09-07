@@ -11,7 +11,7 @@ namespace CheckerServer.Controllers
     public class MenuController : BasicDbController<RestMenu>
     {
         public MenuController(CheckerDBContext context)
-            : base(context, context.RestMenus) 
+            : base(context, context.RestMenus)
         { }
 
         // add a more specified post I guess, to enter the dishes as well as the menu entity

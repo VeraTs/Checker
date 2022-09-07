@@ -1,63 +1,62 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:order="clr-namespace:CheckerUI.Helpers.Order;assembly=CheckerUI"
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
              x:Class="CheckerUI.Views.KitchenLineCardsViews.KitchenOrderItemInProgressCardView"
-             x:DataType="order:OrderItemView">
+             x:DataType="viewModels:OrderItemViewModel">
     <ContentView.Content>
-
         <Frame IsClippedToBounds="True"  
                HasShadow="True"
                Padding="0" 
                CornerRadius="10"
+               HeightRequest="350"
                Margin="1"
-               BackgroundColor="Transparent" BorderColor="Gray">
+               BackgroundColor="White" BorderColor="Black">
             <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
 
-                <BoxView Color="{Binding OrderStatusColor}"
+                <BoxView Color="CadetBlue"
                          WidthRequest="10" 
                          Margin="1"></BoxView>
 
-                <StackLayout Orientation="Vertical" Margin="0,0,0,0" IsClippedToBounds="True">
+                <StackLayout Orientation="Vertical" Margin="0,0,0,0" IsClippedToBounds="True" WidthRequest="250">
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="2*"/>
                         </Grid.RowDefinitions>
 
                         <Label Grid.Row="0"
                             Text="{Binding OrderItemName}" 
                             FontFamily="FAS" 
+                            FontSize="40"
+                            TextColor="Black"
                             VerticalOptions="Center" HorizontalOptions="Center"
                             Margin="2"/>
                         <ScrollView Grid.Row="1" Margin="0,0,0,2"
                                     IsClippedToBounds="True" BackgroundColor="Transparent" WidthRequest="130">
                             <StackLayout>
-                                <Label   
-                                  Text="{Binding  OrderStatusString}"
-                                  VerticalOptions="Center" HorizontalOptions="Center"
-                                  FontFamily="FAS" 
-                                  Margin="2"/>
-                                <Label 
-                                HorizontalOptions="Center"
-                                Text="{Binding OrderItemType}"/>
-                                <Label 
-                                HorizontalOptions="Start"
-                                Text="{Binding FirstTimeToShowString}" 
-                                FontFamily="FAS"/>
-                                <Label 
-                               HorizontalOptions="Start"
-                               Text="{Binding OrderItemTimeStartedString}"
-                               FontFamily="FAS"/>
-                                <Label 
-                                HorizontalOptions="Center"
-                                Text="{Binding OrderItemDescription}" FontFamily="FAS"/>
+                                <Label Text="{Binding  OrderItemType}"
+                                       HorizontalOptions="Center"
+                                       FontFamily="FAS" 
+                                       FontSize="30"
+                                       TextColor="DimGray"
+                                       Margin="2"/>
+                             
+                                <Label HorizontalOptions="Start" FontSize="25"
+                                       Text="{Binding FirstTimeToShowString}" 
+                                       FontFamily="FAS"/>
+                                <Label HorizontalOptions="Start" FontSize="25"
+                                       Text="{Binding OrderItemTimeStartedString}"
+                                       FontFamily="FAS"/>
+                                <Label HorizontalOptions="Start" 
+                                       Text="{Binding OrderItemDescription}" 
+                                       FontFamily="FAS" FontSize="25" TextColor="Black"/>
                             </StackLayout>
                         </ScrollView>
                     </Grid>
                 </StackLayout>
-                <BoxView Color="{Binding OrderStatusColor}" WidthRequest="10" Margin="1"></BoxView>
+                <BoxView Color="CadetBlue"  WidthRequest="10" Margin="1"></BoxView>
             </StackLayout>
         </Frame>
     </ContentView.Content>

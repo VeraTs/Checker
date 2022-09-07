@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CheckerUI.Helpers.Order;
+using CheckerUI.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -37,13 +37,11 @@ namespace CheckerUI.Views
             var stackLayout = sender as StackLayout;
             m_ItemsCollection.SelectedItem = stackLayout.BindingContext;
             
-            var item = m_ItemsCollection.SelectedItem as OrderItemView;
+            var item = m_ItemsCollection.SelectedItem as OrderItemViewModel;
             if (((OrderViewModel) BindingContext).CheckOutItem(item))
             {
                 await Task.Delay(300);
             }
-            
-            
         }
     }
 }
