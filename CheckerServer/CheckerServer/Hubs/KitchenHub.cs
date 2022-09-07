@@ -25,7 +25,7 @@ namespace CheckerServer.Hubs
             Services = services;
             _context = context;
 
-         //   useKitchenManager();
+            //   useKitchenManager();
         }
 
         private object locker = new object();
@@ -35,13 +35,13 @@ namespace CheckerServer.Hubs
 
             //Dictionary<int, List<LineDTO>> lines = r_Manager.ManageKitchen();
             r_Manager.ManageKitchenAsync();
-/*            foreach (var line in lines)
-            {
-                Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
-                // not awaited since this pretains to different restaurants
-                if (rest != null)
-                    await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
-            }*/
+            /*            foreach (var line in lines)
+                        {
+                            Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
+                            // not awaited since this pretains to different restaurants
+                            if (rest != null)
+                                await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
+                        }*/
 
             /*System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 30000; // 50 sec for denugging purposes
@@ -77,8 +77,9 @@ namespace CheckerServer.Hubs
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
             if (item != null)
             {
-                item.Finish = DateTime.Now;   
-                r_Manager.Month=item.dishCount(r_Manager.Month);
+
+                item.Finish = DateTime.Now;
+                r_Manager.Month = item.dishCount(r_Manager.Month);
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
             }
             else
@@ -147,7 +148,7 @@ namespace CheckerServer.Hubs
             else
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, rest.Name);
-                
+
                 //s_Manager.RemoveGroupMember(restId);
                 await Clients.Group(rest.Name).SendAsync("NewGroupMember", $"{Context.ConnectionId} has left the group {rest.Name}.");
             }
