@@ -11,7 +11,7 @@ namespace CheckerServer.Models
         public int LineId { get; set; }
         [ForeignKey("RestMenu")]
         public int RestMenuId { get; set; }
-        [Required]
+        [Required]//
         public float Price { get; set; }
 
         [ForeignKey("Maker")] 
