@@ -4,6 +4,7 @@ using CheckerServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CheckerServer.Migrations
 {
     [DbContext(typeof(CheckerDBContext))]
-    partial class CheckerDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220829181719_possFix")]
+    partial class possFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,10 +271,6 @@ namespace CheckerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -327,23 +325,6 @@ namespace CheckerServer.Migrations
                     b.HasIndex("RestaurantId");
 
                     b.ToTable("ServingAreas");
-                });
-
-            modelBuilder.Entity("CheckerServer.Models.User", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Active")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Email");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Dish", b =>

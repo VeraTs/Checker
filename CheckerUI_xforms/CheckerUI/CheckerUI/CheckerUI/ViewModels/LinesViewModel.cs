@@ -54,10 +54,15 @@ namespace CheckerUI.ViewModels
             });
             App.HubConn.On<OrderItem>("ItemMoved", (item) =>
             {
-                //item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
                 item.dish = mDishesDictionary[item.dishId];
                 var lineVm = m_LinesList.First(line => line.LineID == item.dish.lineId);
                 lineVm.moveItemViewToRightView(item);
+            });
+
+            App.HubConn.On<OrderItem, int>("PlaceItem", (item, spot)  =>
+            {
+                var msg = "Please place the dish in Zone number :" + spot;
+                Application.Current.MainPage.DisplayAlert("msg",msg, "OK");
             });
             StartListening();
         }

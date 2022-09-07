@@ -25,7 +25,7 @@ namespace CheckerServer.Hubs
             Services = services;
             _context = context;
 
-            //   useKitchenManager();
+         //   useKitchenManager();
         }
 
         private object locker = new object();
@@ -35,20 +35,23 @@ namespace CheckerServer.Hubs
 
             //Dictionary<int, List<LineDTO>> lines = r_Manager.ManageKitchen();
             r_Manager.ManageKitchenAsync();
-            /*            foreach (var line in lines)
-                        {
-                            Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
-                            // not awaited since this pretains to different restaurants
-                            if (rest != null)
-                                await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
-                        }*/
+/*            foreach (var line in lines)
+            {
+                Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
+                // not awaited since this pretains to different restaurants
+                if (rest != null)
+                    await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
+            }*/
 
             /*System.Timers.Timer timer = new System.Timers.Timer();
             timer.Interval = 30000; // 50 sec for denugging purposes
             timer.Elapsed += async (o, e) => {
                 
                 r_Manager.UpdateContext(_context);
+
+
             };
+
             timer.Start();*/
         }
 
@@ -74,6 +77,14 @@ namespace CheckerServer.Hubs
             if (item != null)
             {
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+                Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
+                Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
+                OrdersHub orderhub = Services.GetService<OrdersHub>();
+                if(orderhub != null)
+                {
+                    int spot = await orderhub.ItemToBeServed(item, rest);
+                    await Clients.Caller.SendAsync("PlaceItem", item, spot);
+                }
             }
             else
             {
@@ -141,7 +152,7 @@ namespace CheckerServer.Hubs
             else
             {
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, rest.Name);
-
+                
                 //s_Manager.RemoveGroupMember(restId);
                 await Clients.Group(rest.Name).SendAsync("NewGroupMember", $"{Context.ConnectionId} has left the group {rest.Name}.");
             }

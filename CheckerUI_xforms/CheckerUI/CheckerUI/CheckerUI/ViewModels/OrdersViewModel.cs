@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
+using CheckerUI.Enums;
 using CheckerUI.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Xamarin.Forms;
@@ -12,7 +15,7 @@ namespace CheckerUI.ViewModels
     {
         private ObservableCollection<OrderViewModel> m_OrdersViews = new ObservableCollection<OrderViewModel>();
         private readonly Dictionary<int, OrderViewModel> m_Orders = new Dictionary<int, OrderViewModel>();
-        private Dictionary<int, Dish> mDishesDictionary;
+        private readonly Dictionary<int, Dish> mDishesDictionary;
         public ServingAreaViewModel servingArea { get; set; }
         public ObservableCollection<ServingZone> Zones { get; set; } = new ObservableCollection<ServingZone>();
         public OrdersViewModel()
@@ -36,29 +39,53 @@ namespace CheckerUI.ViewModels
                 var view = new OrderViewModel(order);
                 m_OrdersViews.Add(view);
                 m_Orders.Add(order.id, view);
-                int id = GetFirstAvailableZone();
-                if (id >= 0) 
-                {
-                    SetOrderItemInZone(view.Items[0], id);
-                    view.Items[0].Table = order.table;
-                    Zones[id].item = view.Items[0];
-                    Zones[id].isAvailable = false;
-                }
+                //int id = GetFirstAvailableZone();
+                //if (id >= 0) 
+                //{
+                //    SetOrderItemInZone(view.Items[0], id);
+                //    view.Items[0].Table = order.table;
+                //    Zones[id].item = view.Items[0];
+                //    Zones[id].isAvailable = false;
+                //}
             }
+            initEvents();
 
-            //App.HubConn.On<Order>("ReceiveOrder", (order) =>
-            //{
+            StartListening();
+        }
 
-            //    Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
-            //    foreach (var orderItem in order.items)
-            //    {
-            //        orderItem.dish = mDishesDictionary[orderItem.dishId];
-            //    }
-            //    var view = new OrderViewModel(order);
-            //    m_Orders.Add(order.id, view);
-            //    m_OrdersViews.Add(view);
-            //});
-            //StartListening();
+        private void initEvents()
+        {
+            App.HubConn.On<Order>("ReceiveOrder", (order) =>
+            {
+                Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
+                foreach (var orderItem in order.items)
+                {
+                    orderItem.dish = mDishesDictionary[orderItem.dishId];
+                }
+                var view = new OrderViewModel(order);
+                m_Orders.Add(order.id, view);
+                m_OrdersViews.Add(view);
+            });
+
+            App.HubConn.On<OrderItem, int>("PlaceItem", (item, spot) =>
+            {
+                item.dish = mDishesDictionary[item.dishId];
+                var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
+                view.OrderItemTimeDone = DateTime.Now;
+                view.OrderItemLineStatus = eLineItemStatus.Done;
+                SetOrderItemInZone(view, spot);
+            });
+
+            App.HubConn.On<OrderItem>("ItemServed", (item) =>
+            {
+                item.dish = mDishesDictionary[item.dishId];
+                var order = m_Orders[item.orderId];
+                var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
+                order.CheckOutItem(view);
+                var zone = Zones.First(t => t.item.OderItemID == item.id);
+                zone.item = null;
+                zone.isAvailable = true;
+            });
         }
         public int GetFirstAvailableZone()
         {
@@ -94,7 +121,7 @@ namespace CheckerUI.ViewModels
             }
             catch (System.Exception ex)
             {
-                // await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                 await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
             }
         }
 
@@ -116,5 +143,20 @@ namespace CheckerUI.ViewModels
             }
         }
         public ObservableCollection<OrderItemViewModel> itemsLineView { get; set; } = new ObservableCollection<OrderItemViewModel>();
+
+
+        public async Task<bool> PickUpItemForServing(int i_ItemId)
+        {
+            try
+            {
+                await App.HubConn.InvokeAsync("PickUpItemForServing", i_ItemId);
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("failed -  PickUpItemForServing", ex.Message, "OK");
+                return false;
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace CheckerServer.Models
         public int OrderId { get; set; }
         [Required]
         public int ServingAreaZone { get; set; }
-
+        
         public string Changes { get; set; }
         public eItemStatus Status { get; set; } = eItemStatus.Ordered;
         public eLineItemStatus LineStatus { get; set; } = eLineItemStatus.Locked;

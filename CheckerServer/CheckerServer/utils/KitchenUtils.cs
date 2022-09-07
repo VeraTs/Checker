@@ -7,7 +7,7 @@ namespace CheckerServer.utils
     public class KitchenUtils
     {
         // restaurantID -> major list of queues that depict orders
-        private readonly Dictionary<int, List<OrderPyramid>> r_RestaurantOrderQueuesList = new Dictionary<int, List<OrderPyramid>>();
+        private readonly Dictionary<int, List<OrderPyramid>> r_RestaurantOrderQueuesList= new Dictionary<int, List<OrderPyramid>>();
 
         // lineID -> Line with ORDERED LISTS!~!!! so this needs to be kept updated!
         private Dictionary<int, LineDTO> r_Lines = new Dictionary<int, LineDTO>();
@@ -25,9 +25,9 @@ namespace CheckerServer.utils
                 r_RestaurantOrderQueuesList.Add(restaurant.ID, new List<OrderPyramid>());
             }
 
-            foreach (Line line in lines)
+            foreach(Line line in lines)
             {
-                r_Lines.Add(line.ID, new LineDTO() { line = line });
+                r_Lines.Add(line.ID, new LineDTO(){line = line});
             }
 
             LoadAllOrders();
@@ -45,7 +45,7 @@ namespace CheckerServer.utils
             r_RestaurantOrderQueuesList.Add(rest.ID, new List<OrderPyramid>());
             List<Line> lines = _Context.Lines.Where(l => l.ServingArea.RestaurantId == rest.ID).Include("ServingArea").ToList();
 
-            foreach (Line line in lines)
+            foreach(Line line in lines)
             {
                 r_Lines.Add(line.ID, new LineDTO() { line = line });
             }
@@ -58,7 +58,7 @@ namespace CheckerServer.utils
                 .Include(o => o.Items)
                 .ThenInclude(item => item.Dish)
                 .Where(o => o.Status != eOrderStatus.Done).ToList();
-
+            
             orders.ForEach(o =>
             {
                 r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
@@ -71,40 +71,37 @@ namespace CheckerServer.utils
         private OrderPyramid getQueuesForOrder(Order order)
         {
             OrderPyramid orderQueue = new OrderPyramid(order.ID);
-            orderQueue.enterItems(order.Items.Where(i => i.LineStatus == eLineItemStatus.Locked && i.Status != eItemStatus.AtLine).ToList(), order.OrderType);
+            orderQueue.enterItems(order.Items.Where(i => i.LineStatus == eLineItemStatus.Locked && i.Status!= eItemStatus.AtLine).ToList(), order.OrderType);
             return orderQueue;
         }
 
         // SHIT thing
         // receives an order and sorts it into appropriate queues for related restaurant
-        public static void AddOrder(Order order)
-        {
+        public static void AddOrder(Order order) {
 
 
             // if no such restaurant has orders here yet, fix that
 
 
             OrderPyramid orderQueue = new OrderPyramid(order.ID);
-            if (order.OrderType.Equals(eOrderType.AllTogether))
-            {
-
+            if (order.OrderType.Equals(eOrderType.AllTogether)) { 
+                
 
 
 
 
 
                 // if all together, what takes most time must be made first and then the second longest make time, etc.
-                SortedList<float, OrderItem> items = new SortedList<float, OrderItem>();
+                SortedList<float, OrderItem> items = new SortedList<float, OrderItem> ();
                 foreach (OrderItem item in order.Items)
                 {
                     // for each item add to sorted lost according to estimated make time
-                    items.Add(item.Dish.EstMakeTime, item);
+                    items.Add(item.Dish.EstMakeTime, item); 
                 }
 
                 items.Reverse();
             }
-            else if (order.OrderType.Equals(eOrderType.Staggered))
-            {
+            else if (order.OrderType.Equals(eOrderType.Staggered)) { 
             }
             else
             {
@@ -119,7 +116,7 @@ namespace CheckerServer.utils
         // returns a list of all orderItems that are in this Line currently or in future
         public static void getAllLineOrderItems(Line line)
         {
-
+            
         }
 
         internal async Task<Dictionary<int, List<LineDTO>>> GetUpdatedLines(List<int> activeRests)
@@ -131,28 +128,28 @@ namespace CheckerServer.utils
             List<int> availableItemIDS = new List<int>();
             foreach (int restId in r_RestaurantOrderQueuesList.Keys)
             {
-                if (activeRests != null && activeRests.Contains(restId))
+                if(activeRests != null && activeRests.Contains(restId))
                 {
                     foreach (OrderPyramid order in r_RestaurantOrderQueuesList[restId])
                     {
                         var items = order.GetAvailableItems();
-                        if (items != null)
+                        if(items!= null)
                         {
                             foreach (OrderItem item in items)
                             {
                                 availableItemIDS.Add(item.ID);
                             }
                         }
-
+                        
                         //availableItems.AddRange(order.GetAvailableItems()); // returns all items that have available = true (by popping!)
                     }
                 }
             }
 
             availableItems = _Context.OrderItems.Where(x => availableItemIDS.Contains(x.ID)).Include("Dish").ToList();
+            
 
-
-            if (availableItems != null)
+            if(availableItems != null)
             {
                 // now go through the things and sort into lines
                 foreach (OrderItem item in availableItems)
@@ -177,12 +174,12 @@ namespace CheckerServer.utils
                     // assumes that these items are tracking from DB
                     r_Lines[item.Dish.LineId].ToDoItems.Add(item);
                     bool hasItem = r_Lines[item.Dish.LineId].LockedItems.Any(i => i.ID == item.ID);
-                    if (hasItem)
+                    if(hasItem)
                     {
                         OrderItem? oi = r_Lines[item.Dish.LineId].LockedItems.FirstOrDefault(i => i.ID == item.ID);
                         r_Lines[item.Dish.LineId].LockedItems.Remove(oi);
                     }
-
+                    
                     // issue detected - this is not a tracked item any more, so they all need to be retracked.
                     item.LineStatus = eLineItemStatus.ToDo;
                     item.Status = eItemStatus.AtLine;
@@ -190,10 +187,10 @@ namespace CheckerServer.utils
             }
 
             int success = await _Context.SaveChangesAsync();
-
+            
 
             lockedItems = _Context.OrderItems.Where(oi => oi.LineStatus == eLineItemStatus.Locked && oi.Status != eItemStatus.AtLine).Include("Dish").ToList();
-            if (lockedItems != null)
+            if(lockedItems != null)
             {
                 foreach (OrderItem item in lockedItems)
                 {
@@ -216,7 +213,7 @@ namespace CheckerServer.utils
                     // add to line list and update item status
                     // assumes that these items are tracking from DB
                     bool hasItem = r_Lines[item.Dish.LineId].LockedItems.Any(i => i.ID == item.ID);
-                    if (!hasItem)
+                    if(!hasItem)
                         r_Lines[item.Dish.LineId].LockedItems.Add(item);
                     // issue detected - this is not a tracked item any more, so they all need to be retracked.
                     //item.Status = eItemStatus.AtLine;
@@ -224,9 +221,9 @@ namespace CheckerServer.utils
             }
 
             success += await _Context.SaveChangesAsync();
-            if (success > 0)
+            if(success > 0)
             {
-                foreach (int thing in r_Lines.Keys)
+                foreach(int thing in r_Lines.Keys)
                 {
                     var temp = r_Lines[thing].line.ServingArea.RestaurantId;
                     if (!updatedLines.ContainsKey(temp))
@@ -243,13 +240,10 @@ namespace CheckerServer.utils
                     //List<OrderItem> doneItems = new List<OrderItem>();
                     //r_Lines[thing].DoingItems.ForEach(item => doneItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
-                    updatedLines[r_Lines[thing].line.ServingArea.RestaurantId].Add(new LineDTO()
+                    updatedLines[r_Lines[thing].line.ServingArea.RestaurantId].Add(new LineDTO() 
                     {
-                        lineId = thing,
-                        DoingItems = doingItems,
-                        LockedItems = r_Lines[thing].LockedItems,
-                        ToDoItems = toDoItems
-                    });  // this is always the first time the line is added to the list, since lines are uniquely indexed
+                        lineId = thing, DoingItems = doingItems, LockedItems = r_Lines[thing].LockedItems, ToDoItems = toDoItems
+                    }) ;  // this is always the first time the line is added to the list, since lines are uniquely indexed
                 }
             }
 
@@ -276,7 +270,7 @@ namespace CheckerServer.utils
             orders.ForEach(o =>
             {
                 // only add orders that have items that need to go to kitchen
-                if (o.Items.Any(item => item.Status == eItemStatus.Ordered))
+                if(o.Items.Any(item => item.Status == eItemStatus.Ordered))
                 {
                     r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
                     o.Status = eOrderStatus.InProgress;
@@ -337,8 +331,7 @@ namespace CheckerServer.utils
                 if (_available != null)
                 {
                     this.available = _available.Value;
-                }
-                else if (limit <= 0)
+                } else if (limit <= 0)
                 {
                     this.available = true;
                     /*this.timer = new System.Timers.Timer(8000) { AutoReset = false };
@@ -346,18 +339,18 @@ namespace CheckerServer.utils
                         available = true;
                         Console.WriteLine("---------------------------Hoho, timer! CAN SENT TO KITCHEN!-------------------------");
                         Console.WriteLine("---------------------------Hoho, timer! Item:" + item.Dish.Name + "!-------------------------");
-                        timer.Stop();
-                    };*/
-                }
-                else
-                {
-                    this.timer = new System.Timers.Timer(limit) { AutoReset = false };
-                    timer.Elapsed += (o, e) => {
-                        available = true;
-                        Console.WriteLine("---------------------------Hoho, timer! CAN SENT TO KITCHEN!-------------------------");
-                        Console.WriteLine("---------------------------Hoho, timer! Item:" + item.Dish.Name + "!-------------------------");
 
                         timer.Stop();
+                    };*/
+                } else
+                {
+                    this.timer = new System.Timers.Timer(limit) { AutoReset = false };
+                    timer.Elapsed += (o, e) => { 
+                        available = true; 
+                        Console.WriteLine("---------------------------Hoho, timer! CAN SENT TO KITCHEN!-------------------------"); 
+                        Console.WriteLine("---------------------------Hoho, timer! Item:" + item.Dish.Name +"!-------------------------"); 
+
+                        timer.Stop(); 
                     };
 
                     if (_timerUp != null)
@@ -367,28 +360,26 @@ namespace CheckerServer.utils
 
             public void StartTimer()
             {
-                if (timer != null && timerUp)
+                if(timer!= null && timerUp)
                     timer.Start();
             }
         }
 
         public void StartTimers()
         {
-            if (starters != null && starters.Count > 0)
+            if(starters != null && starters.Count > 0)
             {
                 foreach (TimedOrderItem item in starters)
                 {
                     item.StartTimer();
                 }
-            }
-            else if (mains != null && mains.Count > 0)
+            } else if (mains != null && mains.Count > 0)
             {
                 foreach (TimedOrderItem item in mains)
                 {
                     item.StartTimer();
                 }
-            }
-            else if (desserts != null && desserts.Count > 0)
+            } else if (desserts != null && desserts.Count > 0)
             {
                 foreach (TimedOrderItem item in desserts)
                 {
@@ -402,11 +393,11 @@ namespace CheckerServer.utils
             // enters things according to order type
 
             // regardless of orderType, if there are drinks, they are entered into starters immediately
-            if (items.Any(item => item.Dish.Type == eDishType.Drink))
+            if(items.Any(item => item.Dish.Type == eDishType.Drink))
             {
-                if (starters == null)
+                if(starters == null)
                     starters = new Stack<TimedOrderItem>();
-
+                
                 items.ForEach(item =>
                 {
                     if (item.Dish.Type == eDishType.Drink)
@@ -422,16 +413,16 @@ namespace CheckerServer.utils
             {
                 case eOrderType.AllTogether:
                     // put everythinginto starters
-                    if (starters == null)
+                    if(starters == null)
                     {
                         starters = new Stack<TimedOrderItem>();
                     }
 
                     // while SortedDictionary is quicker for entering unsorted data, SortedList uses less memory and also
                     // has a very comfortable retrieval of values, using list.values[3] for example, which will be used in this method
-                    items.ForEach(item =>
+                    items.ForEach(item => 
                     {
-                        if (item.Dish.Type != eDishType.Drink)
+                        if(item.Dish.Type != eDishType.Drink)
                         {
                             sortedItems.Add(item.Dish.EstMakeTime, item);
                         }
@@ -447,7 +438,7 @@ namespace CheckerServer.utils
                     // first ready is first out
                     // so we actually sort it according to the smallest prep time to the largest, all in one category
                     // and basically just send everything to the kitchen at once and let them do whatever
-                    if (starters == null)
+                    if(starters == null)
                     {
                         starters = new Stack<TimedOrderItem>();
                     }
@@ -460,7 +451,7 @@ namespace CheckerServer.utils
                             sortedItems.Add(item.Dish.EstMakeTime, item);
                         });
 
-                    for (int i = sortedItems.Count - 1; i >= 0; i--)
+                    for(int i= sortedItems.Count - 1; i>= 0; i--)
                     {
                         starters.Push(new TimedOrderItem(sortedItems.Values[i], 0));
                     }
@@ -498,19 +489,19 @@ namespace CheckerServer.utils
 
                     if (startersList.Count > 0 && starters == null)
                     {
-                        if (starters == null)
+                        if(starters == null)
                             starters = new Stack<TimedOrderItem>();
                         addFromSortedList(startersList, starters);
                     }
 
-                    if (mainsList.Count > 0 && mains == null)
+                    if(mainsList.Count > 0 && mains == null)
                     {
                         if (mains == null)
                             mains = new Stack<TimedOrderItem>();
                         addFromSortedList(mainsList, mains);
                     }
 
-                    if (dessertsList.Count > 0 && desserts == null)
+                    if(dessertsList.Count > 0 && desserts == null)
                     {
                         if (desserts == null)
                             desserts = new Stack<TimedOrderItem>();
@@ -532,7 +523,7 @@ namespace CheckerServer.utils
         // since I want the last thing entered to be the first thing out
         private void addFromSortedList(SortedList<double, OrderItem> sortedList, Stack<TimedOrderItem> timedQueue)
         {
-            if (sortedList.Count > 0)
+            if(sortedList.Count > 0)
             {
                 for (int i = 1; i <= sortedList.Count - 1; i++)
                 {
@@ -548,9 +539,9 @@ namespace CheckerServer.utils
         internal IEnumerable<OrderItem> GetAvailableItems()
         {
             List<OrderItem> availableItems = null;
-            if (starters != null && starters.Count > 0) { availableItems = getFromStack(starters); }
-            else if (mains != null && mains.Count > 0) { availableItems = getFromStack(mains); }
-            else if (desserts != null && desserts.Count > 0) { availableItems = getFromStack(desserts); }
+            if(starters != null && starters.Count > 0)      { availableItems = getFromStack(starters);}
+            else if(mains != null && mains.Count > 0)    { availableItems = getFromStack(mains); }
+            else if (desserts != null &&  desserts.Count > 0 )  { availableItems = getFromStack(desserts); }
 
             StartTimers();  // start timers for newly allowed items
 
@@ -560,7 +551,7 @@ namespace CheckerServer.utils
         private List<OrderItem> getFromStack(Stack<TimedOrderItem> stack)
         {
             List<OrderItem> availableItems = new List<OrderItem>();
-            if (stack != null && stack.Count > 0)
+            if (stack != null  && stack.Count > 0)
             {
                 TimedOrderItem temp = null;
                 bool hasItem = false;
@@ -596,7 +587,7 @@ namespace CheckerServer.utils
         public int Compare(Tkey? x, Tkey? y)
         {
             int result = 0;
-            if (x != null && y != null)
+            if(x!= null && y!= null)
                 result = x.CompareTo(y);
 
             if (result == 0)
