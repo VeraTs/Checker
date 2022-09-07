@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CheckerServer.Models
 {
@@ -6,10 +7,15 @@ namespace CheckerServer.Models
     {
         [Required]
         public string Name { get; set; }
+
         [Required]
-        private string Email { get; set; }
+        public string Email { get; set; }
         [Required]
-        private string Password { get; set; }
+        public string Password { get; set; }
+
+        [ForeignKey("User")]
+        public String OwnerEmail { get; set; }
+
 
         // fluff
         public string Phone { get; set; }

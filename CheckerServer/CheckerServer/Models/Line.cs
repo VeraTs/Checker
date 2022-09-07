@@ -10,8 +10,10 @@ namespace CheckerServer.Models
         public string Name { get; set; }
         [ForeignKey("ServingArea")]
         public int ServingAreaId { get; set; } // id of serving area related to this line
+        [ForeignKey("Restaurant")]
+        public int? RestaurantId { get; set; }
 
-        public virtual ServingArea ServingArea { get; set; }
+        public virtual ServingArea? ServingArea { get; set; }
 
         public int Limit { get; set; } = -1; // -1 means no limit
         

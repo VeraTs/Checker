@@ -11,7 +11,7 @@ namespace CheckerServer.Models
         public int LineId { get; set; }
         [ForeignKey("RestMenu")]
         public int RestMenuId { get; set; }
-        [Required]
+        [Required]//
         public float Price { get; set; }
 
         [ForeignKey("Maker")] 
@@ -22,5 +22,10 @@ namespace CheckerServer.Models
 
         public string Description { get; set; }
         public eDishType Type { get; set; }
+
+        //statistics
+        public int ThisMonthSalesDish { get; set; } = -1;
+        public int LastMonthSalesDish { get; set; } = -1;
+        public int AvrageMonthSalesDish { get; set; } = -1;
     }
 }

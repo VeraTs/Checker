@@ -30,7 +30,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<IEnumerable<ServingArea>>> get()
         {
             var res = await r_Set
-                .Include(i=>i.Lines)
+                .Include(i=>i.ZoneNum)
                 .ToListAsync();
 
             return res;
@@ -39,7 +39,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<ServingArea>> getSpecific(int id)
         {
             var res = await r_Set
-                .Include(i => i.Lines)
+                .Include(i => i.ZoneNum)
                 .FirstOrDefaultAsync(d => d.ID == id);
 
             return res;
