@@ -78,7 +78,7 @@ namespace CheckerServer.Controllers
                 // any password that passes model validation.
 
                 
-                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals(i_user.Email) && r.Password.Equals(i_user.Password));
+                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals(i_user.UserEmail) && r.Password.Equals(i_user.UserPassword));
                 if (rest == null || String.IsNullOrEmpty(rest.Email))
                 {
                     return BadRequest("UserName or Password is incorrect");
@@ -106,7 +106,7 @@ namespace CheckerServer.Controllers
                     if (res > 0)
                     {
                         // return the added item
-                        sendAnEmailAsync(item.Email, item.Name);
+                        await sendAnEmailAsync(item.Email, item.Name);
                         return item;
                     }
                     else

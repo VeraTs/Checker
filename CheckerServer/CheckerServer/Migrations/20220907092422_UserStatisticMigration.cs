@@ -5,23 +5,37 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CheckerServer.Migrations
 {
-    public partial class myMigrationName : Migration
+    public partial class UserStatisticMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<TimeSpan>(
+            migrationBuilder.AddColumn<string>(
+                name: "Email",
+                table: "Restaurants",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Password",
+                table: "Restaurants",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<DateTime>(
                 name: "Finish",
                 table: "OrderItems",
-                type: "time",
+                type: "datetime2",
                 nullable: false,
-                defaultValue: new TimeSpan(0, 0, 0, 0, 0));
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<TimeSpan>(
+            migrationBuilder.AddColumn<DateTime>(
                 name: "Start",
                 table: "OrderItems",
-                type: "time",
+                type: "datetime2",
                 nullable: false,
-                defaultValue: new TimeSpan(0, 0, 0, 0, 0));
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<int>(
                 name: "AvrageMonthSales",
@@ -47,6 +61,14 @@ namespace CheckerServer.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Email",
+                table: "Restaurants");
+
+            migrationBuilder.DropColumn(
+                name: "Password",
+                table: "Restaurants");
+
             migrationBuilder.DropColumn(
                 name: "Finish",
                 table: "OrderItems");

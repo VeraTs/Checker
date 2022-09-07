@@ -21,6 +21,8 @@ namespace CheckerServer.Data
                     {
                         Name = "My First Shop!",
                         ContactName = "John",
+                        Password = "123456",
+                        Email ="abc@gmail.com",
                         Phone = "052-446-7089"
                     });
                 context.SaveChanges();

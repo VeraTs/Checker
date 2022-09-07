@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CheckerServer.Migrations
 {
     [DbContext(typeof(CheckerDBContext))]
-    [Migration("20220904152838_myMigrationName")]
-    partial class myMigrationName
+    [Migration("20220907092422_UserStatisticMigration")]
+    partial class UserStatisticMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -240,8 +240,8 @@ namespace CheckerServer.Migrations
                     b.Property<int>("DishId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("Finish")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("Finish")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("LineStatus")
                         .HasColumnType("int");
@@ -252,8 +252,8 @@ namespace CheckerServer.Migrations
                     b.Property<int>("ServingAreaZone")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("Start")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -282,7 +282,15 @@ namespace CheckerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

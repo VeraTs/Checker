@@ -30,12 +30,18 @@ namespace CheckerServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<int>("AvrageMonthSales")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("EstMakeTime")
                         .HasColumnType("real");
+
+                    b.Property<int>("LastMonthSales")
+                        .HasColumnType("int");
 
                     b.Property<int>("LineId")
                         .HasColumnType("int");
@@ -54,6 +60,9 @@ namespace CheckerServer.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("RestMenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThisMonthSales")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -229,6 +238,9 @@ namespace CheckerServer.Migrations
                     b.Property<int>("DishId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Finish")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("LineStatus")
                         .HasColumnType("int");
 
@@ -237,6 +249,9 @@ namespace CheckerServer.Migrations
 
                     b.Property<int>("ServingAreaZone")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Start")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -265,7 +280,15 @@ namespace CheckerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
