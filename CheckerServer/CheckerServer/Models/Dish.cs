@@ -27,5 +27,7 @@ namespace CheckerServer.Models
         public int ThisMonthSales { get; set; }
         public int LastMonthSales { get; set; }
         public int AvrageMonthSales { get; set; }
+        public int PresantageFroLastMonth { get; set; }
+
     }
 }
