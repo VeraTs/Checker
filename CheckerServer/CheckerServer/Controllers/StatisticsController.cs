@@ -26,7 +26,9 @@ namespace CheckerServer.Controllers
         [HttpGet("{id}/{month}")]
         public async Task<ActionResult<ICollection<StatisticsResponse>>> GetWithId(int id, int month)
         {
-            Restaurant restaurant = await r_DbContext.Restaurants.FirstOrDefaultAsync(rest => rest.ID == id);
+            Restaurant restaurant = await r_DbContext.Restaurants
+                .Include("Menus.Dishes")
+                .FirstOrDefaultAsync(rest => rest.ID == id);
             if (restaurant == null)
             {
                 return NotFound("No such restaraunt!");
@@ -45,7 +47,7 @@ namespace CheckerServer.Controllers
             }
 
             List<StatisticsResponse> res = new List<StatisticsResponse>();
-            stats.ForEach(stat =>
+            stats.ForEach(async stat =>
             {
                 StatisticsResponse resp = new StatisticsResponse();
                 resp.RestaurantId = stat.RestaurantId;
@@ -54,6 +56,18 @@ namespace CheckerServer.Controllers
                 resp.TimesOrdered = stat.TimesOrdered;
                 resp.Month = stat.Month;
                 resp.DishId = stat.DishId;
+                
+                foreach (RestMenu menu in restaurant.Menus)
+                {
+                    foreach (Dish dish in menu.Dishes)
+                    {
+                        if(dish.ID== stat.DishId)
+                        {
+                            resp.dishName= dish.Name;
+                            resp.eDishType = dish.Type;
+                        }
+                    }
+                }
 
                 res.Add(resp);
             });

@@ -1,70 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CheckerServer.Data;
 using CheckerServer.Models;
-using CheckerServer.Data;
-using Microsoft.EntityFrameworkCore;
 using CheckerServer.utils;
-using Microsoft.AspNetCore.SignalR;
-using System;
+using FluentEmail.Core;
+using FluentEmail.Smtp;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Mail;
-using System.Net.Mime;
-using System.Threading;
-using System.ComponentModel;
-using FluentEmail.Smtp;
-using FluentEmail.Core;
 
 namespace CheckerServer.Controllers
 {
-    [Route("Restaurants")]
+    [Route("Users")]
     [ApiController]
-    public class RestaurantController : BasicDbController<Restaurant>
+    public class UsersController : BasicDbController<Restaurant>
     {
-        public RestaurantController(CheckerDBContext context)
-            : base(context, context.Restaurants) 
+
+        public UsersController(CheckerDBContext context)
+           : base(context, context.Restaurants)
         { }
 
-        protected override void updateItem(Restaurant existingItem, Restaurant updatedItem)
-        {
-            if (!string.IsNullOrEmpty(updatedItem.Name))
-            {
-                existingItem.Name = updatedItem.Name;
-            }
-
-            if (!string.IsNullOrEmpty(updatedItem.ContactName))
-            {
-                existingItem.ContactName = updatedItem.ContactName;
-            }
-
-            if (!string.IsNullOrEmpty(updatedItem.Phone))
-            {
-                existingItem.Phone = updatedItem.Phone;
-            }
-        }
-
-        override internal async Task<ActionResult<IEnumerable<Restaurant>>> get()
-        {
-            var res = await r_Set
-                .Include("ServingAreas")
-                .Include("Lines")
-                .Include("Menus.Dishes")
-                .ToListAsync();
-
-            return res;
-        }
-
-        override internal async Task<ActionResult<Restaurant>> getSpecific(int id)
-        {
-            var res = await r_Set
-                .Include("ServingAreas")
-                .Include("Lines")
-                .Include("Menus.Dishes")
-                .FirstOrDefaultAsync(d => d.ID == id);
-
-            return res;
-        }
-
-
-     /*   [HttpPost]
+        [HttpPost]
         [Route("login")]
         public async Task<ActionResult<Restaurant>> userLogin([FromBody] User i_user)
         {
@@ -76,7 +31,7 @@ namespace CheckerServer.Controllers
                 // For demonstration purposes, the sample validates the user
                 // on the email address maria.rodriguez@contoso.com with 
                 // any password that passes model validation.
-                
+
 
 
                 Restaurant rest = await r_DbContext.Restaurants
@@ -98,7 +53,7 @@ namespace CheckerServer.Controllers
         {
             if (ModelState.IsValid && item != null)
             {
-                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals( item.Email));
+                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals(item.Email));
                 if (rest != null)
                 {
                     return BadRequest("The Email is already in use");
@@ -139,7 +94,12 @@ namespace CheckerServer.Controllers
             }
         }
 
-        private async Task sendAnEmailAsync(String i_Email,String i_RestuarantName)
+        protected override void updateItem(Restaurant existingItem, Restaurant updatedItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task sendAnEmailAsync(String i_Email, String i_RestuarantName)
         {
             var sender = new SmtpSender(() => new SmtpClient("smtp-mail.outlook.com")
             {
@@ -162,6 +122,6 @@ namespace CheckerServer.Controllers
                 .Subject("Tanks for the registeration")
                 .Body("Welcome to Checker App where the world is greener")
                 .SendAsync();
-        }*/
+        }
     }
 }
