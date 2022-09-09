@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CheckerServer.Migrations
 {
     [DbContext(typeof(CheckerDBContext))]
-    [Migration("20220909091008_AddToAzure")]
-    partial class AddToAzure
+    [Migration("20220909141105_AfterStatisticsfix")]
+    partial class AfterStatisticsfix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,18 +32,12 @@ namespace CheckerServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<int>("AvrageMonthSales")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("EstMakeTime")
                         .HasColumnType("real");
-
-                    b.Property<int>("LastMonthSales")
-                        .HasColumnType("int");
 
                     b.Property<int>("LineId")
                         .HasColumnType("int");
@@ -58,16 +52,10 @@ namespace CheckerServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PresantageFroLastMonth")
-                        .HasColumnType("int");
-
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
                     b.Property<int>("RestMenuId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ThisMonthSales")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
@@ -80,30 +68,6 @@ namespace CheckerServer.Migrations
                     b.HasIndex("RestMenuId");
 
                     b.ToTable("Dishes");
-                });
-
-            modelBuilder.Entity("CheckerServer.Models.DishStatistic", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<int>("DishId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Finish")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DishId");
-
-                    b.ToTable("DishStatistics");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Ingredient", b =>
@@ -353,6 +317,28 @@ namespace CheckerServer.Migrations
                     b.ToTable("ServingAreas");
                 });
 
+            modelBuilder.Entity("CheckerServer.Models.Statistic", b =>
+                {
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DishId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("AccPrepTime")
+                        .HasColumnType("float");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("TimesOrdered")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Month", "DishId");
+
+                    b.ToTable("Statistics");
+                });
+
             modelBuilder.Entity("CheckerServer.Models.Dish", b =>
                 {
                     b.HasOne("CheckerServer.Models.Line", null)
@@ -366,17 +352,6 @@ namespace CheckerServer.Migrations
                         .HasForeignKey("RestMenuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CheckerServer.Models.DishStatistic", b =>
-                {
-                    b.HasOne("CheckerServer.Models.Dish", "Dish")
-                        .WithMany()
-                        .HasForeignKey("DishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Dish");
                 });
 
             modelBuilder.Entity("CheckerServer.Models.Ingredient", b =>

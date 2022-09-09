@@ -22,10 +22,5 @@ namespace CheckerServer.Models
 
         public string Description { get; set; }
         public eDishType Type { get; set; }
-
-        //statistics
-        /*public int ThisMonthSales { get; set; }
-        public int LastMonthSales { get; set; }
-        public int AvrageMonthSales { get; set; }*/
     }
 }
