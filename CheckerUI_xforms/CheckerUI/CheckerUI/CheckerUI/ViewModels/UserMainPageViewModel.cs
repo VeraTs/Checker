@@ -34,7 +34,7 @@ namespace CheckerUI.ViewModels
             {
                 BindingContext = mangeKitchenVm
             };
-            ordersView = new OrdersView();
+          
             MyKitchenCommand = new Command(async () =>
             {
                 linesPage = new LinesPage();
@@ -51,6 +51,7 @@ namespace CheckerUI.ViewModels
             });
             OrdersViewCommand = new Command(async () =>
             {
+                ordersView = new OrdersView();
                 await Application.Current.MainPage.Navigation.PushAsync(ordersView);
             });
             ReturnCommand = new Command(async () =>

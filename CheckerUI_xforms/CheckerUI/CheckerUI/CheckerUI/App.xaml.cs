@@ -16,6 +16,7 @@ namespace CheckerUI
       public static ServerRepository Repository { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
+        public static HubConnection OrderHubConnection { get; private set; }
 
         bool isDebug = false;
 
@@ -72,6 +73,22 @@ namespace CheckerUI
                 })
                 .WithAutomaticReconnect()
                 .Build();
+            string OrderHubUrl = BaseAddress + "/OrdersHub";
+            OrderHubConnection = new HubConnectionBuilder()
+                .WithUrl(OrderHubUrl, options =>
+                {
+                    if (isDebug)
+                    {
+                        options.WebSocketConfiguration = conf =>
+                        {
+                            conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                        };
+                        options.HttpMessageHandlerFactory = factory => handler;
+                        //options.AccessTokenProvider = () => Task.FromResult(Token);
+                    }
+                })
+                .WithAutomaticReconnect()
+                .Build();
             HubConn.On<String>("DBError", (str) =>
             {
                 Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
@@ -84,6 +101,21 @@ namespace CheckerUI
             {
                 Application.Current.MainPage.DisplayAlert("NewGroupMemberException!", str, "OK");
             });
+
+
+            OrderHubConnection.On<String>("DBError", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("OrdersHubException!", str, "OK");
+            });
+            OrderHubConnection.On<String>("SignalRError", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("OrdersHubException!", str, "OK");
+            });
+            OrderHubConnection.On<String>("NewGroupMember", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("OrdersHubNewGroupMemberException!", str, "OK");
+            });
+
             MainPage = new NavigationPage(new MainPage())
             {
             };

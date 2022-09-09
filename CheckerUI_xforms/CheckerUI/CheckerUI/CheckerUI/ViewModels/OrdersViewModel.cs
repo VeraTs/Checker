@@ -25,7 +25,10 @@ namespace CheckerUI.ViewModels
             var a = new ServingArea()
             {
                 zoneNum = 5,
-                restaurantId = 1, lines = null, id = 1, name = "temp"
+                restaurantId = 1,
+                lines = null,
+                id = 1,
+                name = "temp"
             };
             servingArea = App.Repository.ServingAreas;
 
@@ -34,11 +37,13 @@ namespace CheckerUI.ViewModels
             {
                 var toAdd = new ServingZone()
                 {
-                    isAvailable = true, id = i, item = null
+                    isAvailable = true,
+                    id = i,
+                    item = null
                 };
                 Zones.Add(toAdd);
             }
-            
+
             //var orders = App.Repository.Orders;
             //foreach (var order in orders)
             //{
@@ -46,21 +51,9 @@ namespace CheckerUI.ViewModels
             //    m_OrdersViews.Add(view);
             //    m_Orders.Add(order.id, view);
             //    int id = GetFirstAvailableZone();
-               
-            //}
 
-            initEvents();
-            
-            StartListening();
-        }
-        public int GetFirstAvailableZone()
-        {
-            var zone = Zones.First(x => x.isAvailable == true);
-            return zone.id;
-        }
-        private void initEvents()
-        {
-            App.HubConn.On<List<Order>>("ReceiveOrders", (orders) =>
+            //}
+            App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
             {
                 foreach (var order in orders)
                 {
@@ -73,17 +66,27 @@ namespace CheckerUI.ViewModels
                     m_OrdersViews.Add(view);
                 }
             });
+            initEvents();
 
-            App.HubConn.On<OrderItem, int>("PlaceItem", (item, spot) =>
+            initOrdersHub();
+
+        }
+        public int GetFirstAvailableZone()
+        {
+            var zone = Zones.First(x => x.isAvailable == true);
+            return zone.id;
+        }
+        private void initEvents()
+        {
+
+            App.OrderHubConnection.On<OrderItem>("ItemToBeServed", (item) =>
             {
                 item.dish = mDishesDictionary[item.dishId];
                 var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
-                view.OrderItemTimeDone = DateTime.Now;
-                view.OrderItemLineStatus = eLineItemStatus.Done;
-                SetOrderItemInZone(view, spot);
+                SetOrderItemInZone(view, item.servingAreaZone);
             });
 
-            App.HubConn.On<OrderItem>("ItemServed", (item) =>
+            App.OrderHubConnection.On<OrderItem>("ItemServed", (item) =>
             {
                 item.dish = mDishesDictionary[item.dishId];
                 var order = m_Orders[item.orderId];
@@ -94,36 +97,39 @@ namespace CheckerUI.ViewModels
                 zone.isAvailable = true;
             });
         }
+
+    
+        private static async void initOrdersHub()
+        {
+            if (App.OrderHubConnection.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await App.OrderHubConnection.StartAsync();
+                    await Task.Delay(300);// start async connection to SignalR Hub at server
+
+                }
+                catch (System.Exception ex)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
+                }
+            }
+
+            try
+            {
+                await App.OrderHubConnection.InvokeAsync("RegisterForOrders", 1);
+            }
+            catch (System.Exception ex)
+            {
+                // await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+            }
+        }
         public bool SetOrderItemInZone(OrderItemViewModel i_Item, int i_zoneId)
         {
             if (i_zoneId <= 0 || i_zoneId >= Zones.Count || !Zones[i_zoneId].isAvailable) return false;
             Zones[i_zoneId].item = i_Item;
             Zones[i_zoneId].isAvailable = false;
             return true;
-        }
-        private static async void StartListening()
-        {
-            if (App.HubConn.State == HubConnectionState.Disconnected)
-            {
-                try
-                {
-                    await App.HubConn.StartAsync();     // start async connection to SignalR Hub at server
-
-                }
-                catch (System.Exception ex)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Exception! Disconnected", ex.Message, "OK");
-                }
-            }
-
-            try
-            {
-                await App.HubConn.InvokeAsync("RegisterForGroup", 1);
-            }
-            catch (System.Exception ex)
-            {
-                // await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
-            }
         }
 
         private void AllItemsCheckedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -148,7 +154,7 @@ namespace CheckerUI.ViewModels
         {
             try
             {
-                await App.HubConn.InvokeAsync("PickUpItemForServing", i_ItemId);
+                await App.OrderHubConnection.InvokeAsync("PickUpItemForServing", i_ItemId);
                 return true;
             }
             catch (System.Exception ex)

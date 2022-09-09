@@ -15,8 +15,6 @@ namespace CheckerUI.Views
         public OrdersView()
         {
             InitializeComponent();
-            var manager = new OrdersViewModel();
-            this.BindingContext = manager;
         }
 
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
