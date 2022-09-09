@@ -19,24 +19,12 @@ namespace CheckerServer.Models
         public eLineItemStatus LineStatus { get; set; } = eLineItemStatus.Locked;
 
         //statistics 
-        public DateTime Start { get; set; }
+        public DateTime Start { get; set; } = DateTime.Now;
 
-        public DateTime Finish { get; set; }
+        public DateTime Finish { get; set; } = DateTime.Now.AddMinutes(2);
 
-        public int dishCount(int i_Month)
-        {
-            if (DateTime.Now.Month != i_Month)
-            {
-                this.Dish.LastMonthSales = this.Dish.LastMonthSales;
-                this.Dish.ThisMonthSales = 0;
-                this.Dish.AvrageMonthSales = 0;
-            }
-            long elapsedTicks = Finish.Ticks - Start.Ticks;
-            TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
-            double doneTime = elapsedSpan.TotalMinutes;
-            this.Dish.AvrageMonthSales = (this.Dish.AvrageMonthSales * this.Dish.ThisMonthSales + (int)doneTime) / (this.Dish.ThisMonthSales + 1);
-            return DateTime.Now.Month;
-        }
+
+
     }
 
     public enum eItemStatus      // the status of the order item overall

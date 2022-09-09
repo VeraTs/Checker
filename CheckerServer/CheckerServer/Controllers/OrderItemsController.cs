@@ -26,6 +26,9 @@ namespace CheckerServer.Controllers
                 existingItem.Changes = updatedItem.Changes;
             }
 
+            /*existingItem.Start = DateTime.Now;
+            existingItem.Finish = DateTime.Now.AddMinutes(2);*/
+
             existingItem.LineStatus = updatedItem.LineStatus;
 
             existingItem.Status = updatedItem.Status;

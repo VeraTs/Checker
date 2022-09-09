@@ -9,7 +9,6 @@ namespace CheckerServer.Hubs
 {
     public class KitchenHub : Hub
     {
-        private readonly KitchenManager? r_Manager = null;
         private readonly CheckerDBContext _context;
         public IServiceProvider? Services { get; }
 
@@ -34,7 +33,6 @@ namespace CheckerServer.Hubs
         {
 
             //Dictionary<int, List<LineDTO>> lines = r_Manager.ManageKitchen();
-            r_Manager.ManageKitchenAsync();
             /*            foreach (var line in lines)
                         {
                             Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
@@ -80,7 +78,13 @@ namespace CheckerServer.Hubs
             {
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
                 item.Finish = DateTime.Now;
-                r_Manager.Month = item.dishCount(r_Manager.Month);
+                Boolean success = await StatisticUtils.updateDishStat(_context, item);
+                
+                if (!success)
+                {
+                    await Clients.Caller.SendAsync("DBError", "Cannot edit statistics table");
+                }
+
                 Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
                 Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
                 OrdersHub orderhub = Services.GetService<OrdersHub>();

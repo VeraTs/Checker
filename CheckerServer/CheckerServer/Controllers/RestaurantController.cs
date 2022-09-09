@@ -106,7 +106,7 @@ namespace CheckerServer.Controllers
                     if (res > 0)
                     {
                         // return the added item
-                        await sendAnEmailAsync(item.Email, item.Name);
+                        sendAnEmailAsync(item.Email, item.Name);
                         return item;
                     }
                     else

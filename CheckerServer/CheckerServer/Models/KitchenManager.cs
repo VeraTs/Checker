@@ -19,10 +19,9 @@ namespace CheckerServer.Models
         public IServiceProvider Services { get; }
         private static int counter = 0;
         private static bool shouldRun = true;
-        public int Month { get; set; }
+        
         public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext)
         {
-            Month = DateTime.Now.Month;
             Services = serviceProvider;
             _hubContext = kitchenHubContext;
             using (var scope = Services.CreateScope())

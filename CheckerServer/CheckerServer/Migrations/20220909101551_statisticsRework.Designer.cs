@@ -4,6 +4,7 @@ using CheckerServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CheckerServer.Migrations
 {
     [DbContext(typeof(CheckerDBContext))]
-    partial class CheckerDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220909101551_statisticsRework")]
+    partial class statisticsRework
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,12 +32,18 @@ namespace CheckerServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
+                    b.Property<int>("AvrageMonthSales")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("EstMakeTime")
                         .HasColumnType("real");
+
+                    b.Property<int>("LastMonthSales")
+                        .HasColumnType("int");
 
                     b.Property<int>("LineId")
                         .HasColumnType("int");
@@ -54,6 +62,9 @@ namespace CheckerServer.Migrations
                         .HasColumnType("real");
 
                     b.Property<int>("RestMenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThisMonthSales")
                         .HasColumnType("int");
 
                     b.Property<int>("Type")
