@@ -11,24 +11,26 @@ namespace CheckerServer.Models
     {
         private CheckerDBContext _context = null;
         private readonly KitchenUtils r_KitchenUtils = null;
-        private readonly Dictionary<int, Dictionary<int, LineDTO>> r_KitchenLines = new Dictionary<int, Dictionary<int,LineDTO>>();
+        private readonly Dictionary<int, Dictionary<int, LineDTO>> r_KitchenLines = new Dictionary<int, Dictionary<int, LineDTO>>();
         private readonly Dictionary<int, int> r_RestsActiveKitchens = new Dictionary<int, int>();
-        private readonly object r_RestUsesLock  = new object();
+        private readonly object r_RestUsesLock = new object();
         private readonly IHubContext<KitchenHub> _hubContext;
         private Timer? _timer = null;
         public IServiceProvider Services { get; }
         private static int counter = 0;
         private static bool shouldRun = true;
-        
+        public int Month { get; set; }
         public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext)
         {
+            Month = DateTime.Now.Month;
             Services = serviceProvider;
             _hubContext = kitchenHubContext;
             using (var scope = Services.CreateScope())
             {
                 using (var context = new CheckerDBContext(
                  scope.ServiceProvider.GetRequiredService<
-                     DbContextOptions<CheckerDBContext>>())){
+                     DbContextOptions<CheckerDBContext>>()))
+                {
                     List<Restaurant> rests = context.Restaurants.ToList();
                     rests.ForEach(r =>
                     {
@@ -38,6 +40,11 @@ namespace CheckerServer.Models
                         r_RestsActiveKitchens.Add(r.ID, 0);
                     });
                     r_KitchenUtils = new KitchenUtils(context);
+                    List<ServingArea> areas = context.ServingAreas.ToList();
+                    areas.ForEach(area =>
+                    {
+                        OrdersUtils.addServingArea(area);
+                    });
                 }
             }
         }
@@ -46,10 +53,10 @@ namespace CheckerServer.Models
         {
             // Orders
             List<Order>? orders = context.Orders.Where(o => o.RestaurantId == rest.ID && o.Status != eOrderStatus.Done).ToList();
-            if(orders != null)
+            if (orders != null)
                 orders.ForEach(o => {
                     List<OrderItem>? items = context.OrderItems.Include("Dish").Where(oi => oi.OrderId == o.ID).ToList();
-                    if(items != null)
+                    if (items != null)
                     {
                         items.ForEach(i =>
                         {
@@ -62,7 +69,8 @@ namespace CheckerServer.Models
 
                             if (i.Status == eItemStatus.AtLine || i.Status == eItemStatus.Ordered)
                             {
-                                switch(i.LineStatus){
+                                switch (i.LineStatus)
+                                {
                                     case eLineItemStatus.ToDo:
                                         if (r_KitchenLines[rest.ID][lineId].ToDoItems == null)
                                             r_KitchenLines[rest.ID][lineId].ToDoItems = new List<OrderItem>();
@@ -79,7 +87,8 @@ namespace CheckerServer.Models
                                         r_KitchenLines[rest.ID][lineId].DoingItems.Add(iDTO);
                                         break;
                                 }
-                            } else if (i.Status == eItemStatus.Ordered)
+                            }
+                            else if (i.Status == eItemStatus.Ordered)
                             {
                                 if (r_KitchenLines[rest.ID][lineId].LockedItems == null)
                                     r_KitchenLines[rest.ID][lineId].LockedItems = new List<OrderItem>();
@@ -138,7 +147,7 @@ namespace CheckerServer.Models
              * 
              */
 
-            using(var scope = Services.CreateScope())
+            using (var scope = Services.CreateScope())
             {
                 using (var context = new CheckerDBContext(
                     scope.ServiceProvider.GetRequiredService<
@@ -173,7 +182,7 @@ namespace CheckerServer.Models
                                         lock (r_KitchenLines[restId][lineDTO.lineId])
                                         {
                                             // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
-                                           
+
 
                                             lineDTO.LockedItems.ForEach(item => {
                                                 OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
@@ -185,19 +194,19 @@ namespace CheckerServer.Models
 
                                             lineDTO.ToDoItems.ForEach(item => {
                                                 OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
-                                                if(oi != null)
+                                                if (oi != null)
                                                 {
                                                     r_KitchenLines[restId][lineDTO.lineId].LockedItems.Remove(oi);
                                                 }
 
                                                 oi = r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Find(i => i.ID == item.ID);
-                                                if(oi == null)
+                                                if (oi == null)
                                                     r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Add(item);
 
                                             });
 
 
-                                            
+
                                         }
                                     }
                                 });
@@ -228,12 +237,12 @@ namespace CheckerServer.Models
                         await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);*/
                 }
             }
-            
+
 
             // can't lock if there us async inside :CRY:
         }
 
-        
+
 
         internal void ItemWasMoved(Order order, OrderItem item)
         {
@@ -245,15 +254,17 @@ namespace CheckerServer.Models
                 case eLineItemStatus.Doing:
                     lock (r_KitchenLines[restId][lineId])
                     {
-                        r_KitchenLines[restId][lineId].ToDoItems.Remove(item);
-                        r_KitchenLines[restId][lineId].DoingItems.Add(item);
+                        OrderItem savedItem = r_KitchenLines[restId][lineId].ToDoItems.First(i => i.ID == item.ID);
+                        r_KitchenLines[restId][lineId].ToDoItems.Remove(savedItem);
+                        r_KitchenLines[restId][lineId].DoingItems.Add(savedItem);
                     }
-                    
+
                     break;
                 case eLineItemStatus.Done:
                     lock (r_KitchenLines[restId][lineId])
                     {
-                        r_KitchenLines[restId][lineId].DoingItems.Remove(item);
+                        OrderItem savedItem = r_KitchenLines[restId][lineId].DoingItems.First(i => i.ID == item.ID);
+                        r_KitchenLines[restId][lineId].DoingItems.Remove(savedItem);
                     }
                     break;
             }
@@ -277,7 +288,7 @@ namespace CheckerServer.Models
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
             return Task.CompletedTask;
         }
 
@@ -289,7 +300,7 @@ namespace CheckerServer.Models
                 await ManageKitchenAsync();
                 shouldRun = true;
             }
-            
+
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
