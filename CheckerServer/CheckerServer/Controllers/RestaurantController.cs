@@ -78,7 +78,14 @@ namespace CheckerServer.Controllers
                 // any password that passes model validation.
 
                 
-                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals(i_user.UserEmail) && r.Password.Equals(i_user.UserPassword));
+                Restaurant rest = await r_DbContext.Restaurants
+                    .Include(r => r.ServingAreas)
+                          .FirstOrDefaultAsync(r => r.Email.Equals(i_user.UserEmail) && r.Password.Equals(i_user.UserPassword));
+                List<Line> lines = await r_DbContext.Lines.Include("Makers").Where(l => l.RestaurantId == rest.ID).ToListAsync();
+                List<RestMenu> menus = await r_DbContext.RestMenus.Include("Dishes").Where(rm => rm.RestaurantId == rest.ID).ToListAsync();
+
+                rest.Menus = menus;
+                rest.Lines = lines;
                 if (rest == null || String.IsNullOrEmpty(rest.Email))
                 {
                     return BadRequest("UserName or Password is incorrect");
@@ -95,7 +102,16 @@ namespace CheckerServer.Controllers
         {
             if (ModelState.IsValid && item != null)
             {
-                Restaurant rest = await r_DbContext.Restaurants.FirstOrDefaultAsync(r => r.Email.Equals( item.Email));
+                Restaurant rest = await r_DbContext.Restaurants
+                    .Include(r => r.ServingAreas)
+                    .FirstOrDefaultAsync(r => r.Email.Equals( item.Email));
+
+                List<Line> lines = await r_DbContext.Lines.Include("Makers").Where(l => l.RestaurantId == rest.ID).ToListAsync();
+                List<RestMenu> menus = await r_DbContext.RestMenus.Include("Dishes").Where(rm => rm.RestaurantId == rest.ID).ToListAsync();
+
+                rest.Menus = menus;
+                rest.Lines = lines;
+
                 if (rest != null)
                 {
                     return BadRequest("The Email is already in use");
