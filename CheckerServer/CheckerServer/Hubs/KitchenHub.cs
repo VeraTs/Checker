@@ -10,50 +10,18 @@ namespace CheckerServer.Hubs
     public class KitchenHub : Hub
     {
         private readonly CheckerDBContext _context;
+        private readonly IHubContext<OrdersHub> ordersHubContext;
         public IServiceProvider? Services { get; }
 
-        // apparently, the ctor is called for each invocation. FFS WTF.
-        // so everything here needs to be a reference to a static thing.
-        public KitchenHub(IServiceProvider services, CheckerDBContext context)
+        public KitchenHub(IServiceProvider services, CheckerDBContext context, IHubContext<OrdersHub> ordersHubContext)
         {
-            // issues here - MAJOR. The context is refreshed at every call for the hub, 
-            // and the previous context assigned to KitchenManager is disposed of
-            // updating the context is needed
-
-            //r_Manager = kitchenManager;
             Services = services;
             _context = context;
-
-            //   useKitchenManager();
+            this.ordersHubContext = ordersHubContext;
         }
 
         private object locker = new object();
 
-        private async Task useKitchenManager()
-        {
-
-            //Dictionary<int, List<LineDTO>> lines = r_Manager.ManageKitchen();
-            /*            foreach (var line in lines)
-                        {
-                            Restaurant? rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.Key);
-                            // not awaited since this pretains to different restaurants
-                            if (rest != null)
-                                await Clients.Group(rest.Name).SendAsync("UpdatedLines", lines[rest.ID]);
-                        }*/
-
-            /*System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Interval = 30000; // 50 sec for denugging purposes
-            timer.Elapsed += async (o, e) => {
-                
-                r_Manager.UpdateContext(_context);
-
-
-            };
-
-            timer.Start();*/
-        }
-
-        // checks if orderITem is legitimate and moves it if it is
         // checks if orderITem is legitimate and moves it if it is
         public async Task MoveOrderItemToDoing(int id)
         {
@@ -77,20 +45,15 @@ namespace CheckerServer.Hubs
             if (item != null)
             {
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
-                item.Finish = DateTime.Now;
-                Boolean success = await StatisticUtils.updateDishStat(_context, item);
-                
-                if (!success)
-                {
-                    await Clients.Caller.SendAsync("DBError", "Cannot edit statistics table");
-                }
-
                 Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
                 Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
-                OrdersHub orderhub = Services.GetService<OrdersHub>();
-                if (orderhub != null)
+                int spot = await itemToBeServed(item, rest);
+                if(spot < 0)
                 {
-                    int spot = await orderhub.ItemToBeServed(item, rest);
+                    await Clients.Caller.SendAsync("CantPlaceItem", "No free spot found");
+                }
+                else
+                {
                     await Clients.Caller.SendAsync("PlaceItem", item, spot);
                 }
             }
@@ -98,6 +61,33 @@ namespace CheckerServer.Hubs
             {
                 await Clients.Caller.SendAsync("DBError", "No such orderItem");
             }
+        }
+
+        internal async Task<int> itemToBeServed(OrderItem orderItem, Restaurant rest)
+        {
+            int spot = -1;
+            try
+            {
+                if (orderItem != null)
+                {
+                    bool success = await OrdersUtils.prepareItemForServing(_context, orderItem);
+                    if (success)
+                    {
+                        spot = orderItem.ServingAreaZone;
+                        Line? line = await _context.Lines.FirstAsync(l => l.ID == orderItem.Dish.LineId);
+                        if(line!= null)
+                        {
+                            await ordersHubContext.Clients.Group(rest.Name).SendAsync("ItemToBeServed", line.ServingAreaId, orderItem);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await ordersHubContext.Clients.Group(rest.Name).SendAsync("SignalRError", "an unexpected error occured: " + ex.Message);
+            }
+
+            return spot;
         }
 
         private async Task moveFromListToList(OrderItem item, eLineItemStatus prevStatus, eLineItemStatus nextStatus, string prevListName, string nextListName)
