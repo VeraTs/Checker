@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CheckerServer.Migrations
 {
-    public partial class AfterStatisticsfix : Migration
+    public partial class work : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
