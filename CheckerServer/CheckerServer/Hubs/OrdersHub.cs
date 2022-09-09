@@ -101,53 +101,7 @@ namespace CheckerServer.Hubs
             }
         }
 
-        internal async Task<int> ItemToBeServed(OrderItem orderItem, Restaurant rest)
-        {
-            int spot = -1;
-            try
-            {
-                if (orderItem != null)
-                {
-                    await prepareItemForServing(orderItem);
-                    spot = orderItem.ServingAreaZone;
-                    await Clients.Group(rest.Name).SendAsync("ItemToBeServed", orderItem);
-                }
-            }
-            catch (Exception ex)
-            {
-                await Clients.Group(rest.Name).SendAsync("SignalRError", "an unexpected error occured: " + ex.Message);
-            }
 
-            return spot;
-        }
-
-        private async Task<Boolean> prepareItemForServing(OrderItem item)
-        {
-            Boolean success = false;
-            try
-            {
-                OrderItem orderitem = await _context.OrderItems.FirstAsync(oi => oi.ID == item.ID);
-                orderitem.Status = eItemStatus.WaitingToBeServed;
-                Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == orderitem.Dish.LineId);
-                ServingArea area = await _context.ServingAreas.FirstOrDefaultAsync(sa => sa.ID == line.ServingAreaId);
-                int spot = OrdersUtils.findSpotInServingArea(area);
-                if (spot > -1)
-                {
-                    if (OrdersUtils.fillSpotInServingArea(area, item, spot))
-                    {
-                        item.ServingAreaZone = spot;
-                        success = await _context.SaveChangesAsync() > 0;
-                    }
-                }
-
-                return success;
-
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
 
         public async Task PickUpItemForServing(int itemId)
         {
