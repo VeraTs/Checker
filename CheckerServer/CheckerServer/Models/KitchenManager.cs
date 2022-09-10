@@ -19,10 +19,10 @@ namespace CheckerServer.Models
         public IServiceProvider Services { get; }
         private static int counter = 0;
         private static bool shouldRun = true;
-        public int Month { get; set; }
+        private List<int> readyToRunRests = new List<int>();
+
         public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext)
         {
-            Month = DateTime.Now.Month;
             Services = serviceProvider;
             _hubContext = kitchenHubContext;
             using (var scope = Services.CreateScope())
@@ -31,22 +31,28 @@ namespace CheckerServer.Models
                  scope.ServiceProvider.GetRequiredService<
                      DbContextOptions<CheckerDBContext>>()))
                 {
+                    r_KitchenUtils = new KitchenUtils(context);
+
                     List<Restaurant> rests = context.Restaurants.ToList();
                     rests.ForEach(r =>
                     {
-                        r_KitchenLines.Add(r.ID, new Dictionary<int, LineDTO>());
-                        // init the kitchen lines with order items
-                        initLines(context, r);
-                        r_RestsActiveKitchens.Add(r.ID, 0);
-                    });
-                    r_KitchenUtils = new KitchenUtils(context);
-                    List<ServingArea> areas = context.ServingAreas.ToList();
-                    areas.ForEach(area =>
-                    {
-                        OrdersUtils.addServingArea(area);
+                        setUpRest(context, r);
                     });
                 }
             }
+        }
+
+        private void setUpRest(CheckerDBContext context, Restaurant r)
+        {
+            r_KitchenLines.Add(r.ID, new Dictionary<int, LineDTO>());
+            // init the kitchen lines with order items
+            initLines(context, r);
+            r_RestsActiveKitchens.Add(r.ID, 0);
+            List<ServingArea> areas = context.ServingAreas.Where(sa => sa.RestaurantId == r.ID).ToList();
+            areas.ForEach(area =>
+            {
+                OrdersUtils.addServingArea(area);
+            });
         }
 
         private void initLines(CheckerDBContext context, Restaurant rest)
@@ -144,6 +150,7 @@ namespace CheckerServer.Models
              *              \----- 'LoadNewOrders' with input of active orders from DB (actually, is input needed? KitchenUtils has context access)
              *      2.4) if there are closed orders, remove them from the KitchenUtils
              *              \----- 'ClearDeadOrders' with no input needed
+             *      2.5) Check for new restaurants to load
              * 
              */
 
@@ -183,7 +190,6 @@ namespace CheckerServer.Models
                                         {
                                             // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
 
-
                                             lineDTO.LockedItems.ForEach(item => {
                                                 OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
                                                 if (oi == null)
@@ -204,9 +210,6 @@ namespace CheckerServer.Models
                                                     r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Add(item);
 
                                             });
-
-
-
                                         }
                                     }
                                 });
@@ -232,6 +235,24 @@ namespace CheckerServer.Models
 
                     // step 2.4
                     r_KitchenUtils.ClearOrders();
+
+                    // step 2.5
+                    lock (readyToRunRests)
+                    {
+                        if(readyToRunRests.Count > 0)
+                        {
+                            readyToRunRests.ForEach(async id =>
+                            {
+                                Restaurant? rest = await context.Restaurants.FindAsync(id);
+                                if(rest!= null)
+                                {
+                                    setUpRest(context, rest);
+                                }
+                            });
+                        }
+
+                        readyToRunRests.Clear();
+                    }
 
                     /*if(updatedLines != null)
                         await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);*/
@@ -286,9 +307,17 @@ namespace CheckerServer.Models
             }
         }
 
+        internal void RestaurantReadyToWork(int restId)
+        {
+            lock (readyToRunRests)
+            {
+                readyToRunRests.Add(restId);
+            }
+        }
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
             return Task.CompletedTask;
         }
 
