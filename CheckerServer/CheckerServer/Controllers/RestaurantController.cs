@@ -19,9 +19,12 @@ namespace CheckerServer.Controllers
     [ApiController]
     public class RestaurantController : BasicDbController<Restaurant>
     {
-        public RestaurantController(CheckerDBContext context)
+        IServiceProvider serviceProvider;
+        public RestaurantController(CheckerDBContext context, IServiceProvider serviceProvider)
             : base(context, context.Restaurants)
-        { }
+        {
+            this.serviceProvider = serviceProvider;
+        }
 
         protected override void updateItem(Restaurant existingItem, Restaurant updatedItem)
         {
@@ -59,6 +62,31 @@ namespace CheckerServer.Controllers
                 .Include("Lines")
                 .Include("Menus.Dishes")
                 .FirstOrDefaultAsync(d => d.ID == id);
+
+            return res;
+        }
+
+        // Activate restaurant: all lines are complete and such, doors open situation
+        [HttpPost]
+        [Route("Activate")]
+        public async Task<ActionResult<Boolean>> Activate([FromBody] User i_user)
+        {
+            Boolean res = false;
+            if(i_user != null)
+            {
+                Restaurant? rest = await r_DbContext.Restaurants
+                    .Include("ServingAreas")
+                    .FirstOrDefaultAsync(r => r.Email.Equals(i_user.UserEmail) && r.Password.Equals(i_user.UserPassword));
+
+                if(rest != null && serviceProvider !=null)
+                {
+                    KitchenManager? manager = serviceProvider.GetService<KitchenManager>();
+                    if(manager != null)
+                    {
+                        manager.RestaurantReadyToWork(rest.ID);
+                    }
+                }
+            }
 
             return res;
         }
