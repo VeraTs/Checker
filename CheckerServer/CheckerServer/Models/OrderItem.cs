@@ -19,9 +19,9 @@ namespace CheckerServer.Models
         public eLineItemStatus LineStatus { get; set; } = eLineItemStatus.Locked;
 
         //statistics 
-        public DateTime Start { get; set; } = DateTime.Now;
+        public DateTime Start { get; set; }
 
-        public DateTime Finish { get; set; } = DateTime.Now.AddMinutes(2);
+        public DateTime Finish { get; set; }
 
 
 

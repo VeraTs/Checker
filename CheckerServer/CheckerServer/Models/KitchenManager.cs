@@ -284,7 +284,7 @@ namespace CheckerServer.Models
                     {
                         OrderItem savedItem = r_KitchenLines[restId][lineId].ToDoItems.First(i => i.ID == item.ID);
                         r_KitchenLines[restId][lineId].ToDoItems.Remove(savedItem);
-                        r_KitchenLines[restId][lineId].DoingItems.Add(savedItem);
+                        r_KitchenLines[restId][lineId].DoingItems.Add(item);
                     }
 
                     break;
@@ -293,6 +293,7 @@ namespace CheckerServer.Models
                     {
                         OrderItem savedItem = r_KitchenLines[restId][lineId].DoingItems.First(i => i.ID == item.ID);
                         r_KitchenLines[restId][lineId].DoingItems.Remove(savedItem);
+                        //r_KitchenLines[restId][lineId].DoneItems.Add(item);
                     }
                     break;
             }

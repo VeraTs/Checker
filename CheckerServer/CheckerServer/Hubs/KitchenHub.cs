@@ -45,6 +45,9 @@ namespace CheckerServer.Hubs
             if (item != null)
             {
                 await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
+                item.Finish = DateTime.Now;
+                Boolean statSuccess = await StatisticUtils.updateDishStat(Services, item);
+
                 Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
                 Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
                 int spot = await itemToBeServed(item, rest);
