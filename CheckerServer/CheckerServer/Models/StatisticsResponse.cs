@@ -12,5 +12,6 @@
         public string dishName { get; set; }
 
         public eDishType eDishType { get; set; }
+        public double Grows { get; set; }
     }
 }
