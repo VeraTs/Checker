@@ -35,8 +35,11 @@ namespace CheckerServer.Controllers
 
 
                 Restaurant rest = await r_DbContext.Restaurants
-                    .Include("Menus")
+                    .Include("ServingAreas")
                     .FirstOrDefaultAsync(r => r.Email.Equals(i_user.UserEmail) && r.Password.Equals(i_user.UserPassword));
+
+                rest.Menus = r_DbContext.RestMenus.Where(m => m.RestaurantId == rest.ID).ToList();
+                rest.Lines = r_DbContext.Lines.Where(l => l.RestaurantId == rest.ID).ToList();
                 if (rest == null || String.IsNullOrEmpty(rest.Email))
                 {
                     return BadRequest("UserName or Password is incorrect");
