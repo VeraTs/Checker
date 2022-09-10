@@ -18,7 +18,7 @@ namespace CheckerServer.Hubs
         }
 
         // gets all orders in system
-        public async Task GetAllOrders()
+        private async Task getAllOrders()
         {
             List<Order> orders = await _context.Orders.Include("Items").ToListAsync();
 
@@ -270,6 +270,7 @@ namespace CheckerServer.Hubs
                 var manager = Services.GetService<KitchenManager>();
                 manager.AddGroupMember(restId);
                 await Clients.Group(rest.Name).SendAsync("NewGroupMember", $"{Context.ConnectionId} has joined the group {rest.Name}.");
+                await getAllOrders();
             }
 
         }

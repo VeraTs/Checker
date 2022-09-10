@@ -129,6 +129,8 @@ namespace CheckerServer.utils
             List<OrderItem>? availableItems = null;
             List<OrderItem>? lockedItems = null;
             List<int> availableItemIDS = new List<int>();
+
+            // for every restaurant that is active - 
             foreach (int restId in r_RestaurantOrderQueuesList.Keys)
             {
                 if (activeRests != null && activeRests.Contains(restId))
@@ -143,8 +145,6 @@ namespace CheckerServer.utils
                                 availableItemIDS.Add(item.ID);
                             }
                         }
-
-                        //availableItems.AddRange(order.GetAvailableItems()); // returns all items that have available = true (by popping!)
                     }
                 }
             }

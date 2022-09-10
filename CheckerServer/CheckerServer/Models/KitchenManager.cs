@@ -179,40 +179,10 @@ namespace CheckerServer.Models
                             Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
                             if (updatedLines.ContainsKey(restId))
                             {
-                                updatedLines[restId].ForEach(lineDTO => {
-                                    if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
-                                    {
-                                        r_KitchenLines[restId][lineDTO.lineId] = lineDTO;
-                                    }
-                                    else
-                                    {
-                                        lock (r_KitchenLines[restId][lineDTO.lineId])
-                                        {
-                                            // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
-
-                                            lineDTO.LockedItems.ForEach(item => {
-                                                OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
-                                                if (oi == null)
-                                                {
-                                                    r_KitchenLines[restId][lineDTO.lineId].LockedItems.Add(item);
-                                                }
-                                            });
-
-                                            lineDTO.ToDoItems.ForEach(item => {
-                                                OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
-                                                if (oi != null)
-                                                {
-                                                    r_KitchenLines[restId][lineDTO.lineId].LockedItems.Remove(oi);
-                                                }
-
-                                                oi = r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Find(i => i.ID == item.ID);
-                                                if (oi == null)
-                                                    r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Add(item);
-
-                                            });
-                                        }
-                                    }
-                                });
+                                foreach(LineDTO lineDTO in updatedLines[restId])
+                                {
+                                    updateOutgoingLines(restId, lineDTO);
+                                }
                             }
 
                             // not awaited since this pretains to different restaurants
@@ -261,6 +231,43 @@ namespace CheckerServer.Models
 
 
             // can't lock if there us async inside :CRY:
+        }
+
+
+        private void updateOutgoingLines(int restId, LineDTO lineDTO)
+        {
+            if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
+            {
+                r_KitchenLines[restId][lineDTO.lineId] = lineDTO;
+            }
+            else
+            {
+                lock (r_KitchenLines[restId][lineDTO.lineId])
+                {
+                    // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
+
+                    lineDTO.LockedItems.ForEach(item => {
+                        OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
+                        if (oi == null)
+                        {
+                            r_KitchenLines[restId][lineDTO.lineId].LockedItems.Add(item);
+                        }
+                    });
+
+                    lineDTO.ToDoItems.ForEach(item => {
+                        OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
+                        if (oi != null)
+                        {
+                            r_KitchenLines[restId][lineDTO.lineId].LockedItems.Remove(oi);
+                        }
+
+                        oi = r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Find(i => i.ID == item.ID);
+                        if (oi == null)
+                            r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Add(item);
+
+                    });
+                }
+            }
         }
 
 

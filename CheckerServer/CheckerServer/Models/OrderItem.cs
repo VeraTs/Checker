@@ -12,7 +12,7 @@ namespace CheckerServer.Models
         [ForeignKey("Order")]
         public int OrderId { get; set; }
         [Required]
-        public int ServingAreaZone { get; set; }
+        public int ServingAreaZone { get; set; } = -1;
         
         public string Changes { get; set; }
         public eItemStatus Status { get; set; } = eItemStatus.Ordered;
