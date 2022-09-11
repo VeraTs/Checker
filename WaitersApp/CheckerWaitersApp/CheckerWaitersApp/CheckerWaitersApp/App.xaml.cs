@@ -37,14 +37,10 @@ namespace CheckerWaitersApp
             client.Timeout = new TimeSpan(0, 0, 30);
 
             this.handler = handler;
-            DependencyService.Register<DishDataStore>();
-            DependencyService.Register<OrderItemDataStore>();
-            DependencyService.Register<OrdersDataStore>();
             DependencyService.Register<UserDataStore>();
 
 
-            //Repository = new ServerRepository();
-            //Repository.LoadData();
+         
             string ordersHubUrl = BaseAddress + "/OrdersHub";
             HubConn = new HubConnectionBuilder()
                 .WithUrl(ordersHubUrl, options =>
@@ -90,6 +86,7 @@ namespace CheckerWaitersApp
 
         protected override void OnStart()
         {
+            Repository = new ServerRepository();
         }
 
         protected override void OnSleep()

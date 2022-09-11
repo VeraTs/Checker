@@ -65,7 +65,7 @@
                                VerticalOptions="Center"
                                TextColor="CadetBlue"
                                MaxLines="1"/>
-                        <Label Text="{Binding CreatedItemString  }"
+                        <Label Text="{Binding StartItemString  }"
                                FontFamily="FAS"
                                FontSize="Large"
                                FontAttributes="Bold"

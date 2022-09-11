@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Models;
 using Xamarin.Forms;
@@ -8,13 +7,20 @@ namespace CheckerWaitersApp.ViewModels
 {
     public class OrderItemViewModel : BaseViewModel
     {
+        public string TypeString { get; private set; }
+        public string StartItemString { get; private set; }
+        public string FinishItemString { get; private set; }
+        public string StateString { get; private set; }
+        public string Note { get; set; }
+        public OrderItem OrderItemModel { get; private set; }
+
+        private Command longPressCommand;
         public OrderItemViewModel(OrderItem i_Model)
         {
-
             OrderItemModel = new OrderItem
             {
                 dish = i_Model.dish,
-                start = DateTime.Now,
+                start = i_Model.start,
                 finish = i_Model.finish,
                 orderId = i_Model.id,
                 lineStatus = i_Model.lineStatus,
@@ -32,8 +38,8 @@ namespace CheckerWaitersApp.ViewModels
             {
                 dish = i_DishModel,
                 dishId = i_DishModel.id,
-                start = DateTime.MinValue,
-                finish = DateTime.MinValue,
+                start = default,
+                finish = default,
                 orderId = i_CountID,
                 lineStatus = eLineItemStatus.Locked,
                 changes = "None",
@@ -47,19 +53,15 @@ namespace CheckerWaitersApp.ViewModels
             StateString = "State :" + OrderItemModel.lineStatus.ToString();
             Note = "Note :" + OrderItemModel.changes;
             TypeString = "Type :" + OrderItemModel.dish.type;
-            CreatedItemString = "Started :" + OrderItemModel.start.ToShortTimeString();
+            StartItemString = "Started :" + OrderItemModel.start.ToShortTimeString();
+            FinishItemString = "Finished :" + OrderItemModel.finish.ToShortTimeString();
         }
-        public string TypeString { get; private set; }
-        public string CreatedItemString { get; private set; }
-        public string StateString { get; private set; }
-        public string Note { get;  set; }
         public string DishName
         {
             get => OrderItemModel.dish.name;
             private set => OrderItemModel.dish.name = value;
         }
-       
-
+        
         public eLineItemStatus State
         {
             get => OrderItemModel.lineStatus;
@@ -80,9 +82,7 @@ namespace CheckerWaitersApp.ViewModels
             get => OrderItemModel.dish;
             set => OrderItemModel.dish = value;
         }
-        public OrderItem OrderItemModel { get; private set; }
-
-        private Command longPressCommand;
+       
         public Command LongPressCommand
         {
             get { return longPressCommand ??= new Command(longPress); }

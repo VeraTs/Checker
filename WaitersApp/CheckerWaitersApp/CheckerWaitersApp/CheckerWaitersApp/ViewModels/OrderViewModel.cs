@@ -21,6 +21,14 @@ namespace CheckerWaitersApp.ViewModels
         public Command PayForOrder { get; private set; }
         public Command PayPartialForOrder { get; private set; }
 
+        private string RemainsString;
+        public string CreatedTime => Order.createdDate.ToShortTimeString();
+
+        public ObservableCollection<OrderItem> Items { get; private set; }
+        public OrdersViewModel m_MainVm { get; set; }
+
+        public ObservableCollection<OrderItemViewModel> OrderItemsViews { get; private set; } =
+            new ObservableCollection<OrderItemViewModel>();
         public eOrderStatus OrderState
         {
             get => Order.status;
@@ -46,15 +54,6 @@ namespace CheckerWaitersApp.ViewModels
                 OnPropertyChanged(nameof(Remains));
             }
         }
-
-        private string RemainsString;
-        public string CreatedTime => Order.createdDate.ToShortTimeString();
-
-        public ObservableCollection<OrderItem> Items { get; private set; }
-        public OrdersViewModel m_MainVm { get; set; }
-
-        public ObservableCollection<OrderItemViewModel> OrderItemsViews { get; private set; } =
-            new ObservableCollection<OrderItemViewModel>();
 
         public OrderViewModel(Order i_Model, OrdersViewModel i_MainVm)
         {

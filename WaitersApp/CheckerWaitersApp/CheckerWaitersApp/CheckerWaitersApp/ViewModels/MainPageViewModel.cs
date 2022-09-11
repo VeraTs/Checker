@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Threading.Tasks;
 using CheckerWaitersApp.Models;
 using CheckerWaitersApp.Views.CreateOrderView;
@@ -25,7 +24,8 @@ namespace CheckerWaitersApp.ViewModels
                 var res = await checkUserDetails();
                 if (res)
                 {
-                    App.RestId = App.restaurant.id;
+                    App.RestId = App.restaurant.id; 
+                    App.Repository.LoadData();
                     await Application.Current.MainPage.Navigation.PushAsync(new CreateOrderView());
                 }
                 else

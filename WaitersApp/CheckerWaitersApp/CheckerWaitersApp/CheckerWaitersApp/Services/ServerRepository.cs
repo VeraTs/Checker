@@ -1,41 +1,37 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CheckerWaitersApp.Models;
-
 
 namespace CheckerWaitersApp.Services
 {
     public class ServerRepository
     {
-
-        public static DishDataStore DishesStore { get; private set; }
-        public static OrderItemDataStore AllOrdersItemsStore { get; private set; }
-        public static OrdersDataStore OrdersStore { get; private set; }
         public List<Dish> Dishes { get; private set; }
+        public List<ServingArea> ServingAreas { get; private set; }
+        public Dictionary<int, Dish> DishesDictionary { get; private set; }
 
-        public List<OrderItem> OrderedItems { get; private set; }
-        public List<Order> Orders { get; private set; }
+        public List<Line> lines { get; private set; }
 
         public ServerRepository()
         {
-            Dishes = new List<Dish>();
-            //Orders = new List<Order>();
-            //OrderedItems = new List<OrderItem>();
-            // Orders = new List<Order>();
-            // OrderedItems = new List<OrderItem>();
 
-            // OrderedItems = AllOrdersItemsStore.items;
-            // Orders = OrdersStore.orders;
+            Dishes = new List<Dish>();
+            DishesDictionary = new Dictionary<int, Dish>();
+            lines = new List<Line>();
+            ServingAreas = new List<ServingArea>();
         }
 
         public async void LoadData()
         {
-            await DishesStore.GetItemsAsync();
-            Dishes = DishesStore.dishes;
-           // await AllOrdersItemsStore.GetItemsAsync();
-           // OrderedItems = AllOrdersItemsStore.items;
-            //await OrdersStore.GetItemsAsync();
-          //  Orders = OrdersStore.orders;
-            
+            foreach (var dish in App.restaurant.menus.SelectMany(menu => menu.dishes))
+            {
+                Dishes.Add(dish);
+                DishesDictionary.Add(dish.id, dish);
+            }
+
+            lines = App.restaurant.lines;
+            ServingAreas = App.restaurant.servingAreas;
+
         }
     }
 }
