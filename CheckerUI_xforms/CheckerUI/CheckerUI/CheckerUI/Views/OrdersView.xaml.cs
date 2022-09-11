@@ -33,13 +33,13 @@ namespace CheckerUI.Views
         {
             if (sender is StackLayout stackLayout) Zones.SelectedItem = stackLayout.BindingContext;
 
-            if (Zones.SelectedItem is ServingZone item &&
-                ((OrdersViewModel) BindingContext).PickUpItemForServing(item.id).Result)
-            {
-                lastStackLayout.BackgroundColor = Color.White;
-                lastStackLayout = null;
-                await Task.Delay(300);
-            }
+            //if (Zones.SelectedItem is ServingZone item &&
+            //    ((OrdersViewModel) BindingContext).PickUpItemForServing(item.id).Result)
+            //{
+            //    lastStackLayout.BackgroundColor = Color.White;
+            //    lastStackLayout = null;
+            //    await Task.Delay(300);
+            //}
         }
     }
 }
