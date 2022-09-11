@@ -17,7 +17,7 @@ namespace CheckerUI.ViewModels
         public UpdateKitchenPage updatePage { get; private set; }
         public MangePage mangeKitchenPage { get; private set; }
         public MangePageViewModel mangeKitchenVm { get; private set; }
-        public OrdersView ordersView { get; private set; }
+        public ServingWindowsView servingWindowsPage { get; private set; }
 
         public ObservableCollection<PageModel> Pages { get; private set; }
 
@@ -51,8 +51,8 @@ namespace CheckerUI.ViewModels
             });
             OrdersViewCommand = new Command(async () =>
             {
-                ordersView = new OrdersView();
-                await Application.Current.MainPage.Navigation.PushAsync(ordersView);
+                servingWindowsPage = new ServingWindowsView(); 
+                await Application.Current.MainPage.Navigation.PushAsync(servingWindowsPage);
             });
             ReturnCommand = new Command(async () =>
             {

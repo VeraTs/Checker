@@ -13,58 +13,69 @@ namespace CheckerUI.ViewModels
 {
     public class OrdersViewModel : BaseViewModel
     {
-        private ObservableCollection<OrderViewModel> m_OrdersViews = new ObservableCollection<OrderViewModel>();
-        private readonly Dictionary<int, OrderViewModel> m_Orders = new Dictionary<int, OrderViewModel>();
+        private ObservableCollection<OrderViewModel> m_OrdersViews;
+        private readonly Dictionary<int, OrderViewModel> m_Orders;
         private Dictionary<int, Dish> mDishesDictionary;
-        public List<ServingArea> servingArea { get; set; } = new List<ServingArea>();
-        public ObservableCollection<ServingZone> Zones { get; set; } = new ObservableCollection<ServingZone>();
+        public ServingArea servingArea { get; set; } 
+
+        public ObservableCollection<ZoneViewModel> Zones { get; set; }
+        public int ViewId { get; set; }
+
+        public string Name => servingArea.name;
+        public int Capacity => m_OrdersViews.Count;
+
         public OrdersViewModel()
         {
-            mDishesDictionary = App.Repository.DishesDictionary;
-
-           
-            servingArea = App.Repository.ServingAreas;
-
             
-            for (int i = 0; i < servingArea[0].zoneNum; i++)
+        }
+        public OrdersViewModel(int i_AreaId, ServingArea i_Area)
+        {
+            m_OrdersViews = new ObservableCollection<OrderViewModel>();
+            m_Orders = new Dictionary<int, OrderViewModel>();
+            Zones = new ObservableCollection<ZoneViewModel>();
+            mDishesDictionary = App.Repository.DishesDictionary;
+            ViewId = i_AreaId;
+
+            servingArea = i_Area;
+
+            for (var i = 0; i < servingArea.zoneNum; i++)
             {
                 var toAdd = new ServingZone()
                 {
                     isAvailable = true,
                     id = i,
-                    item = new OrderItemViewModel()
+                    item = null,
                 };
-                Zones.Add(toAdd);
+                var model = new ZoneViewModel(toAdd);
+                Zones.Add(model);
             }
-
-            App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
-            {
-                foreach (var order in orders)
-                {
-                    foreach (var orderItem in order.items)
-                    {
-                        orderItem.dish = mDishesDictionary[orderItem.dishId];
-                        if (orderItem.servingAreaZone <= -1) continue;
-                        // var itemView = new OrderItemViewModel(item.Model);
-                        SetOrderItemInZone(orderItem, orderItem.servingAreaZone);
-                    }
-                    var view = new OrderViewModel(order);
-
-                    m_Orders.Add(order.id, view);
-                    m_OrdersViews.Add(view);
-
-                }
-            });
-
-            initEvents();
-
-            initOrdersHub();
-
         }
         public int GetFirstAvailableZone()
         {
-            var zone = Zones.First(x => x.isAvailable == true);
-            return zone.id;
+            var zone = Zones.First(x => x.model.isAvailable == true);
+            return zone.ZoneId;
+        }
+
+        public void AddOrderItem(int i_OrderId, OrderItem i_item, int areaId, Order orderModel)
+        {
+            if (m_Orders.ContainsKey(i_OrderId))
+            {
+                m_Orders[i_OrderId].AddOrderItem(i_item);
+            }
+            else
+            {
+                var vm = new OrderViewModel(orderModel, areaId);
+                vm.AddOrderItem(i_item);
+                m_Orders.Add(vm.OrderID,vm);
+            }
+        }
+        public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId)
+        {
+            if (i_zoneId < 0 || !Zones[i_zoneId].model.isAvailable) return false;
+            var itemView = new OrderItemViewModel(i_Item);
+            Zones[i_zoneId].model.item = itemView;
+            Zones[i_zoneId].model.isAvailable = false;
+            return true;
         }
         private void initEvents()
         {
@@ -122,37 +133,37 @@ namespace CheckerUI.ViewModels
         }
 
     
-        private static async void initOrdersHub()
-        {
-            if (App.OrderHubConnection.State == HubConnectionState.Disconnected)
-            {
-                try
-                {
-                    await App.OrderHubConnection.StartAsync();
-                }
-                catch (Exception ex)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
-                }
-            }
+        //private static async void initOrdersHub()
+        //{
+        //    if (App.OrderHubConnection.State == HubConnectionState.Disconnected)
+        //    {
+        //        try
+        //        {
+        //            await App.OrderHubConnection.StartAsync();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
+        //        }
+        //    }
 
-            try
-            {
-                await App.OrderHubConnection.InvokeAsync("RegisterForGroup", App.RestId);
-            }
-            catch (System.Exception ex)
-            {
-                 await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
-            }
-        }
-        public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId)
-        {
-            if (i_zoneId <0 || !Zones[i_zoneId].isAvailable) return false;
-            var itemView = new OrderItemViewModel(i_Item);
-            Zones[i_zoneId].item = itemView;
-            Zones[i_zoneId].isAvailable = false;
-            return true;
-        }
+        //    try
+        //    {
+        //        await App.OrderHubConnection.InvokeAsync("RegisterForGroup", App.RestId);
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //         await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+        //    }
+        //}
+        //public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId)
+        //{
+        //    if (i_zoneId <0 || !Zones[i_zoneId].isAvailable) return false;
+        //    var itemView = new OrderItemViewModel(i_Item);
+        //    Zones[i_zoneId].item = itemView;
+        //    Zones[i_zoneId].isAvailable = false;
+        //    return true;
+        //}
 
         private void AllItemsCheckedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -171,20 +182,6 @@ namespace CheckerUI.ViewModels
                 OnPropertyChanged(nameof(OrdersViews));
             }
         }
-
-        //public async Task<bool> PickUpItemForServing(int i_ItemId)
-        //{
-        //    try
-        //    {
-        //        await App.OrderHubConnection.InvokeAsync("PickUpItemForServing", i_ItemId);
-        //        return true;
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        await Application.Current.MainPage.DisplayAlert("failed -  PickUpItemForServing", ex.Message, "OK");
-        //        return false;
-        //    }
-        //}
         public ObservableCollection<OrderItemViewModel> itemsLineView { get; set; } = new ObservableCollection<OrderItemViewModel>();
     }
 }

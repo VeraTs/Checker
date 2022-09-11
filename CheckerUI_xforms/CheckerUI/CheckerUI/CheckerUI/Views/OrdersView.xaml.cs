@@ -11,12 +11,23 @@ namespace CheckerUI.Views
     public partial class OrdersView : ContentPage
     {
         private StackLayout lastStackLayout = null;
-
-        public OrdersView()
+        private OrdersViewModel m_ViewModel;
+        private ServingAreasViewModel m_AreasViewModel;
+        public string name { get; set; }
+        public int AreaId { get; set; }
+        public OrdersView(OrdersViewModel i_Vm)
         {
             InitializeComponent();
+            m_ViewModel = i_Vm;
+            BindingContext = m_ViewModel;
+            AreaId = i_Vm.ViewId;
+            name = m_ViewModel.Name;
         }
 
+        public void SetBindingToMainVM(ServingAreasViewModel i_mainVM)
+        {
+            m_AreasViewModel = i_mainVM;
+        }
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
         {
             var stackLayout = sender as StackLayout;
@@ -33,13 +44,13 @@ namespace CheckerUI.Views
         {
             if (sender is StackLayout stackLayout) Zones.SelectedItem = stackLayout.BindingContext;
 
-            //if (Zones.SelectedItem is ServingZone item &&
-            //    ((OrdersViewModel) BindingContext).PickUpItemForServing(item.id).Result)
-            //{
-            //    lastStackLayout.BackgroundColor = Color.White;
-            //    lastStackLayout = null;
-            //    await Task.Delay(300);
-            //}
+            if (Zones.SelectedItem is ServingZone item &&
+                m_AreasViewModel.PickUpItemForServing(item.id).Result)
+            {
+                lastStackLayout.BackgroundColor = Color.White;
+                lastStackLayout = null;
+                await Task.Delay(300);
+            }
         }
     }
 }

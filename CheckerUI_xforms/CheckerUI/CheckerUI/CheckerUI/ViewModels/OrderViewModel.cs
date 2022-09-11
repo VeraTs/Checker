@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Linq;
 using CheckerUI.Enums;
+using CheckerUI.Models;
 
 namespace CheckerUI.ViewModels
 {
@@ -8,13 +10,13 @@ namespace CheckerUI.ViewModels
     {
         private readonly Models.Order m_Order;
         private string m_RemainItemsString;
-
-        public OrderViewModel(Models.Order i_model)
+        public int AreaId = -1;
+        public OrderViewModel(Models.Order i_model, int i_areaId)
         {
+            AreaId = i_areaId; 
             m_Order = i_model;
-            foreach (var itemModel in i_model.items)
+            foreach (var itemView in from itemModel in i_model.items where itemModel.servingAreaZone == i_areaId select new OrderItemViewModel(itemModel))
             {
-                var itemView = new OrderItemViewModel(itemModel);
                 Items.Add(itemView);
             }
 
@@ -91,6 +93,19 @@ namespace CheckerUI.ViewModels
 
         public ObservableCollection<OrderItemViewModel> Items { get; set; } = new ObservableCollection<OrderItemViewModel>();
 
+        public void AddOrderItem(OrderItem i_item)
+        {
+            if (i_item.servingAreaZone == AreaId)
+            {
+                var itemView = new OrderItemViewModel(i_item);
+                Items.Add(itemView);
+            }
+        }
+
+        public void RemoveOrderItem(OrderItem i_item)
+        {
+            Items.Remove(Items.First(t=>t.OderItemID == i_item.id));
+        }
         public eOrderStatus State
         {
             get => m_Order.status;

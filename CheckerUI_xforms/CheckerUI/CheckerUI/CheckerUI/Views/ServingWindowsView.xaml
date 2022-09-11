@@ -2,13 +2,13 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
-             x:Class="CheckerUI.Views.LinesPage"  Title="Choose a Line" BackgroundImageSource="PartialCover">
+             x:Class="CheckerUI.Views.ServingWindowsView" Title="Choose a Window" BackgroundImageSource="PartialCover">
     <ContentPage.BindingContext>
-        <viewModels:LinesViewModel/>
+        <viewModels:ServingAreasViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout Margin="50">
-            <CarouselView  ItemsSource="{Binding LinesList}"
+            <CarouselView  ItemsSource="{Binding OrdersWindow }"
                            PeekAreaInsets="200" 
                            IsScrollAnimated="True"   IndicatorView="indicatorView">
                 <CarouselView.ItemTemplate>
@@ -49,47 +49,47 @@
                                    HeightRequest="600"
                                    WidthRequest="500"
                                    HorizontalOptions="Center" BackgroundColor="Transparent">
-                            <Grid x:Name="myGrid">
+                                <Grid x:Name="myGrid">
                                     <Image Source="chefBackground" Aspect="AspectFill" ></Image>
-                                <Grid >
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height=".75*"/>
-                                        <RowDefinition Height=".35*"/>
-                                        <RowDefinition Height=".1*"/>
-                                        <RowDefinition Height=".15*"/>
-                                        <RowDefinition Height=".25*"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions >
-                                        <ColumnDefinition Width=".1*"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width=".1*"/>
+                                    <Grid >
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height=".75*"/>
+                                            <RowDefinition Height=".35*"/>
+                                            <RowDefinition Height=".1*"/>
+                                            <RowDefinition Height=".15*"/>
+                                            <RowDefinition Height=".25*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions >
+                                            <ColumnDefinition Width=".1*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width=".1*"/>
 
-                                    </Grid.ColumnDefinitions >
-                                    <BoxView Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
+                                        </Grid.ColumnDefinitions >
+                                        <BoxView Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
                                              BackgroundColor ="WhiteSmoke"
                                              Margin="30,1,30,0"
                                              CornerRadius="10" ></BoxView>
-                                        <Button  x:Name="m_LineButton"
+                                        <Button  x:Name="m_AreaButton"
                                                  Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" 
-                                                 Text="{Binding LineName}"
+                                                 Text="{Binding Name}"
                                                  HorizontalOptions="Center"
                                                  FontSize="Title"
                                                  FontFamily="FAS"
                                                  WidthRequest="280"
                                                  BackgroundColor="Transparent"
                                                  BorderColor="DarkGray"
-                                                 TextColor="Black" Clicked="LineButton_OnClicked" />
-                                        
-                                    <Label Grid.Column="1" Grid.Row="4" Text="{Binding  LineCapacity}"
+                                                 TextColor="Black" Clicked="M_AreaButton_OnClicked" />
+
+                                        <Label Grid.Column="1" Grid.Row="4" Text="{Binding  Capacity}"
                                            FontAttributes="Bold"
                                            FontSize="Large"
                                            HorizontalOptions="Center"
                                             FontFamily="FAS"
                                            LineBreakMode="TailTruncation"
-                                           TextColor="{Binding LabelsColor }"/>
+                                           TextColor= "Black"/>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Frame>
+                            </Frame>
                         </StackLayout>
                     </DataTemplate>
                 </CarouselView.ItemTemplate>
@@ -101,4 +101,3 @@
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
-

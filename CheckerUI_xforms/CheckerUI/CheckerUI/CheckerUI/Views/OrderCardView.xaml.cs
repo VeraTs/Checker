@@ -11,10 +11,12 @@ namespace CheckerUI.Views
     {
         private Frame m_LastFrameTapped;
         private OrderViewModel m_ViewModel;
+       
         public OrderCardView()
         {
             InitializeComponent();
             m_ViewModel = this.BindingContext as OrderViewModel;
+            
         }
 
         private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
