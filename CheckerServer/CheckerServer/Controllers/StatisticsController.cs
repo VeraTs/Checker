@@ -47,7 +47,7 @@ namespace CheckerServer.Controllers
             }
 
             List<StatisticsResponse> res = new List<StatisticsResponse>();
-            stats.ForEach(async stat =>
+            stats.ForEach(stat =>
             {
                 StatisticsResponse resp = new StatisticsResponse();
                 resp.RestaurantId = stat.RestaurantId;

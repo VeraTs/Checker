@@ -19,14 +19,18 @@ namespace CheckerServer.utils
                     int currMonth = DateTime.Now.Month;
                     try
                     {
-                        Statistic stat = await context.Statistics.FirstOrDefaultAsync(stat => stat.Month == currMonth && stat.DishId == orderItem.DishId);
-                        if (stat.AccPrepTime < 0)
+                        Statistic stat = await context.Statistics.FirstOrDefaultAsync(s => s.Month == currMonth && s.DishId == orderItem.DishId);
+                        if (stat == null || stat.AccPrepTime < 0)
                         {
                             // no such record in table
+                            Order order = await context.Orders.FindAsync(orderItem.OrderId);
+                            stat = new Statistic();
                             stat.Month = currMonth;
                             stat.DishId = orderItem.DishId;
                             stat.TimesOrdered = 0;
                             stat.AccPrepTime = 0;
+                            stat.RestaurantId = order.RestaurantId;
+                            context.Statistics.Add(stat);
                         }
 
                         stat.TimesOrdered++;

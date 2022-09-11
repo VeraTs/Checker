@@ -142,6 +142,19 @@ namespace CheckerServer.Controllers
             }
         }
 
+        protected virtual async Task<ActionResult<int>> delete(T item)
+        {
+            try
+            {
+                r_Set.Remove(item);
+                return await r_DbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
         // DELETE specific instance
         [HttpDelete]
         public async Task<ActionResult<int>> Delete(int id)
@@ -149,15 +162,7 @@ namespace CheckerServer.Controllers
             var res = await r_Set.FirstAsync(d => d.ID == id);
             if (res != null && ModelState.IsValid)
             {
-                try
-                {
-                    r_Set.Remove(res);
-                    return await r_DbContext.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest("Something went wrong!");
-                }
+                return await delete(res);
             }
             else
             {

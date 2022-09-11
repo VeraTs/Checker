@@ -1,7 +1,7 @@
 ﻿using CheckerServer.Data;
 using CheckerServer.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckerServer.Controllers
 {
@@ -26,6 +26,19 @@ namespace CheckerServer.Controllers
             }
             
             existingItem.Type = updatedItem.Type;
+        }
+
+        protected override async Task<ActionResult<int>> delete(Dish item)
+        {
+            ActionResult<int> success = await base.delete(item);
+            if(success.Value > 0)
+            {
+                List<Statistic> dishStats = await r_DbContext.Statistics.Where(stat => stat.DishId == item.ID).ToListAsync();
+                r_DbContext.Statistics.RemoveRange(dishStats);
+                return await r_DbContext.SaveChangesAsync();
+            }
+
+            return success;
         }
     }
 }
