@@ -20,7 +20,7 @@ namespace CheckerWaitersApp.ViewModels
               Orders = new ObservableCollection<Order>();
               views = new ObservableCollection<OrderViewModel>();
               Details = "Total Orders :" + views.Count;
-           // Orders.CollectionChanged += Orders_CollectionChanged;
+            Orders.CollectionChanged += Orders_CollectionChanged;
         }
 
         private void Orders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -30,6 +30,10 @@ namespace CheckerWaitersApp.ViewModels
                 var view = new OrderViewModel(Orders.Last(), this);
                 views.Add(view);
                 count++;
+            }
+            else if (count > Orders.Count)
+            {
+                count--;
             }
         }
 
@@ -42,10 +46,7 @@ namespace CheckerWaitersApp.ViewModels
 
         public void AddNewOrder(Order i_Order)
         {
-            if (i_Order.remainsToPay == 0) return;
             Orders.Add(i_Order);
-            var view = new OrderViewModel(Orders.Last(), this);
-            views.Add(view);
         }
 
         public void RemovePaidOrder(Order i_Order)

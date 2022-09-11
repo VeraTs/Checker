@@ -26,7 +26,6 @@ namespace CheckerUI.ViewModels
             {
                 zoneNum = 5,
                 restaurantId = 1,
-                lines = null,
                 id = 1,
                 name = "temp"
             };
@@ -39,33 +38,13 @@ namespace CheckerUI.ViewModels
                 {
                     isAvailable = true,
                     id = i,
-                    item = null
+                    item = new OrderItemViewModel()
                 };
                 Zones.Add(toAdd);
             }
 
-            //var orders = App.Repository.Orders;
-            //foreach (var order in orders)
-            //{
-            //    var view = new OrderViewModel(order);
-            //    m_OrdersViews.Add(view);
-            //    m_Orders.Add(order.id, view);
-            //    int id = GetFirstAvailableZone();
-
-            //}
-            App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
-            {
-                foreach (var order in orders)
-                {
-                    foreach (var orderItem in order.items)
-                    {
-                        orderItem.dish = mDishesDictionary[orderItem.dishId];
-                    }
-                    var view = new OrderViewModel(order);
-                    m_Orders.Add(order.id, view);
-                    m_OrdersViews.Add(view);
-                }
-            });
+         
+          
             initEvents();
 
             initOrdersHub();
@@ -78,12 +57,42 @@ namespace CheckerUI.ViewModels
         }
         private void initEvents()
         {
+            App.OrderHubConnection.On<Order>("ReceiveOrder", (order) =>
+            {
+               // Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
+                foreach (var orderItem in order.items)
+                {
+                    orderItem.dish = mDishesDictionary[orderItem.dishId];
+                }
+                var view = new OrderViewModel(order);
+                m_Orders.Add(order.id, view);
+                m_OrdersViews.Add(view);
+
+            });
+            App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
+            {
+                foreach (var order in orders)
+                {
+                    foreach (var orderItem in order.items)
+                    {
+                        orderItem.dish = mDishesDictionary[orderItem.dishId];
+                        if (orderItem.servingAreaZone <= -1) continue;
+                        // var itemView = new OrderItemViewModel(item.Model);
+                        SetOrderItemInZone(orderItem, orderItem.servingAreaZone);
+                    }
+                    var view = new OrderViewModel(order);
+                    
+                    m_Orders.Add(order.id, view);
+                    m_OrdersViews.Add(view);
+                    
+                }
+            });
 
             App.OrderHubConnection.On<OrderItem>("ItemToBeServed", (item) =>
             {
                 item.dish = mDishesDictionary[item.dishId];
                 var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
-                SetOrderItemInZone(view, item.servingAreaZone);
+                SetOrderItemInZone(view.Model, item.servingAreaZone);
             });
 
             App.OrderHubConnection.On<OrderItem>("ItemServed", (item) =>
@@ -106,28 +115,33 @@ namespace CheckerUI.ViewModels
                 try
                 {
                     await App.OrderHubConnection.StartAsync();
-                    await Task.Delay(300);// start async connection to SignalR Hub at server
-
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
                 }
+                /*catch (System.Exception ex)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
+                }*/
+
             }
 
             try
             {
-                await App.OrderHubConnection.InvokeAsync("RegisterForOrders", 1);
+                await App.OrderHubConnection.InvokeAsync("RegisterForGroup", App.RestId);
+               // await App.OrderHubConnection.InvokeAsync("GetAllOrders");
             }
             catch (System.Exception ex)
             {
-                // await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+                 await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
             }
         }
-        public bool SetOrderItemInZone(OrderItemViewModel i_Item, int i_zoneId)
+        public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId)
         {
-            if (i_zoneId <= 0 || i_zoneId >= Zones.Count || !Zones[i_zoneId].isAvailable) return false;
-            Zones[i_zoneId].item = i_Item;
+            if (i_zoneId <0 || !Zones[i_zoneId].isAvailable) return false;
+            var itemView = new OrderItemViewModel(i_Item);
+            Zones[i_zoneId].item = itemView;
             Zones[i_zoneId].isAvailable = false;
             return true;
         }

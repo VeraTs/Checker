@@ -36,7 +36,7 @@ namespace CheckerWaitersApp.ViewModels
         }
 
         public string Counter => "Total Items :" + Order.items.Count;
-        public string Cost => "Price :" + Order.totalCost.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
+        public string Cost => "Price :" + Order.totalCost.ToString("C2", CultureInfo.CreateSpecificCulture("en-US"));
         public string Remains
         {
             get => RemainsString;
@@ -59,13 +59,12 @@ namespace CheckerWaitersApp.ViewModels
         public OrderViewModel(Order i_Model, OrdersViewModel i_MainVm)
         {
             m_MainVm = i_MainVm;
-            Order = new Order();
             Order = i_Model;
             TableNumber = "Table :" + i_Model.table.ToString();
             OrderID = "Order #" + Order.id.ToString();
             OrderHeader = OrderID + TableNumber;
             OrderState = i_Model.status;
-            Remains = "Remain :" + Order.remainsToPay.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
+            Remains = "Remain :" + Order.remainsToPay.ToString("C2", CultureInfo.CreateSpecificCulture("en-US"));
             foreach (var card in i_Model.items.Select(item => new OrderItemViewModel(item)))
             {
                 OrderItemsViews.Add(card);
@@ -87,7 +86,7 @@ namespace CheckerWaitersApp.ViewModels
         public  bool UpdatePayPartialForOrder(float i_sum)
         {
             Order.remainsToPay = i_sum;
-            Remains = "Remain :" + Order.remainsToPay.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
+            Remains = "Remain :" + Order.remainsToPay.ToString("C2", CultureInfo.CreateSpecificCulture("en-US"));
             return Order.remainsToPay == 0;
         }
         private async void getPaymentAmountFromUser()
@@ -130,8 +129,6 @@ namespace CheckerWaitersApp.ViewModels
             {
                 await App.Current.MainPage.DisplayAlert("Server Close Order !", ex.Message + Order.id+","+SumToPay, "OK");
             }
-
         }
     }
-    
 }

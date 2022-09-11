@@ -26,7 +26,7 @@ namespace CheckerUI.ViewModels
             OrderItemDescription = "Note :" + i_item.changes;
             FirstTimeToShowString = OrderItemTimeCreate;
         }
-
+        public OrderItemViewModel(){}
         private void feelColorsState()
         {
            m_StateColors.Add(eLineItemStatus.Locked, Color.SeaGreen);
@@ -51,6 +51,9 @@ namespace CheckerUI.ViewModels
                 OrderStatusColor = m_StateColors[OrderItemLineStatus];
             } 
         }
+
+        public OrderItem Model => m_orderItem;
+
         //Properties
         private readonly OrderItem m_orderItem;
         private readonly Dictionary<eLineItemStatus, Color> m_StateColors = new Dictionary<eLineItemStatus, Color>();
@@ -62,31 +65,41 @@ namespace CheckerUI.ViewModels
         public Color OrderStatusColor { get; set; } = new Color();
         public eDishType OrderItemType => m_orderItem.dish.type;
         public ObservableCollection<int> OrderStatusChangedNotifier { get; set; } = new ObservableCollection<int>();
-        public string OrderItemTimeCreate => "Created: " + m_orderItem.createdDate.ToString("hh:mm tt");
-        public string OrderItemTimeStartedString => "Started: " + m_orderItem.startDate.ToString("hh: mm tt");
+        public string OrderItemTimeCreate => "Created: " +DateTime.Now.ToString("hh:mm tt");
+        public string OrderItemTimeStartedString => "Started: " + m_orderItem.start.ToString("hh: mm tt");
 
-        public string OrderItemTimeDoneString => "Done: " + m_orderItem.doneDate.ToString("hh:mm tt");
+        public string OrderItemTimeDoneString => "Done: " + m_orderItem.finish.ToString("hh:mm tt");
 
         public DateTime OrderItemTimeStarted
         {
-            get => m_orderItem.createdDate;
+            get => m_orderItem.start;
             set
             {
-                m_orderItem.createdDate = value;
+                m_orderItem.start = value;
                 OnPropertyChanged(nameof(OrderItemTimeStarted));
             }
         }
         
         public DateTime OrderItemTimeDone
         {
-            get => m_orderItem.doneDate;
+            get => m_orderItem.finish;
             set
             {
-                m_orderItem.doneDate = value;
+                m_orderItem.finish = value;
                 OnPropertyChanged(nameof(OrderItemTimeStarted));
             }
         }
 
+        public Dish OrderItemDish
+        {
+            get=> m_orderItem.dish;
+            set => m_orderItem.dish = value;
+        }
+        public int ServingAreaZone
+        {
+            get => m_orderItem.servingAreaZone;
+            private set => m_orderItem.servingAreaZone = value;
+        }
         public string OrderItemName
         {
             get => m_orderItem.dish.name;

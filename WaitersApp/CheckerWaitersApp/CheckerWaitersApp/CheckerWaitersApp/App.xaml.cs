@@ -15,11 +15,13 @@ namespace CheckerWaitersApp
         public static ServerRepository Repository { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
-
+        public static UserDataStore UserStore { get; private set; } = new UserDataStore();
+        public static Restaurant restaurant { get; set; }
+        public static int RestId = 1;
         bool isDebug = false;
 
         private string BaseAddress =
-            DeviceInfo.Platform == DevicePlatform.Android ? "https://10.0.2.2:7059" : "https://localhost:7059";
+            DeviceInfo.Platform == DevicePlatform.Android ? "https://checkerapp.azurewebsites.net" : "https://checkerapp.azurewebsites.net";
         public static HttpClient client { get; private set; }
 
         private List<Dish> dishes = new List<Dish>();
@@ -36,24 +38,13 @@ namespace CheckerWaitersApp
 
             this.handler = handler;
             DependencyService.Register<DishDataStore>();
+            DependencyService.Register<OrderItemDataStore>();
+            DependencyService.Register<OrdersDataStore>();
+            DependencyService.Register<UserDataStore>();
 
 
-            /*Store = new WebDataStore("https://checkertester.azurewebsites.net/JsonToDos/");
-            HubConn = new HubConnectionBuilder()
-                .WithUrl("https://checkertester.azurewebsites.net/todosHub")
-                .WithAutomaticReconnect()
-                .Build();*/
-
-            // makes SSL certificate for using localhost at debug
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-            {
-                if (cert.Issuer.Equals("CN=localhost"))
-                    return true;
-                return errors == System.Net.Security.SslPolicyErrors.None;
-            };
-
-            Repository = new ServerRepository();
-            Repository.LoadData();
+            //Repository = new ServerRepository();
+            //Repository.LoadData();
             string ordersHubUrl = BaseAddress + "/OrdersHub";
             HubConn = new HubConnectionBuilder()
                 .WithUrl(ordersHubUrl, options =>
@@ -64,7 +55,17 @@ namespace CheckerWaitersApp
                         {
                             conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
                         };
-                        options.HttpMessageHandlerFactory = factory => handler;
+                        options.HttpMessageHandlerFactory = factory =>
+                        {
+                            HttpClientHandler handler = new HttpClientHandler();
+                            //handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                            //{
+                            //    if (cert.Issuer.Equals("CN=localhost"))
+                            //        return true;
+                            //    return errors == System.Net.Security.SslPolicyErrors.None;
+                            //};
+                            return handler;
+                        };
                         //options.AccessTokenProvider = () => Task.FromResult(Token);
                     }
                 })
@@ -74,7 +75,14 @@ namespace CheckerWaitersApp
             {
                 Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
             });
-
+            HubConn.On<String>("SignalRError", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("OrdersHubException!", str, "OK");
+            });
+            HubConn.On<String>("NewGroupMember", (str) =>
+            {
+                Application.Current.MainPage.DisplayAlert("OrdersHubNewGroupMemberException!", str, "OK");
+            });
             MainPage = new NavigationPage(new MainPage())
             {
             };

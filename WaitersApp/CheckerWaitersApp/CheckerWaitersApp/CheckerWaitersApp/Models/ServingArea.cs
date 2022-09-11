@@ -10,11 +10,11 @@ namespace CheckerWaitersApp.Models
     public class ServingArea : BaseDBItem
     {
         // how many distinct zones there are in the servbing area to place dishes
-        [ForeignKey("Restaurant")]
+
         public int restaurantId { get; set; }
-        [Required]
+
         public int zoneNum { get; set; }
-        [Required]
+
         public string name { get; set; }
         // for each zone depicts which orderitem resides there
         private Dictionary<int, OrderItem> zones = new Dictionary<int, OrderItem>();

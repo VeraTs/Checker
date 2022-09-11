@@ -14,12 +14,11 @@ namespace CheckerWaitersApp.ViewModels
             OrderItemModel = new OrderItem
             {
                 dish = i_Model.dish,
-                createdDate = DateTime.Now,
-                doneDate = i_Model.doneDate,
+                start = DateTime.Now,
+                finish = i_Model.finish,
                 orderId = i_Model.id,
                 lineStatus = i_Model.lineStatus,
                 changes = i_Model.changes,
-                startDate = i_Model.startDate,
                 table = i_Model.table,
                 servingAreaZone = i_Model.servingAreaZone,
                 status = i_Model.status
@@ -33,11 +32,9 @@ namespace CheckerWaitersApp.ViewModels
             {
                 dish = i_DishModel,
                 dishId = i_DishModel.id,
-                startDate = DateTime.MinValue,
-                createdDate = DateTime.Now,
-                doneDate = DateTime.MinValue,
+                start = DateTime.MinValue,
+                finish = DateTime.MinValue,
                 orderId = i_CountID,
-                servingAreaZone = 1,
                 lineStatus = eLineItemStatus.Locked,
                 changes = "None",
                 table = 0,
@@ -50,7 +47,7 @@ namespace CheckerWaitersApp.ViewModels
             StateString = "State :" + OrderItemModel.lineStatus.ToString();
             Note = "Note :" + OrderItemModel.changes;
             TypeString = "Type :" + OrderItemModel.dish.type;
-            CreatedItemString = "Created :" + OrderItemModel.createdDate.ToShortTimeString();
+            CreatedItemString = "Started :" + OrderItemModel.start.ToShortTimeString();
         }
         public string TypeString { get; private set; }
         public string CreatedItemString { get; private set; }
@@ -88,15 +85,7 @@ namespace CheckerWaitersApp.ViewModels
         private Command longPressCommand;
         public Command LongPressCommand
         {
-            get
-            {
-                if (longPressCommand == null)
-                {
-                    longPressCommand = new Command(longPress);
-                }
-
-                return longPressCommand;
-            }
+            get { return longPressCommand ??= new Command(longPress); }
         }
 
         private async void longPress()

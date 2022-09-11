@@ -7,9 +7,9 @@ namespace CheckerWaitersApp.Models
     // representing an actual menu with dishes divided by Departments (starter, entry, main, etc.)
     public class RestMenu : BaseDBItem
     {
-        [ForeignKey("Restaurant")]
+
         public int restaurantId { get; set; }
-        [Required]
+
         public string name { get; set; }
 
         // practicals

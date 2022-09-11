@@ -57,7 +57,6 @@ namespace CheckerUI.ViewModels
                 //item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
                 item.dish = mDishesDictionary[item.dishId];
                 var lineVm = m_LinesList.First(line => line.LineID == item.dish.lineId);
-                
                 lineVm.moveItemViewToRightView(item);
             });
 
@@ -78,40 +77,7 @@ namespace CheckerUI.ViewModels
                 m_LinesViews.Add(view);
             }
         }
-        //private void initUsingRepository()
-        //{
-        //   // var items = App.Repository.OrderedItems;
-        //    foreach (var orderItem in items)
-        //    {
-        //        var lineId = orderItem.dish.lineId;
-        //        var lineView = m_LinesViews.First(view => view.m_ViewModel.LineID == lineId);
-        //        var vm = lineView.m_ViewModel;
-        //        switch (orderItem.lineStatus)
-        //        {
-        //            case eLineItemStatus.Locked:
-        //                {
-        //                    vm.AddOrderItemToLocked(orderItem);
-        //                    break;
-        //                }
-        //            case eLineItemStatus.ToDo:
-        //                {
-        //                    vm.AddOrderItemToAvailable(orderItem);
-
-        //                    break;
-        //                }
-        //            case eLineItemStatus.Doing:
-        //                {
-        //                    vm.AddOrderItemToInProgress(orderItem);
-        //                    break;
-        //                }
-        //            case eLineItemStatus.Done:
-        //                {
-        //                    vm.AddOrderItemToDone(orderItem);
-        //                    break;
-        //                }
-        //        }
-        //    }
-        //}
+      
         private static async void StartListening()
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)
@@ -129,7 +95,7 @@ namespace CheckerUI.ViewModels
 
             try
             {
-                await App.HubConn.InvokeAsync("RegisterForGroup", 1);
+                await App.HubConn.InvokeAsync("RegisterForGroup", App.RestId);
             }
             catch (System.Exception ex)
             {

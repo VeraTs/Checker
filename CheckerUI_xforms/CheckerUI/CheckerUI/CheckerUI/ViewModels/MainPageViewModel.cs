@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using CheckerUI.Views;
 using Xamarin.Forms;
+using CheckerUI.Models;
+using CheckerUI.Services;
 
 namespace CheckerUI.ViewModels
 {
@@ -21,9 +23,11 @@ namespace CheckerUI.ViewModels
         {
             LogInCommand = new Command(async () =>
             {
-                if (checkUserDetails())
+                var res = await checkUserDetails();
+                if (res)
                 {
-                    var user = await loadUserDetails();
+                    App.RestId = App.restaurant.id;
+                    App.Repository.LoadData();
                     await Application.Current.MainPage.Navigation.PushAsync(new UserMainPage());
                 }
                 else
@@ -86,10 +90,11 @@ namespace CheckerUI.ViewModels
             HidePassword = !HidePassword;
         }
       
-        private bool checkUserDetails()
+        private async Task<bool> checkUserDetails()
         {
-           // return (UserName == "admin" && Password == "admin");
-           return true;
+            var user = new User(UserName, Password);
+            var res = await App.UserStore.LoginAsync(user);
+            return res;
         }
         private async Task<RegistrationPageViewModel> loadUserDetails()
         {

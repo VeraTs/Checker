@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using CheckerWaitersApp.Models;
 using CheckerWaitersApp.Views.CreateOrderView;
 using Xamarin.Forms;
 
@@ -13,15 +15,23 @@ namespace CheckerWaitersApp.ViewModels
       
         public Command ExitCommand { get; private set; }
 
-        public ObservableCollection<string> AllNotes { get; set; } = new ObservableCollection<string>();
+        
         string _mUserName;
         private string _mPassword;
         public MainPageViewModel()
         {
             LogInCommand = new Command(async () =>
             {
-                waitersPage = new CreateOrderView();
-                await Application.Current.MainPage.Navigation.PushAsync(waitersPage);
+                var res = await checkUserDetails();
+                if (res)
+                {
+                    App.RestId = App.restaurant.id;
+                    await Application.Current.MainPage.Navigation.PushAsync(new CreateOrderView());
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Wrong Details", "User name or Password incorrect", "Ok");
+                }
             });
 
             ExitCommand = new Command(() =>
@@ -76,7 +86,12 @@ namespace CheckerWaitersApp.ViewModels
             HidePassword = !HidePassword;
         }
 
-
+        private async Task<bool> checkUserDetails()
+        {
+            var user = new User(UserName, Password);
+            var res = await App.UserStore.LoginAsync(user);
+            return res;
+        }
     }
 }
 

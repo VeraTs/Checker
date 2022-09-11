@@ -7,7 +7,7 @@ namespace CheckerWaitersApp.Models
 {
     public class Order : BaseDBItem
     {
-        [ForeignKey("Restaurant")]
+
         public int restaurantId { get; set; }
         public int table { get; set; }
         public eOrderStatus status { get; set; } = eOrderStatus.Ordered;
@@ -18,5 +18,6 @@ namespace CheckerWaitersApp.Models
 
         public DateTime createdDate { get; set; }
         public DateTime doneDate { get; set; }
+
     }
 }

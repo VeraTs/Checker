@@ -25,9 +25,19 @@ namespace CheckerWaitersApp.ViewModels
             initUsingRepository();
             App.HubConn.On<Order>("ReceiveOrder", (order) =>
             {
-                Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
+                //Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
                 Orders.AddNewOrder(order);
-
+            });
+            App.HubConn.On<List<Order>>("ReceiveOrders", (orders) =>
+            {
+                foreach (var order in orders)
+                {
+                    foreach (var item in order.items)
+                    {
+                        item.dish = m_Dishes[item.dishId];
+                    }
+                    Orders.AddNewOrder(order);
+                }
             });
 
             App.HubConn.On<Order, float>("PaymentMadeFull" ,(order , sum) =>
@@ -68,6 +78,33 @@ namespace CheckerWaitersApp.ViewModels
                     
                 }
             }
+
+            initOrdersHub();
+        }
+        private static async void initOrdersHub()
+        {
+            if (App.HubConn.State == HubConnectionState.Disconnected)
+            {
+                try
+                {
+                    await App.HubConn.StartAsync();
+                    await Task.Delay(300);// start async connection to SignalR Hub at server
+
+                }
+                catch (System.Exception ex)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
+                }
+            }
+
+            try
+            {
+                await App.HubConn.InvokeAsync("RegisterForGroup", App.RestId);
+            }
+            catch (System.Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
+            }
         }
 
         private void initUsingRepository()
@@ -75,11 +112,6 @@ namespace CheckerWaitersApp.ViewModels
             foreach (var dish in App.Repository.Dishes)
             {
                 m_Dishes.Add(dish);
-            }
-            var orders = App.Repository.Orders;
-            foreach (var order in orders)
-            {
-                Orders.AddNewOrder(order);
             }
         }
         public List<eOrderType> AllDishTypesList()
@@ -143,7 +175,7 @@ namespace CheckerWaitersApp.ViewModels
         public void AddToOrderCollection(DishViewModel i_ToAdd)
         {
             var item = new OrderItemViewModel(i_ToAdd.Model, m_CountItemsID++);
-            m_TotalPrice += i_ToAdd.Model.price;
+            m_TotalPrice += i_ToAdd.DishPrice;
             ToOrderCollection.Add(item);
         }
         public void RemoveFromOrderCollection(OrderItemViewModel i_ToRemove)
@@ -164,7 +196,7 @@ namespace CheckerWaitersApp.ViewModels
             var orderItems = new List<OrderItem>();
             foreach (var item in ToOrderCollection)
             {
-                item.OrderItemModel.createdDate = DateTime.Now;
+                item.OrderItemModel.start = DateTime.Now;
                 item.OrderItemModel.table = int.Parse(EntryValue);
                 orderItems.Add(item.OrderItemModel);
             }

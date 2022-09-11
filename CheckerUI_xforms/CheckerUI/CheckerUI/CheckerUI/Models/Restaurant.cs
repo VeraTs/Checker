@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace CheckerUI.Models
 {
     public class Restaurant : BaseDBItem
     {
-        [Required]
+        
         public string name { get; set; }
-        [Required]
-        private string email { get; set; }
-        [Required]
-        private string password { get; set; }
+        
+        public string email { get; set; }
+        
+        public string password { get; set; }
 
         // fluff
         public string phone { get; set; }

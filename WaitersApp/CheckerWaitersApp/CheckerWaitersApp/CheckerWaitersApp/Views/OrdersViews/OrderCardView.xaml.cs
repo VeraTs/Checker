@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CheckerWaitersApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -13,19 +14,19 @@ namespace CheckerWaitersApp.Views.OrdersViews
             InitializeComponent();
         }
 
-        private void Button_OnClicked(object sender, EventArgs e)
+        
+        private async void ImageButton_OnClicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            FramePartial.BackgroundColor = Color.Gray;
+            await Task.Delay(20);
+            FramePartial.BackgroundColor = Color.Transparent;
         }
 
-        private async void CloseOrderButton_OnClicked(object sender, EventArgs e)
+        private async void CloseOrderImageButton_OnClicked(object sender, EventArgs e)
         {
-
-        }
-
-        public void setVm(OrderViewModel VM)
-        {
-
+            frameFull.BackgroundColor = Color.Gray;
+            await Task.Delay(20);
+            frameFull.BackgroundColor = Color.Transparent;
         }
     }
 }

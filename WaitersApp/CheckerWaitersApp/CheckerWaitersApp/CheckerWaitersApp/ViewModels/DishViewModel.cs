@@ -20,7 +20,12 @@ namespace CheckerWaitersApp.ViewModels
         {
             Model = new Dish();
             Model = i_dish;
-            Price = "Price :"+ Model.price.ToString("C2", CultureInfo.CreateSpecificCulture("es-ES"));
+            Price = "Price :"+ Model.price.ToString("C2", CultureInfo.CreateSpecificCulture("en-US"));
+        }
+        public float DishPrice
+        {
+            get => Model.price;
+            private set => Model.price = value;
         }
         public string DishName
         {

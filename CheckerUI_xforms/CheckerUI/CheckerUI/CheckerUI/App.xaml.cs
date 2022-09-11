@@ -12,43 +12,27 @@ namespace CheckerUI
 {
     public partial class App : Application
     {
-
-      public static ServerRepository Repository { get; private set; }
+        public static ServerRepository Repository { get; private set; }
         public static HubConnection HubConn { get; private set; }
         private readonly HttpClientHandler handler = new HttpClientHandler();
         public static HubConnection OrderHubConnection { get; private set; }
-
-        bool isDebug = false;
+        public static UserDataStore UserStore { get; private set; } = new UserDataStore();
+        public static Restaurant restaurant { get; set; }
+        public static int RestId = 1;
+        private readonly bool isDebug = false;
 
         private string BaseAddress =
-            DeviceInfo.Platform == DevicePlatform.Android ? "https://10.0.2.2:7059" : "https://localhost:7059";
+            DeviceInfo.Platform == DevicePlatform.Android ? "https://checkerapp.azurewebsites.net" : "https://checkerapp.azurewebsites.net";
         public static HttpClient client { get; private set; }
 
         private List<Dish> dishes = new List<Dish>();
         public App()
         {
 
-        #if DEBUG
+#if DEBUG
             isDebug = true;
-        #endif
+#endif
 
-            InitializeComponent();
-            client = isDebug ? new HttpClient(handler) : new HttpClient();
-            client.BaseAddress = new Uri(BaseAddress);
-            client.Timeout = new TimeSpan(0, 0, 30);
-
-
-            DependencyService.Register<DishDataStore>();
-            DependencyService.Register<OrderItemDataStore>();
-            DependencyService.Register<OrdersDataStore>();
-            DependencyService.Register<LinesDataStore>();
-            /*Store = new WebDataStore("https://checkertester.azurewebsites.net/JsonToDos/");
-            HubConn = new HubConnectionBuilder()
-                .WithUrl("https://checkertester.azurewebsites.net/todosHub")
-                .WithAutomaticReconnect()
-                .Build();*/
-
-            // makes SSL certificate for using localhost at debug
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
             {
                 if (cert.Issuer.Equals("CN=localhost"))
@@ -56,24 +40,16 @@ namespace CheckerUI
                 return errors == System.Net.Security.SslPolicyErrors.None;
             };
 
-            loadRepository();
+            InitializeComponent();
+            client = isDebug ? new HttpClient(handler) : new HttpClient();
+            client.BaseAddress = new Uri(BaseAddress);
+            client.Timeout = new TimeSpan(0, 0, 10);
+
+            DependencyService.Register<UserDataStore>();
+
             string kitchenHubUrl = BaseAddress + "/KitchenHub";
-            HubConn = new HubConnectionBuilder()
-                .WithUrl(kitchenHubUrl, options =>
-                {
-                    if (isDebug)
-                    {
-                        options.WebSocketConfiguration = conf =>
-                        {
-                            conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
-                        };
-                        options.HttpMessageHandlerFactory = factory => handler;
-                        //options.AccessTokenProvider = () => Task.FromResult(Token);
-                    }
-                })
-                .WithAutomaticReconnect()
-                .Build();
             string OrderHubUrl = BaseAddress + "/OrdersHub";
+
             OrderHubConnection = new HubConnectionBuilder()
                 .WithUrl(OrderHubUrl, options =>
                 {
@@ -83,12 +59,51 @@ namespace CheckerUI
                         {
                             conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
                         };
-                        options.HttpMessageHandlerFactory = factory => handler;
+                        options.HttpMessageHandlerFactory = factory =>
+                        {
+                            HttpClientHandler handler3 = new HttpClientHandler();
+                            /*handler3.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                            {
+                                if (cert.Issuer.Equals("CN=localhost"))
+                                    return true;
+                                return errors == System.Net.Security.SslPolicyErrors.None;
+                            };*/
+                            return handler3;
+                        };
                         //options.AccessTokenProvider = () => Task.FromResult(Token);
                     }
                 })
                 .WithAutomaticReconnect()
                 .Build();
+
+
+            HubConn = new HubConnectionBuilder()
+                .WithUrl(kitchenHubUrl, options =>
+                {
+                    if (isDebug)
+                    {
+                        options.WebSocketConfiguration = conf =>
+                        {
+                            conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                        };
+                        options.HttpMessageHandlerFactory = factory =>
+                        {
+                            HttpClientHandler handler2 = new HttpClientHandler();
+                            /*handler2.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                            {
+                                if (cert.Issuer.Equals("CN=localhost"))
+                                    return true;
+                                return errors == System.Net.Security.SslPolicyErrors.None;
+                            };*/
+                            return handler2;
+                        };
+                        //options.AccessTokenProvider = () => Task.FromResult(Token);
+                    }
+                })
+                .WithAutomaticReconnect()
+                .Build();
+
+
             HubConn.On<String>("DBError", (str) =>
             {
                 Application.Current.MainPage.DisplayAlert("Exception!", str, "OK");
@@ -123,14 +138,9 @@ namespace CheckerUI
 
         protected override void OnStart()
         {
-           
+            Repository = new ServerRepository();
         }
 
-        private async void loadRepository()
-        {
-            Repository = new ServerRepository();
-            Repository.LoadData();
-        }
         protected override void OnSleep()
         {
         }

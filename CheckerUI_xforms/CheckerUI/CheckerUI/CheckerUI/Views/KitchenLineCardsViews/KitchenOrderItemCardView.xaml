@@ -43,14 +43,14 @@
                     <BoxView Color="{Binding OrderStatusColor}" WidthRequest="10"></BoxView>
                     <StackLayout Orientation="Vertical">
                         <Label HorizontalOptions="Start"
-                               Text="{Binding FirstTimeToShowString}" FontSize="25" FontFamily="FAS" />
-                        <Label HorizontalOptions="Start" FontSize="25"
-                       Text="{Binding OrderItemTimeStartedString}" FontFamily="FAS"/>
-
-                        <Label 
-                    HorizontalOptions="Start" 
-                       Text="{Binding OrderItemDescription}" FontFamily="FAS"  FontSize="30"
-                    TextColor="Black"/>
+                               Text="{Binding OrderItemTimeStartedString}"
+                               FontSize="25" FontFamily="FAS" />
+                        <Label HorizontalOptions="Start"
+                               FontSize="25"
+                               Text="{Binding FirstTimeToShowString}" FontFamily="FAS"/>
+                        <Label HorizontalOptions="Start" 
+                               Text="{Binding OrderItemDescription}" FontFamily="FAS"  FontSize="30"
+                               TextColor="Black"/>
                     </StackLayout>
 
                 </StackLayout>

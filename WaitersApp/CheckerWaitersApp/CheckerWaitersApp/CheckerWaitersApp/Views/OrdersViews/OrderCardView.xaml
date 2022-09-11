@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
              xmlns:ordersViews="clr-namespace:CheckerWaitersApp.Views.OrdersViews;assembly=CheckerWaitersApp"
+             xmlns:effects="http://xamarin.com/schemas/2020/toolkit"
              x:DataType="viewmodels:OrderViewModel" 
              x:Class="CheckerWaitersApp.Views.OrdersViews.OrderCardView">
     <ContentView.Content>
@@ -30,7 +31,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width=".1*"/>
+                            <ColumnDefinition Width="0.01*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="5*"/>
@@ -49,29 +50,34 @@
                                HorizontalOptions="StartAndExpand"
                                FontSize="35"
                                Text="{Binding OrderID}"/>
-                        <ImageButton 
+                        <Frame x:Name="frameFull" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"  
+                                           BorderColor="Black">
+                            <ImageButton 
                             x:Name="CloseOrderButton"
-                            Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"
                             BackgroundColor="Transparent"
-                            VerticalOptions="StartAndExpand"
+                            VerticalOptions="CenterAndExpand"
                             Margin="2"
                             BorderColor="Transparent"
                             BorderWidth="1"
-                            HorizontalOptions="End"
+                            HorizontalOptions="EndAndExpand"
                             WidthRequest="40" 
                             Source="iconTrashOpen"
+                            Clicked="CloseOrderImageButton_OnClicked"
                             Command="{ Binding PayForOrder}"/>
+                            </Frame>
+                        <Frame x:Name="FramePartial" Grid.Row="3" Grid.RowSpan="3" Grid.Column="3" Grid.ColumnSpan="2"  
+                               BorderColor="Black" BackgroundColor="Transparent">
                         <ImageButton 
-                            Grid.Row="3" Grid.RowSpan="3" Grid.Column="3" Grid.ColumnSpan="2"
                             BackgroundColor="Transparent"
-                            VerticalOptions="StartAndExpand"
+                            VerticalOptions="Center"
                             Margin="2"
                             BorderColor="Transparent"
-                            BorderWidth="1"
-                            HorizontalOptions="End"
+                            HorizontalOptions="Center"
                             WidthRequest="40" 
                             Source="icon_dollar"
-                            Command="{ Binding PayPartialForOrder}"/>
+                            Command="{ Binding PayPartialForOrder}"
+                            Clicked="ImageButton_OnClicked"/>
+                        </Frame>
                         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                                FontAttributes="Bold"
                                TextColor="DarkBlue"
