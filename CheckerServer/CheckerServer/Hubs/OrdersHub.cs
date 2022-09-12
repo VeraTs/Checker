@@ -110,7 +110,7 @@ namespace CheckerServer.Hubs
             if (item.Status == eItemStatus.WaitingToBeServed)
             {
                 Boolean success = OrdersUtils.freeSpot(line.ServingArea, item);
-                if (success)
+                if (true)
                 {
                     item.Status = eItemStatus.Served;
                     item.ServingAreaZone = -1;
