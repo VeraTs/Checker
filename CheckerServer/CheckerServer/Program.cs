@@ -18,8 +18,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<KitchenManager>();
+builder.Services.AddScoped<OrdersHub>();
 
-builder.Host.ConfigureServices(services => { services.AddHostedService<KitchenManager>(provider => provider.GetService<KitchenManager>()); });
+builder.Host.ConfigureServices(services => {
+    services.AddHostedService<KitchenManager>(provider => provider.GetService<KitchenManager>()); 
+});
 
 var app = builder.Build();
 

@@ -37,6 +37,34 @@ namespace CheckerServer.utils
             }
         }
 
+        public static async Task<Boolean> prepareItemForServing(CheckerDBContext context, OrderItem item)
+        {
+            Boolean success = false;
+            try
+            {
+                OrderItem orderitem = await context.OrderItems.FirstAsync(oi => oi.ID == item.ID);
+                orderitem.Status = eItemStatus.WaitingToBeServed;
+                Line line = await context.Lines.FirstOrDefaultAsync(l => l.ID == orderitem.Dish.LineId);
+                ServingArea area = await context.ServingAreas.FirstOrDefaultAsync(sa => sa.ID == line.ServingAreaId);
+                int spot = findSpotInServingArea(area);
+                if (spot > -1)
+                {
+                    if (OrdersUtils.fillSpotInServingArea(area, item, spot))
+                    {
+                        item.ServingAreaZone = spot;
+                        success = await context.SaveChangesAsync() > 0;
+                    }
+                }
+
+                return success;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static Boolean addServingArea(ServingArea area)
         {
             Boolean res = true;
