@@ -13,16 +13,10 @@ namespace CheckerServer.Hubs
         private readonly IHubContext<OrdersHub> ordersHubContext;
         public IServiceProvider? Services { get; }
 
-        // apparently, the ctor is called for each invocation. FFS WTF.
-        // so everything here needs to be a reference to a static thing.
-        public KitchenHub(IServiceProvider services, CheckerDBContext context, IHubContext<OrdersHub> ordersHubContext)
         public KitchenHub(IServiceProvider services, CheckerDBContext context, IHubContext<OrdersHub> ordersHubContext)
         {
             Services = services;
             _context = context;
-            this.ordersHubContext = ordersHubContext;
-
-            //   useKitchenManager();
             this.ordersHubContext = ordersHubContext;
         }
 
@@ -54,28 +48,8 @@ namespace CheckerServer.Hubs
                 item.Finish = DateTime.Now;
                 Boolean statSuccess = await StatisticUtils.updateDishStat(Services, item);
 
-                await moveFromListToList(item, eLineItemStatus.Doing, eLineItemStatus.Done, "Doing", "Done");
-
-                int spot = await itemToBeServed(item, rest);
-                await Clients.Caller.SendAsync("PlaceItem", item, spot);
-            }
-            else
-            {
-                await Clients.Caller.SendAsync("DBError", "No such orderItem");
-            }
-        }
-
-        internal async Task<int> itemToBeServed(OrderItem orderItem, Restaurant rest)
-        {
-            int spot = -1;
-            try
-            {
-                if (orderItem != null)
-                {
-                    bool success = await OrdersUtils.prepareItemForServing(_context, orderItem);
-                    spot = orderItem.ServingAreaZone;
-                    await ordersHubContext.Clients.Group(rest.Name).SendAsync("ItemToBeServed", orderItem);
-                }
+                Line line = await _context.Lines.FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
+                Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == line.RestaurantId);
                 int spot = await itemToBeServed(item, rest);
                 if(spot < 0)
                 {
@@ -85,13 +59,11 @@ namespace CheckerServer.Hubs
                 {
                     await Clients.Caller.SendAsync("PlaceItem", item, spot);
                 }
-                    await Clients.Caller.SendAsync("PlaceItem", item, spot);
-                }
-
-                    await Clients.Caller.SendAsync("PlaceItem", item, spot);
-                }
-
-            return spot;
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("DBError", "No such orderItem");
+            }
         }
 
         internal async Task<int> itemToBeServed(OrderItem orderItem, Restaurant rest)
@@ -119,12 +91,6 @@ namespace CheckerServer.Hubs
             }
 
             return spot;
-
-            }
-            catch (Exception ex)
-            {
-                await ordersHubContext.Clients.Group(rest.Name).SendAsync("SignalRError", "an unexpected error occured: " + ex.Message);
-            }
         }
 
         private async Task moveFromListToList(OrderItem item, eLineItemStatus prevStatus, eLineItemStatus nextStatus, string prevListName, string nextListName)

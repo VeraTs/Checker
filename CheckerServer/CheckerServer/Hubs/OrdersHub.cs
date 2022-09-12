@@ -105,7 +105,6 @@ namespace CheckerServer.Hubs
 
         public async Task PickUpItemForServing(int itemId)
         {
-            
             OrderItem item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(oi => oi.ID == itemId);
             Line line = await _context.Lines.Include("ServingArea").FirstOrDefaultAsync(l => l.ID == item.Dish.LineId);
             if (item.Status == eItemStatus.WaitingToBeServed)
