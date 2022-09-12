@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using CheckerWaitersApp.Enums;
 using CheckerWaitersApp.Models;
@@ -15,26 +15,31 @@ namespace CheckerWaitersApp.ViewModels
         private static int m_CountItemsID = 0;
         
         private float m_TotalPrice = 0;
-        private const int restId = 1;
-        public OrdersViewModel Orders { get; set; } = new OrdersViewModel();
-
+        public OrdersViewModel Orders { get; set; }
+        
      
         public CreateOrderViewModel()
         {
             m_Dishes = new ObservableCollection<Dish>();
+
             initUsingRepository();
+            Orders ??= new OrdersViewModel();
             App.HubConn.On<Order>("ReceiveOrder", (order) =>
             {
-                //Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
-                Orders.AddNewOrder(order);
+                foreach (var item in order.items)
+                {
+                    item.dish = App.Repository.DishesDictionary[item.dishId];
+                }
+                if (order.restaurantId == App.RestId) { Orders.AddNewOrder(order); }
+               
             });
             App.HubConn.On<List<Order>>("ReceiveOrders", (orders) =>
             {
-                foreach (var order in orders)
+                foreach (var order in orders.Where(o=>o.restaurantId == App.RestId))
                 {
                     foreach (var item in order.items)
                     {
-                        item.dish = m_Dishes[item.dishId];
+                        item.dish = App.Repository.DishesDictionary[item.dishId];
                     }
                     Orders.AddNewOrder(order);
                 }
@@ -42,12 +47,15 @@ namespace CheckerWaitersApp.ViewModels
 
             App.HubConn.On<Order, float>("PaymentMadeFull" ,(order , sum) =>
             {
-                Orders.RemovePaidOrder(order);
+                if(order.restaurantId == App.RestId){ Orders.RemovePaidOrder(order); }
             });
 
             App.HubConn.On<Order, float>("PartialPaymentMade", (order, sum) =>
             {
-                Orders.UpdatePartialPay(order, order.remainsToPay);
+                if (order.restaurantId == App.RestId)
+                {
+                    Orders.UpdatePartialPay(order, order.remainsToPay);
+                }
             });
 
 
@@ -75,7 +83,6 @@ namespace CheckerWaitersApp.ViewModels
                     case eDishType.Drink:
                         Drinks.Add(dishViewModel);
                         break;
-                    
                 }
             }
 
@@ -88,8 +95,6 @@ namespace CheckerWaitersApp.ViewModels
                 try
                 {
                     await App.HubConn.StartAsync();
-                    await Task.Delay(300);// start async connection to SignalR Hub at server
-
                 }
                 catch (System.Exception ex)
                 {
@@ -193,31 +198,22 @@ namespace CheckerWaitersApp.ViewModels
         // should be async
         public async void GenerateOrder()
         {
-            var orderItems = new List<OrderItem>();
-            foreach (var item in ToOrderCollection)
-            {
-                item.OrderItemModel.start = DateTime.Now;
-                item.OrderItemModel.table = int.Parse(EntryValue);
-                orderItems.Add(item.OrderItemModel);
-            }
+            var orderItems = ToOrderCollection.Select(item => item.OrderItemModel).ToList();
 
             var newOrder = new Order()
             {
                 table = int.Parse(EntryValue),
-                id = 0,
-                status = eOrderStatus.Ordered,
                 orderType = PickedOrderType,
                 items = orderItems,
-                createdDate = DateTime.Now,
                 remainsToPay = m_TotalPrice,
                 totalCost = m_TotalPrice,
-                restaurantId = restId
+                restaurantId = App.RestId,
             };
            await UpdateManagerNewOrder(newOrder);
             m_CountItemsID++;
         }
 
-        private async Task UpdateManagerNewOrder(Order ToUpdate)
+        private static async Task UpdateManagerNewOrder(Order ToUpdate)
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)
             {

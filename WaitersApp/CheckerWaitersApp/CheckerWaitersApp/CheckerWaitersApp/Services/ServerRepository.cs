@@ -21,17 +21,23 @@ namespace CheckerWaitersApp.Services
             ServingAreas = new List<ServingArea>();
         }
 
-        public async void LoadData()
+        public void LoadData()
         {
-            foreach (var dish in App.restaurant.menus.SelectMany(menu => menu.dishes))
+            foreach (var dish in App.restaurant.menus.Where(menu => menu.restaurantId == App.RestId).SelectMany(menu => menu.dishes))
             {
                 Dishes.Add(dish);
                 DishesDictionary.Add(dish.id, dish);
             }
 
-            lines = App.restaurant.lines;
-            ServingAreas = App.restaurant.servingAreas;
+            foreach (var line in App.restaurant.lines.Where(line => line.restaurantId == App.RestId))
+            {
+                lines.Add(line);
+            }
 
+            foreach (var sa in App.restaurant.servingAreas.Where(area => area.restaurantId == App.RestId))
+            {
+                ServingAreas.Add(sa);
+            }
         }
     }
 }

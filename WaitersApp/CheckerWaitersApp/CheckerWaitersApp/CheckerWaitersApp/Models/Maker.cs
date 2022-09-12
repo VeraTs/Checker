@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CheckerWaitersApp.Models
+﻿namespace CheckerWaitersApp.Models
 {
     public class Maker : BaseDBItem
     {

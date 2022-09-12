@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CheckerUI.Enums;
 using CheckerUI.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
@@ -11,19 +12,19 @@ namespace CheckerUI.ViewModels
 
         private Color m_BackgroundState;
         private Color m_LabelsColorState;
-
+        public int LineId { get; set; }
 
         public LineViewModel(Line i_model) : base()
         {
             base.init();
             m_BackgroundState = new Color();
-
             model = i_model;
-            LineName = model.name;
+            LineId = i_model.id;
+            LineName = i_model.name;
             model.dishes = new List<Dish>();
+            model.dishes.AddRange(i_model.dishes);
             setColorState();
         }
-
 
         private void setColorState()
         {

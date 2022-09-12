@@ -27,21 +27,21 @@
                     </Grid.RowDefinitions>
                     <BoxView Grid.Row="1" Color="Black"/>
                     <Label
-                                            Grid.Row="0" Text="{Binding ZoneId   }"
-                                            FontSize="30"
-                                            TextColor="Black"
-                                            HorizontalOptions="Center" 
-                                            VerticalOptions="Center" />
+                        Grid.Row="0" Text="{Binding ZoneId   }"
+                        FontSize="30"
+                        TextColor="Black"
+                        HorizontalOptions="Center" 
+                        VerticalOptions="Center" />
                     <Label 
-                                            Grid.Row="2"
-                                            Text="{Binding  ItemName}"
-                                            FontFamily="FAS"
-                                            FontSize="30"
-                                            TextColor="Black"
-                                            FontAttributes="Bold"
-                                            HorizontalOptions="Center"
-                                            VerticalOptions="Center"
-                                            MaxLines="1"/>
+                        Grid.Row="2"
+                        Text="{Binding  ItemName}"
+                        FontFamily="FAS"
+                        FontSize="30"
+                        TextColor="Black"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        MaxLines="1"/>
                 </Grid>
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup Name="CommonStates">

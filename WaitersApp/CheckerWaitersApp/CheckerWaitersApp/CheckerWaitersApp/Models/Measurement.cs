@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CheckerWaitersApp.Models
+﻿namespace CheckerWaitersApp.Models
 {
     public class Measurement
     {

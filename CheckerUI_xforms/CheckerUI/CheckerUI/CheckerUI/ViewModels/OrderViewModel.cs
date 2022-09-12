@@ -35,8 +35,7 @@ namespace CheckerUI.ViewModels
         public bool CheckOutItem(OrderItemViewModel i_ToCheck)
         {
             Items.Remove(i_ToCheck);
-            int currentSize = Items.Count;
-            RemainingItems = currentSize.ToString();
+            RemainingItems = Items.Count.ToString();
             if (Items.Count == 0)
             {
                 AllItemsCheckedOrderID.Add(OrderID);
@@ -54,7 +53,7 @@ namespace CheckerUI.ViewModels
                         OrderStateColor = Color.Brown;
                         break;
                     }
-                case eOrderStatus.Started:
+                case eOrderStatus.InProgress:
                     {
                         OrderStateColor = Color.DarkOrange;
                         break;
@@ -95,16 +94,15 @@ namespace CheckerUI.ViewModels
 
         public void AddOrderItem(OrderItem i_item)
         {
-            if (i_item.servingAreaZone == AreaId)
-            {
-                var itemView = new OrderItemViewModel(i_item);
-                Items.Add(itemView);
-            }
+            var itemView = new OrderItemViewModel(i_item); 
+            Items.Add(itemView);
+            RemainingItems = Items.Count.ToString();
         }
 
         public void RemoveOrderItem(OrderItem i_item)
         {
             Items.Remove(Items.First(t=>t.OderItemID == i_item.id));
+            RemainingItems = Items.Count.ToString();
         }
         public eOrderStatus State
         {

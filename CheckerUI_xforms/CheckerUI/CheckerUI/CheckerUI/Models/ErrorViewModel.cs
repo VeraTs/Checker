@@ -1,4 +1,4 @@
-namespace CheckerWaitersApp.Models
+﻿namespace CheckerUI.Models
 {
     public class ErrorViewModel
     {

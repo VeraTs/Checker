@@ -25,7 +25,6 @@ namespace CheckerWaitersApp.ViewModels
                 orderId = i_Model.id,
                 lineStatus = i_Model.lineStatus,
                 changes = i_Model.changes,
-                table = i_Model.table,
                 servingAreaZone = i_Model.servingAreaZone,
                 status = i_Model.status
             };
@@ -33,17 +32,13 @@ namespace CheckerWaitersApp.ViewModels
         }
         public OrderItemViewModel(Dish i_DishModel, int i_CountID)
         {
-
             OrderItemModel = new OrderItem
             {
                 dish = i_DishModel,
                 dishId = i_DishModel.id,
-                start = default,
-                finish = default,
                 orderId = i_CountID,
                 lineStatus = eLineItemStatus.Locked,
                 changes = "None",
-                table = 0,
             };
             init();
         }

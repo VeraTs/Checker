@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading.Tasks;
-using CheckerUI.Enums;
 using CheckerUI.Models;
-using Microsoft.AspNetCore.SignalR.Client;
-using Xamarin.Forms;
 
 namespace CheckerUI.ViewModels
 {
@@ -24,10 +19,7 @@ namespace CheckerUI.ViewModels
         public string Name => servingArea.name;
         public int Capacity => m_OrdersViews.Count;
 
-        public OrdersViewModel()
-        {
-            
-        }
+        public OrdersViewModel() { }
         public OrdersViewModel(int i_AreaId, ServingArea i_Area)
         {
             m_OrdersViews = new ObservableCollection<OrderViewModel>();
@@ -66,104 +58,32 @@ namespace CheckerUI.ViewModels
             {
                 var vm = new OrderViewModel(orderModel, areaId);
                 vm.AddOrderItem(i_item);
+                m_OrdersViews.Add(vm);
                 m_Orders.Add(vm.OrderID,vm);
             }
         }
-        public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId)
+
+        public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId, bool i_setFlag)
         {
-            if (i_zoneId < 0 || !Zones[i_zoneId].model.isAvailable) return false;
-            var itemView = new OrderItemViewModel(i_Item);
-            Zones[i_zoneId].model.item = itemView;
-            Zones[i_zoneId].model.isAvailable = false;
-            return true;
+            if (i_setFlag)
+            {
+                if (i_zoneId < 0 || !Zones[i_zoneId].model.isAvailable) return false;
+                var itemView = new OrderItemViewModel(i_Item);
+                Zones[i_zoneId].model.item = itemView;
+                Zones[i_zoneId].model.isAvailable = false;
+                return true;
+            }
+            else
+            {
+                if (i_zoneId < 0 || Zones[i_zoneId].model.isAvailable) return false;
+                var itemVm = Zones[i_zoneId].model.item;
+                Zones[i_zoneId].model.item = null;
+                Zones[i_zoneId].model.isAvailable = false;
+                if (m_OrdersViews[i_Item.orderId].CheckOutItem(itemVm))
+                    m_OrdersViews.Remove(m_OrdersViews[i_Item.orderId]);
+                return true;
+            }
         }
-        private void initEvents()
-        {
-            //App.OrderHubConnection.On<Order>("ReceiveOrder", (order) =>
-            //{
-            //   // Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
-            //    foreach (var orderItem in order.items)
-            //    {
-            //        orderItem.dish = mDishesDictionary[orderItem.dishId];
-            //    }
-            //    var view = new OrderViewModel(order);
-            //    m_Orders.Add(order.id, view);
-            //    m_OrdersViews.Add(view);
-
-            //});
-            //App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
-            //{
-            //    foreach (var order in orders)
-            //    {
-            //        foreach (var orderItem in order.items)
-            //        {
-            //            orderItem.dish = mDishesDictionary[orderItem.dishId];
-            //            if (orderItem.servingAreaZone <= -1) continue;
-            //            // var itemView = new OrderItemViewModel(item.Model);
-            //            SetOrderItemInZone(orderItem, orderItem.servingAreaZone);
-            //        }
-            //        var view = new OrderViewModel(order);
-                    
-            //        m_Orders.Add(order.id, view);
-            //        m_OrdersViews.Add(view);
-                    
-            //    }
-            //});
-
-            //App.OrderHubConnection.On<OrderItem>("ItemToBeServed", (item) =>
-            //{
-            //    item.dish = mDishesDictionary[item.dishId];
-            //    var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
-            //    SetOrderItemInZone(view.Model, item.servingAreaZone);
-            //});
-
-            //App.OrderHubConnection.On<OrderItem>("ItemServed", (item) =>
-            //{
-            //    //item.dish = mDishesDictionary[item.dishId];
-            //    //var order = m_Orders[item.orderId];
-            //    //var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
-            //    //order.CheckOutItem(view);
-            //    //var zone = Zones.First(t => t.item.OderItemID == item.id);
-            //    //zone.item = null;
-            //    //zone.isAvailable = true;
-            //    item.dish = mDishesDictionary[item.dishId];
-            //    var view = m_Orders[item.orderId].Items.First(t => t.OderItemID == item.id);
-            //    SetOrderItemInZone(view.Model, item.servingAreaZone);
-            //});
-        }
-
-    
-        //private static async void initOrdersHub()
-        //{
-        //    if (App.OrderHubConnection.State == HubConnectionState.Disconnected)
-        //    {
-        //        try
-        //        {
-        //            await App.OrderHubConnection.StartAsync();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            await Application.Current.MainPage.DisplayAlert("Exception! Disconnected orders", ex.Message, "OK");
-        //        }
-        //    }
-
-        //    try
-        //    {
-        //        await App.OrderHubConnection.InvokeAsync("RegisterForGroup", App.RestId);
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //         await Application.Current.MainPage.DisplayAlert("Exception!", ex.Message, "OK");
-        //    }
-        //}
-        //public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId)
-        //{
-        //    if (i_zoneId <0 || !Zones[i_zoneId].isAvailable) return false;
-        //    var itemView = new OrderItemViewModel(i_Item);
-        //    Zones[i_zoneId].item = itemView;
-        //    Zones[i_zoneId].isAvailable = false;
-        //    return true;
-        //}
 
         private void AllItemsCheckedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

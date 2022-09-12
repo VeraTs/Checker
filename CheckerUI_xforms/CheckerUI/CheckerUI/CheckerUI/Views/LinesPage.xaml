@@ -71,7 +71,7 @@
                                              CornerRadius="10" ></BoxView>
                                         <Button  x:Name="m_LineButton"
                                                  Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" 
-                                                 Text="{Binding LineName}"
+                                                 Text="{Binding LineId}"
                                                  HorizontalOptions="Center"
                                                  FontSize="Title"
                                                  FontFamily="FAS"

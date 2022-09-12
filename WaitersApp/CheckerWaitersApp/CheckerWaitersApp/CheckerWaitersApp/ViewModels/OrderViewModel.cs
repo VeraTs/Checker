@@ -22,7 +22,7 @@ namespace CheckerWaitersApp.ViewModels
         public Command PayPartialForOrder { get; private set; }
 
         private string RemainsString;
-        public string CreatedTime => Order.createdDate.ToShortTimeString();
+        public string CreatedTime => Order.items.First().start.ToShortTimeString();
 
         public ObservableCollection<OrderItem> Items { get; private set; }
         public OrdersViewModel m_MainVm { get; set; }

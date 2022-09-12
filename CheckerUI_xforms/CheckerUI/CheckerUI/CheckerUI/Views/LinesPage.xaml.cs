@@ -16,8 +16,9 @@ namespace CheckerUI.Views
         {
             var name = (sender as Button).Text;
             var vm2 = this.BindingContext as LinesViewModel;
-            vm2.ClickedLineName = name;
-            await vm2.LineButton_OnClickedString(sender,e);
+          //  vm2.ClickedLineName = name;
+          vm2.m_ClickedLineId = int.Parse(name);
+            await vm2.LineButton_OnClicked(sender,e);
         }
     }
 }

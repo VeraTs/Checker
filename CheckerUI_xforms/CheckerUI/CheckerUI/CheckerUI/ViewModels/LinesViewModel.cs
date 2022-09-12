@@ -16,37 +16,38 @@ namespace CheckerUI.ViewModels
         private readonly ObservableCollection<NewLineView> m_LinesViews = new ObservableCollection<NewLineView>();
 
         public int m_ClickedLineId { get; set; } = 0;
-        public string ClickedLineName { get; set; }
+        public string ClickedLineName { get; set; } = "";
         public LinesViewModel()
         {
-            var mDishesDictionary = App.Repository.DishesDictionary;
             initLinesByRepository();
 
             App.HubConn.On<List<LineDTO>>("UpdatedLines", (linesDTO) =>
             {
                 foreach (var dto in linesDTO)
                 {
-                    var lineVM = m_LinesList.First(line => line.LineID == dto.lineId);
-                    if (lineVM.LineID > 0)
+                    var lineVM = m_LinesList.First(line => line.LineId == dto.lineId);
+                    if (lineVM.LineId > 0)
                     {
                         foreach (var orderItem in from orderItem in dto.lockedItems let currentID = orderItem.dishId select orderItem)
                         {
-                            // orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            orderItem.dish = mDishesDictionary[orderItem.dishId];
+                            orderItem.dish = App.Repository.DishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
 
                         foreach (var orderItem in from orderItem in dto.toDoItems let currentID = orderItem.dishId select orderItem)
                         {
-                            // orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            orderItem.dish = mDishesDictionary[orderItem.dishId];
+                            orderItem.dish = App.Repository.DishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
 
                         foreach (var orderItem in from orderItem in dto.doingItems let currentID = orderItem.dishId select orderItem)
                         {
-                            //orderItem.dish = m_Dishes.Find(dish => dish.id == currentID);
-                            orderItem.dish = mDishesDictionary[orderItem.dishId];
+                            orderItem.dish = App.Repository.DishesDictionary[orderItem.dishId];
+                            lineVM.moveItemViewToRightView(orderItem);
+                        }
+                        foreach (var orderItem in from orderItem in dto.doneItems let currentID = orderItem.dishId select orderItem)
+                        {
+                            orderItem.dish = App.Repository.DishesDictionary[orderItem.dishId];
                             lineVM.moveItemViewToRightView(orderItem);
                         }
                     }
@@ -54,9 +55,8 @@ namespace CheckerUI.ViewModels
             });
             App.HubConn.On<OrderItem>("ItemMoved", (item) =>
             {
-                //item.dish = m_Dishes.Find(dish => dish.id == item.dishId);
-                item.dish = mDishesDictionary[item.dishId];
-                var lineVm = m_LinesList.First(line => line.LineID == item.dish.lineId);
+                item.dish = App.Repository.DishesDictionary[item.dishId];
+                var lineVm = m_LinesList.First(line => line.LineId == item.dish.lineId);
                 lineVm.moveItemViewToRightView(item);
             });
 
@@ -77,7 +77,7 @@ namespace CheckerUI.ViewModels
                 m_LinesViews.Add(view);
             }
         }
-      
+
         private static async void StartListening()
         {
             if (App.HubConn.State == HubConnectionState.Disconnected)

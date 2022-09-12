@@ -5,14 +5,9 @@ namespace CheckerWaitersApp.Models
 {
     public class Restaurant : BaseDBItem
     {
-       
         public string name { get; set; }
-       
         public string email { get; set; }
-       
         public string password { get; set; }
-
-        // fluff
         public string phone { get; set; }
         public string contactName { get; set; }
         public int balance { get; set; } = 0;

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using CheckerUI.Views;
 using Xamarin.Forms;
 using CheckerUI.Models;
-using CheckerUI.Services;
 
 namespace CheckerUI.ViewModels
 {
@@ -14,7 +13,6 @@ namespace CheckerUI.ViewModels
         private string m_Password;
         private bool m_hidePassword = true;
         public Command LogInCommand { get; }
-        public Command SignUpCommand { get; }
         public Command ExitCommand { get; }
         public string ShowIcon { get; set; }
         public string HideIcon { get; set; }
@@ -34,16 +32,6 @@ namespace CheckerUI.ViewModels
                 {
                     await Application.Current.MainPage.DisplayAlert("Wrong Details", "User name or Password incorrect", "Ok");
                 }
-            });
-
-            SignUpCommand = new Command(async () =>
-            {
-                var registrationVm = new RegistrationPageViewModel();
-                var regPage = new RegistrationPage
-                {
-                    BindingContext = registrationVm
-                };
-                await Application.Current.MainPage.Navigation.PushAsync(regPage);
             });
 
             ExitCommand = new Command(() =>
@@ -92,18 +80,12 @@ namespace CheckerUI.ViewModels
       
         private async Task<bool> checkUserDetails()
         {
-            var user = new User(UserName, Password);
+            var user = new User()
+            {
+                userEmail = m_UserName, userPassword = Password
+            };
             var res = await App.UserStore.LoginAsync(user);
             return res;
-        }
-        private async Task<RegistrationPageViewModel> loadUserDetails()
-        {
-            RegistrationPageViewModel user = new RegistrationPageViewModel
-            {
-                UserName = UserName,
-                Password = Password
-            };
-            return await Task.FromResult(user);
         }
     }
 }

@@ -168,7 +168,6 @@ namespace CheckerUI.ViewModels
                     }
                 case eLineItemStatus.Done:
                 {
-
                     AddOrderItemToDone(i_item);
                         break;
                 }
@@ -181,8 +180,6 @@ namespace CheckerUI.ViewModels
         }
         public async Task ItemToMakeOnDoubleClicked(OrderItemViewModel i_Item)
         {
-          //  i_Item.OrderItemTimeStarted = DateTime.Now;
-          //  i_Item.OrderItemLineStatus = eLineItemStatus.ToDo;
             try
             {
                 await App.HubConn.InvokeAsync("MoveOrderItemToDoing", i_Item.OderItemID);

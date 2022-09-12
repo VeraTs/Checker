@@ -8,13 +8,16 @@ namespace CheckerUI.Views
     public partial class NewLineView : ContentPage
     {
         public LineViewModel m_ViewModel;
-        
+        public int LineId { get; set; }
+        public string LineName { get; set; }
         public NewLineView(LineViewModel i_VM)
         {
             InitializeComponent();
             BackgroundColor = Color.Transparent;
             m_ViewModel = i_VM;
             BindingContext = m_ViewModel;
+            LineId = i_VM.LineId;
+            LineName = i_VM.LineName;
             m_ItemsToMakeCardView.ViewModel = m_ViewModel;
             m_ItemsInProgressCardView.ViewModel = m_ViewModel;
             m_ItemsDoneCardView.ViewModel = m_ViewModel;
@@ -23,12 +26,12 @@ namespace CheckerUI.Views
 
         public int GetLineId()
         {
-            return m_ViewModel.LineID;
+            return LineId;
         }
 
         public string GetLineName()
         {
-            return m_ViewModel.LineName;
+            return LineName;
         }
     }
 }

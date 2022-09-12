@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
 using CheckerUI.Models;
 using CheckerUI.Views;
@@ -24,25 +22,8 @@ namespace CheckerUI.ViewModels
         {
             mDishesDictionary = App.Repository.DishesDictionary;
             initServingAreasByRepository();
+            initEvents();
             initOrdersHub();
-
-            App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
-            {
-                foreach (var order in orders)
-                {
-                    foreach (var orderItem in order.items)
-                    {
-                        orderItem.dish = mDishesDictionary[orderItem.dishId];
-                    }
-                   
-                    OrdersModels.Add(order.id, order);
-                    foreach (var orderItem in order.items)
-                    {
-                        var vm = m_OrdersViewModels.First(o => o.ViewId == orderItem.servingAreaZone);
-                        vm.AddOrderItem(order.id,orderItem, orderItem.servingAreaZone, order);
-                    }
-                }
-            });
         }
         private void initServingAreasByRepository()
         {
@@ -68,7 +49,11 @@ namespace CheckerUI.ViewModels
                 }
                 foreach (var orderItem in order.items)
                 {
-                    m_OrdersViewModels.First(vm => vm.ViewId == orderItem.servingAreaZone).AddOrderItem(order.id,orderItem, orderItem.servingAreaZone, order);
+                    var lineId = orderItem.dish.lineId;
+                    var line = App.restaurant.lines.First(l => l.id == lineId);
+                    var areaId = line.servingAreaId;
+                    var windowVM = m_OrdersViewModels.First(vm => vm.ViewId == areaId);
+                    windowVM.AddOrderItem(order.id, orderItem, areaId, order);
                 }
             });
             App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
@@ -82,7 +67,11 @@ namespace CheckerUI.ViewModels
                     }
                     foreach (var orderItem in order.items)
                     {
-                        m_OrdersViewModels.First(vm => vm.ViewId == orderItem.servingAreaZone).AddOrderItem(order.id, orderItem, orderItem.servingAreaZone, order);
+                        var lineId = orderItem.dish.lineId;
+                        var line = App.restaurant.lines.First(l => l.id == lineId);
+                        var areaId = line.servingAreaId;
+                        var windowVM = m_OrdersViewModels.First(vm => vm.ViewId == areaId);
+                        windowVM.AddOrderItem(order.id, orderItem, areaId, order);
                     }
                 }
             });
@@ -90,8 +79,17 @@ namespace CheckerUI.ViewModels
             App.OrderHubConnection.On<OrderItem>("ItemServed", (item) =>
             {
                 item.dish = mDishesDictionary[item.dishId];
-                var vm = m_OrdersViewModels.First(o => o.ViewId == item.servingAreaZone);
-                vm.SetOrderItemInZone(item, item.servingAreaZone);
+                var lineId = item.dish.lineId;
+                var line = App.restaurant.lines.First(l => l.id == lineId);
+                var areaId = line.servingAreaId;
+                var vm = m_OrdersViewModels.First(o => o.ViewId == areaId);
+                vm.SetOrderItemInZone(item, item.servingAreaZone, false);
+            });
+            App.OrderHubConnection.On<int, OrderItem>("ItemToBeServed", (areaId, item) =>
+            {
+                item.dish = mDishesDictionary[item.dishId];
+                var vm = m_OrdersViewModels.First(o => o.ViewId == areaId);
+                vm.SetOrderItemInZone(item, item.servingAreaZone, true);
             });
         }
         private static async void initOrdersHub()
