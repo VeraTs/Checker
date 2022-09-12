@@ -54,6 +54,10 @@ namespace CheckerUI.ViewModels
                     var areaId = line.servingAreaId;
                     var windowVM = m_OrdersViewModels.First(vm => vm.ViewId == areaId);
                     windowVM.AddOrderItem(order.id, orderItem, areaId, order);
+                    if (orderItem.servingAreaZone > -1)
+                    {
+                        windowVM.SetOrderItemInZone(orderItem, orderItem.servingAreaZone, true);
+                    }
                 }
             });
             App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
@@ -72,6 +76,10 @@ namespace CheckerUI.ViewModels
                         var areaId = line.servingAreaId;
                         var windowVM = m_OrdersViewModels.First(vm => vm.ViewId == areaId);
                         windowVM.AddOrderItem(order.id, orderItem, areaId, order);
+                        if (orderItem.servingAreaZone > -1)
+                        {
+                            windowVM.SetOrderItemInZone(orderItem, orderItem.servingAreaZone, true);
+                        }
                     }
                 }
             });
@@ -81,13 +89,16 @@ namespace CheckerUI.ViewModels
                 item.dish = mDishesDictionary[item.dishId];
                 var lineId = item.dish.lineId;
                 var line = App.restaurant.lines.First(l => l.id == lineId);
-                var areaId = line.servingAreaId;
-                var vm = m_OrdersViewModels.First(o => o.ViewId == areaId);
+                var zone = line.servingAreaId;
+                var vm = m_OrdersViewModels.First(o => o.ViewId == zone);
+                vm.CheckOutItem(item);
                 vm.SetOrderItemInZone(item, item.servingAreaZone, false);
             });
             App.OrderHubConnection.On<int, OrderItem>("ItemToBeServed", (areaId, item) =>
             {
+
                 item.dish = mDishesDictionary[item.dishId];
+
                 var vm = m_OrdersViewModels.First(o => o.ViewId == areaId);
                 vm.SetOrderItemInZone(item, item.servingAreaZone, true);
             });

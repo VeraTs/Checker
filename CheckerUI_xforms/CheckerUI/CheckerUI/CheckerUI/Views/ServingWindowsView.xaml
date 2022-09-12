@@ -46,8 +46,9 @@
                                    BorderColor="Transparent"
                                    CornerRadius="100"
                                    Margin="20"
-                                   HeightRequest="600"
-                                   WidthRequest="500"
+                                   HeightRequest="400"
+                                   WidthRequest="300"
+                                   VerticalOptions="CenterAndExpand"
                                    HorizontalOptions="Center" BackgroundColor="Transparent">
                                 <Grid x:Name="myGrid">
                                     <Image Source="chefBackground" Aspect="AspectFill" ></Image>
@@ -66,7 +67,7 @@
 
                                         </Grid.ColumnDefinitions >
                                         <BoxView Grid.Column="1" Grid.Row="1" Grid.RowSpan="3"
-                                             BackgroundColor ="WhiteSmoke"
+                                             BackgroundColor ="Transparent"
                                              Margin="30,1,30,0"
                                              CornerRadius="10" ></BoxView>
                                         <Button  x:Name="m_AreaButton"
@@ -80,9 +81,11 @@
                                                  BorderColor="DarkGray"
                                                  TextColor="Black" Clicked="M_AreaButton_OnClicked" />
 
-                                        <Label Grid.Column="1" Grid.Row="4" Text="{Binding  Capacity}"
+                                        <Label Grid.Column="1" Grid.Row="3" Text="{Binding  Capacity}"
                                            FontAttributes="Bold"
                                            FontSize="Large"
+                                           TextTransform="None"
+                                           VerticalOptions="Start"
                                            HorizontalOptions="Center"
                                             FontFamily="FAS"
                                            LineBreakMode="TailTruncation"

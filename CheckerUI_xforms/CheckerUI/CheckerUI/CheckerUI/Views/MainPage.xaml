@@ -22,7 +22,7 @@
                 VerticalOptions="CenterAndExpand"
                 HorizontalOptions="EndAndExpand"
                 WidthRequest="700" HeightRequest="700">
-                    <Image Source="CheckerLogo" Aspect="AspectFill" ></Image>
+                    <Image Source="CheckerLogo" Aspect="AspectFit" HorizontalOptions="StartAndExpand"></Image>
                 </Frame>
             </StackLayout>
             <Frame IsClippedToBounds="True"  
@@ -30,22 +30,21 @@
                    Padding="50"
                    CornerRadius="10"
                    Margin="-180,0,0,0"
-                   BackgroundColor="BlanchedAlmond"
-                   BorderColor="Black"
+                   BackgroundColor="Transparent"
                    HorizontalOptions="EndAndExpand" VerticalOptions="EndAndExpand"
-                   WidthRequest="550" HeightRequest="270">
+                   WidthRequest="550" HeightRequest="220">
                 <StackLayout x:Name="SL1"
                              Padding="0">
-                    <Frame IsClippedToBounds="True" CornerRadius="10" BorderColor="Black" HeightRequest="60" Margin="1">
+                    <Frame IsClippedToBounds="True" CornerRadius="10" BorderColor="Black" HeightRequest="50" Margin="1">
                         <Entry  x:Name="email" 
                            Placeholder="Email"
-                           FontSize="30"
+                           FontSize="25"
                            ClearButtonVisibility="WhileEditing"
                            PlaceholderColor="Black"
                            Text="{Binding UserName}"/>
                     </Frame>
-                    <Frame IsClippedToBounds="True" BorderColor="Black" CornerRadius="10" HeightRequest="60" Margin="1">
-                        <Entry x:Name="Password" Placeholder="Password" FontSize="30"
+                    <Frame IsClippedToBounds="True" BorderColor="Black" CornerRadius="10" HeightRequest="50" Margin="1">
+                        <Entry x:Name="Password" Placeholder="Password" FontSize="25"
                            Text ="{Binding Password}"
                            IsPassword="{Binding  Path=HidePassword}"
                            ClearButtonVisibility="WhileEditing" PlaceholderColor="Black" Margin="2"
@@ -53,7 +52,6 @@
                     </Frame>
 
                     <StackLayout Orientation="Vertical">
-                        <BoxView BackgroundColor="Transparent" HeightRequest="20"></BoxView>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
                         <Button 
@@ -69,6 +67,7 @@
                             BorderColor="#8C9B9A" 
                             BorderWidth="5" 
                             FontFamily="FAS"
+                            TextTransform="None"
                             FontAttributes="Bold"/>
                         <Button x:Name=" exitButton"
                                 BackgroundColor="LightGray"
@@ -78,6 +77,7 @@
                                 HorizontalOptions="FillAndExpand"
                                 Text="Exit"
                                 TextColor="Black"
+                                TextTransform="None"
                                 BorderColor="#8C9B9A"
                                 BorderWidth="5"
                                 FontFamily="FAS"

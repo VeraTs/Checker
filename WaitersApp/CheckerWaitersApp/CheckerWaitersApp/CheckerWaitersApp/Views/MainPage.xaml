@@ -23,7 +23,7 @@
                 VerticalOptions="CenterAndExpand"
                 HorizontalOptions="EndAndExpand"
                 WidthRequest="700" HeightRequest="700">
-                <Image Source="CheckerLogo" Aspect="AspectFill" ></Image>
+                <Image Source="CheckerLogo" Aspect="AspectFit" HorizontalOptions="StartAndExpand" ></Image>
             </Frame>
         </StackLayout>
             <Frame IsClippedToBounds="True"  
@@ -31,13 +31,12 @@
                    Padding="50"
                    CornerRadius="10"
                    Margin="-180,0,0,0"
-                   BackgroundColor="BlanchedAlmond"
-                   BorderColor="Black"
+                   BackgroundColor="Transparent"
                    HorizontalOptions="EndAndExpand" VerticalOptions="EndAndExpand"
-                   WidthRequest="550" HeightRequest="270">
+                   WidthRequest="450" HeightRequest="230">
                 <StackLayout x:Name="SL1"
                              Padding="0">
-                    <Frame IsClippedToBounds="True" CornerRadius="10" BorderColor="Black" HeightRequest="60" Margin="1">
+                    <Frame IsClippedToBounds="True" CornerRadius="10" BorderColor="Black" HeightRequest="50" Margin="1">
                         <Entry  x:Name="email" 
                            Placeholder="Email"
                            FontSize="30"
@@ -45,7 +44,7 @@
                            PlaceholderColor="Black"
                            Text="{Binding UserName}"/>
                     </Frame>
-                    <Frame IsClippedToBounds="True" BorderColor="Black" CornerRadius="10" HeightRequest="60" Margin="1">
+                    <Frame IsClippedToBounds="True" BorderColor="Black" CornerRadius="10" HeightRequest="50" Margin="1">
                     <Entry x:Name="Password" Placeholder="Password" FontSize="30"
                            Text ="{Binding Password}"
                            IsPassword="{Binding  Path=HidePassword}"
@@ -54,7 +53,6 @@
                     </Frame>
 
                     <StackLayout Orientation="Vertical">
-                        <BoxView BackgroundColor="Transparent" HeightRequest="20"></BoxView>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
                         <Button 
@@ -65,6 +63,7 @@
                             Font="30"
                             HorizontalOptions="FillAndExpand"
                             Text="Login"
+                            TextTransform="None"
                             TextColor="#000000" 
                             Command="{Binding LogInCommand}" 
                             BorderColor="#8C9B9A" 
@@ -78,6 +77,8 @@
                                 Font="30"
                                 HorizontalOptions="FillAndExpand"
                                 Text="Exit"
+                                TextTransform="None"
+
                                 TextColor="Black"
                                 BorderColor="#8C9B9A"
                                 BorderWidth="5"

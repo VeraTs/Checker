@@ -38,15 +38,15 @@
                             <Frame HasShadow="True"
                                    BorderColor="Black"
                                    CornerRadius="5"
-                                   HeightRequest="550"
-                                   WidthRequest="670" Padding="1"
+                                   HeightRequest="350"
+                                   WidthRequest="370" Padding="1"
                                    BackgroundColor="Azure"
                                    HorizontalOptions="Center"
                                    VerticalOptions="CenterAndExpand">
                                 <StackLayout>
                                     <Label Text="{Binding  Name}"
                                            FontAttributes="Bold"
-                                           FontSize="Header"
+                                           FontSize="50"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center"
                                            TextColor="Black"/>

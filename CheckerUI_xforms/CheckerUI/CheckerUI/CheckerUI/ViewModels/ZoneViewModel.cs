@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using CheckerUI.Models;
+﻿using CheckerUI.Models;
 
 namespace CheckerUI.ViewModels
 {
     public class ZoneViewModel : BaseViewModel
     {
         public ServingZone model;
-
-        private Color m_BackgroundState;
-        private Color m_LabelsColorState;
-
-
-        public ZoneViewModel(ServingZone i_model) : base()
+        public ZoneViewModel(ServingZone i_model)
         {
-            m_BackgroundState = new Color();
             model = i_model;
         }
 
@@ -25,6 +15,12 @@ namespace CheckerUI.ViewModels
             model.item = i_Item;
             model.isAvailable = false;
         }
+        public OrderItemViewModel ItemViewModel
+        {
+            get => model.item;
+            set=> model.item = value;
+        }
+        public bool isAvailable => model.isAvailable;
 
         public void RemoveOrderItem()
         {
@@ -42,7 +38,5 @@ namespace CheckerUI.ViewModels
         }
 
         public string ItemName => model.item != null ? model.item.OrderItemName : "Empty";
-
-
     }
 }

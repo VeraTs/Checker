@@ -36,7 +36,7 @@ namespace CheckerUI.ViewModels
                 {
                     isAvailable = true,
                     id = i,
-                    item = null,
+                    item = new OrderItemViewModel(),
                 };
                 var model = new ZoneViewModel(toAdd);
                 Zones.Add(model);
@@ -63,22 +63,24 @@ namespace CheckerUI.ViewModels
             }
         }
 
+        public void CheckOutItem(OrderItem i_Item)
+        {
+            m_Orders[i_Item.orderId].RemoveOrderItem(i_Item);
+        }
         public bool SetOrderItemInZone(OrderItem i_Item, int i_zoneId, bool i_setFlag)
         {
             if (i_setFlag)
             {
-                if (i_zoneId < 0 || !Zones[i_zoneId].model.isAvailable) return false;
+                if (i_zoneId < 0 || !Zones[i_zoneId].isAvailable) return false;
                 var itemView = new OrderItemViewModel(i_Item);
-                Zones[i_zoneId].model.item = itemView;
-                Zones[i_zoneId].model.isAvailable = false;
+                Zones[i_zoneId].SetOrderItem(itemView);
                 return true;
             }
             else
             {
-                if (i_zoneId < 0 || Zones[i_zoneId].model.isAvailable) return false;
-                var itemVm = Zones[i_zoneId].model.item;
-                Zones[i_zoneId].model.item = null;
-                Zones[i_zoneId].model.isAvailable = false;
+                if (i_zoneId < 0 || Zones[i_zoneId].isAvailable) return false;
+                var itemVm = Zones[i_zoneId].ItemViewModel;
+                Zones[i_zoneId].RemoveOrderItem();
                 if (m_OrdersViews[i_Item.orderId].CheckOutItem(itemVm))
                     m_OrdersViews.Remove(m_OrdersViews[i_Item.orderId]);
                 return true;

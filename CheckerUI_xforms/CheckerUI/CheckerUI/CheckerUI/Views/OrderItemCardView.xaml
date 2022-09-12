@@ -25,9 +25,8 @@
                        FontSize="30"
                        TextColor="Black"
                        FontAttributes="Bold"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center"
-                       MaxLines="1"/>
+                       HorizontalOptions="CenterAndExpand"
+                       VerticalOptions="CenterAndExpand"/>
             </Grid>
         </Frame>
 

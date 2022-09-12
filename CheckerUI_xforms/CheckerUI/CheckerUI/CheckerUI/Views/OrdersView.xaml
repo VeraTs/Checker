@@ -37,13 +37,10 @@
                                     <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_OnDoubleTapped"/>
                                 </StackLayout.GestureRecognizers>
                                 <views:ZoneCardView IsClippedToBounds="True"/>
-                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup Name="CommonStates">
                                         <VisualState Name="Normal"/>
                                         <VisualState Name="Selected">
-                                            <VisualState.Setters>
-                                                <Setter Property="BackgroundColor" Value="Transparent"/>
-                                            </VisualState.Setters>
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>

@@ -35,11 +35,11 @@
                            Text ="Order"
                            x:Name="LabelDishes"
                            FontAttributes ="Bold"
-                           FontSize="80"
+                           FontSize="45"
                            TextColor="Black"
                            FontFamily ="FAS"
                            HorizontalOptions="Center"
-                           VerticalOptions="Start"/>
+                           VerticalOptions="Center"/>
                     <BoxView Grid.Row="0" Color="Black" 
                              HorizontalOptions="FillAndExpand"
                              VerticalOptions="End"
@@ -116,12 +116,12 @@
                                        BackgroundColor="LightSteelBlue" 
                                        BorderColor="Gray"/>
                                 <Label Grid.Row="0" Grid.Column="0"
-                                       Text=" Total Items :"
+                                       Text=" Total Items:"
                                        FontAttributes ="Bold"
                                        TextColor="Black"
                                        VerticalOptions="CenterAndExpand"
                                        HorizontalOptions="Start"
-                                       FontSize="30"
+                                       FontSize="23"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Text="{Binding ToOrderCollection.Count}"
@@ -129,15 +129,15 @@
                                        TextColor="Black"
                                        VerticalOptions="CenterAndExpand"
                                        HorizontalOptions="Center"
-                                       FontSize="30"
+                                       FontSize="23"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="1" Grid.Column="0"
-                                       Text=" Table :"
+                                       Text=" Table:"
                                        FontAttributes ="Bold"
                                        TextColor="Black"
                                        VerticalOptions="Start"
                                        HorizontalOptions="Start"
-                                       FontSize="30"
+                                       FontSize="23"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="1" Grid.Column="1"
                                        x:Name="TableNumLabel"
@@ -146,16 +146,16 @@
                                        TextColor="Black"
                                        VerticalOptions="Start"
                                        HorizontalOptions="Center"
-                                       FontSize="30"
+                                       FontSize="23"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="2" Grid.Column="0"
                                        x:Name="OrderTypeLabel"
-                                       Text=" Order Type :"
+                                       Text=" Order Type:"
                                        FontAttributes ="Bold"
                                        VerticalOptions="Center"
                                        HorizontalOptions="Start"
                                        TextColor="Black"
-                                       FontSize="30"
+                                       FontSize="23"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="3" Grid.Column="0"
                                        x:Name="TypeLabel"
@@ -164,7 +164,7 @@
                                        VerticalOptions="Start"
                                        TextColor="Black"
                                        HorizontalOptions="End"
-                                       FontSize="30"
+                                       FontSize="23"
                                        FontFamily ="FAS"/>
                               
                                
@@ -173,7 +173,7 @@
                             <Button Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2"
                                     Text="Send Order"
                                     FontFamily="FAS"
-                                    FontSize="50"
+                                    FontSize="40"
                                     FontAttributes="Bold"
                                     VerticalOptions="End"
                                     CornerRadius="5"

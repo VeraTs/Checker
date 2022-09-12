@@ -43,13 +43,13 @@ namespace CheckerUI.Views
         private async void TapGestureRecognizer_OnDoubleTapped(object sender, EventArgs e)
         {
             if (sender is StackLayout stackLayout) Zones.SelectedItem = stackLayout.BindingContext;
-
-            if (Zones.SelectedItem is ServingZone item &&
-                m_AreasViewModel.PickUpItemForServing(item.id).Result)
+            var item = Zones.SelectedItem as ZoneViewModel;
+            var id = item.ItemViewModel.OderItemID;
+            
+            if(m_AreasViewModel.PickUpItemForServing(id).Result)
             {
                 lastStackLayout.BackgroundColor = Color.White;
                 lastStackLayout = null;
-                await Task.Delay(300);
             }
         }
     }

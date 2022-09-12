@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:CheckerUI.Models;assembly=CheckerUI"
-             xmlns:views="clr-namespace:CheckerUI.Views;assembly=CheckerUI" xmlns:viewmodels="clr-namespace:CheckerUI.ViewModels"
-             x:Class="CheckerUI.Views.ZoneCardView" x:DataType="viewmodels:ZoneViewModel">
+             xmlns:viewmodels="clr-namespace:CheckerUI.ViewModels"
+             x:Class="CheckerUI.Views.ZoneCardView" 
+             x:DataType="viewmodels:ZoneViewModel">
     <ContentView.Content>
         <Frame IsClippedToBounds="True"  
                                    HasShadow="True"
@@ -14,10 +14,6 @@
                                    BackgroundColor="White" 
                                    BorderColor="Black">
             <StackLayout>
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer NumberOfTapsRequired="1"/>
-                    <TapGestureRecognizer NumberOfTapsRequired="2" />
-                </StackLayout.GestureRecognizers>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height=".4*"/>
@@ -40,20 +36,8 @@
                         TextColor="Black"
                         FontAttributes="Bold"
                         HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        MaxLines="1"/>
+                        VerticalOptions="Center"/>
                 </Grid>
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup Name="CommonStates">
-                        <VisualState Name="Normal"/>
-                        <VisualState Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="Transparent"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
-
             </StackLayout>
         </Frame>
     </ContentView.Content>

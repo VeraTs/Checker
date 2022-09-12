@@ -34,13 +34,13 @@
                                 Grid.Row="0"  
                                 HorizontalTextAlignment="Start"  
                                 VerticalTextAlignment="Center"  
-                                FontSize="40"
+                                FontSize="30"
                                 LineBreakMode="TailTruncation"/>
                     <Label Text="{Binding RemainingItems}"
                                Grid.Row="1" Margin="3"
                                HorizontalTextAlignment="Start"  
                                VerticalTextAlignment="Center"  
-                               FontSize="40"
+                               FontSize="30"
                                LineBreakMode="TailTruncation"/>
                     <BoxView Grid.Row="2" Color="CadetBlue" 
                                  Margin="-7,0,-1,0"
@@ -57,8 +57,8 @@
                                 <DataTemplate>
                                     <StackLayout >
                                         <StackLayout.GestureRecognizers>
-                                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="TapGestureRecognizer_OnTapped"/>
-                                            <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_OnDoubleTapped"/>
+                                            <TapGestureRecognizer NumberOfTapsRequired="1"/>
+                                            <TapGestureRecognizer NumberOfTapsRequired="2"/>
                                         </StackLayout.GestureRecognizers>
                                         <views:OrderItemCardView  
                                             Margin="1"
