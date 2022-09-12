@@ -39,13 +39,14 @@
                     <Frame IsClippedToBounds="True" CornerRadius="10" BorderColor="Black" HeightRequest="50" Margin="1">
                         <Entry  x:Name="email" 
                            Placeholder="Email"
-                           FontSize="30"
+                           FontSize="20"
                            ClearButtonVisibility="WhileEditing"
                            PlaceholderColor="Black"
+                           TextColor="Black"
                            Text="{Binding UserName}"/>
                     </Frame>
                     <Frame IsClippedToBounds="True" BorderColor="Black" CornerRadius="10" HeightRequest="50" Margin="1">
-                    <Entry x:Name="Password" Placeholder="Password" FontSize="30"
+                        <Entry x:Name="Password" Placeholder="Password"   TextColor="Black" FontSize="20"
                            Text ="{Binding Password}"
                            IsPassword="{Binding  Path=HidePassword}"
                            ClearButtonVisibility="WhileEditing" PlaceholderColor="Black" Margin="2"
@@ -54,7 +55,7 @@
 
                     <StackLayout Orientation="Vertical">
                     </StackLayout>
-                    <StackLayout Orientation="Horizontal">
+                    <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
                         <Button 
                             x:Name=" EnterButton"
                             IsEnabled="True"

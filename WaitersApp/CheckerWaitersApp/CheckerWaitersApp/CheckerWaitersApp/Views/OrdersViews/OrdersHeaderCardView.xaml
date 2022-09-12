@@ -20,7 +20,7 @@
                     <Label Grid.Row ="0" 
                            Text =" Open Orders"
                            FontAttributes ="Bold"
-                           FontSize="80"
+                           FontSize="45"
                            TextColor="Black"
                            FontFamily ="FAS"
                            HorizontalOptions="Center"

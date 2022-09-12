@@ -63,7 +63,8 @@
                                Placeholder=" Enter Table Number"
                                Keyboard="Numeric"
                                TextColor="Black"
-                               FontSize="25"
+                               PlaceholderColor="Black"
+                               FontSize="20"
                                PropertyChanged="TableEntry_OnPropertyChanged"
                                Text="{Binding EntryValue}">
                             <Entry.Behaviors>
@@ -75,7 +76,7 @@
                                Padding="0" 
                                BackgroundColor="Transparent"
                                BorderColor="Black"/>
-                        <Picker Grid.Column="1" 
+                        <Picker Grid.Column="1"  TextColor="Black"  HorizontalOptions="Center"
                                 ItemsSource="{Binding DishTypesStrings}"
                                 x:Name="TypePicker" 
                                 PropertyChanged="TypePicker_OnPropertyChanged"/>
@@ -121,7 +122,7 @@
                                        TextColor="Black"
                                        VerticalOptions="CenterAndExpand"
                                        HorizontalOptions="Start"
-                                       FontSize="23"
+                                       FontSize="20"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="0" Grid.Column="1"
                                        Text="{Binding ToOrderCollection.Count}"
@@ -129,7 +130,7 @@
                                        TextColor="Black"
                                        VerticalOptions="CenterAndExpand"
                                        HorizontalOptions="Center"
-                                       FontSize="23"
+                                       FontSize="20"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="1" Grid.Column="0"
                                        Text=" Table:"
@@ -137,7 +138,7 @@
                                        TextColor="Black"
                                        VerticalOptions="Start"
                                        HorizontalOptions="Start"
-                                       FontSize="23"
+                                       FontSize="20"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="1" Grid.Column="1"
                                        x:Name="TableNumLabel"
@@ -146,7 +147,7 @@
                                        TextColor="Black"
                                        VerticalOptions="Start"
                                        HorizontalOptions="Center"
-                                       FontSize="23"
+                                       FontSize="20"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="2" Grid.Column="0"
                                        x:Name="OrderTypeLabel"
@@ -155,7 +156,7 @@
                                        VerticalOptions="Center"
                                        HorizontalOptions="Start"
                                        TextColor="Black"
-                                       FontSize="23"
+                                       FontSize="20"
                                        FontFamily ="FAS"/>
                                 <Label Grid.Row="3" Grid.Column="0"
                                        x:Name="TypeLabel"
@@ -164,7 +165,7 @@
                                        VerticalOptions="Start"
                                        TextColor="Black"
                                        HorizontalOptions="End"
-                                       FontSize="23"
+                                       FontSize="20"
                                        FontFamily ="FAS"/>
                               
                                
@@ -177,6 +178,7 @@
                                     FontAttributes="Bold"
                                     VerticalOptions="End"
                                     CornerRadius="5"
+                                    TextColor="Black"
                                     BackgroundColor="LightGreen"
                                     effects:TouchEffect.LongPressCommand="{Binding LongPressOrderCommand}"
                                     effects:TouchEffect.LongPressDuration="2000"

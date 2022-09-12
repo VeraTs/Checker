@@ -14,6 +14,7 @@
                        IsClippedToBounds="True"  
                        HasShadow="True"
                        Padding="0" 
+                       HeightRequest="70"
                        CornerRadius="10"
                        Margin="0"
                        BackgroundColor="Azure"
@@ -30,11 +31,11 @@
 
                             <Label Grid.Column="1" Text="{Binding  DishName}"
                                    FontFamily="FAS"
-                                   FontSize="Large"
+                                   FontSize="15"
                                    FontAttributes="Bold"
                                    TextColor="Black"
                                    HorizontalOptions="Start"
-                                   VerticalOptions="Start"/>
+                                   VerticalOptions="CenterAndExpand"/>
                         </Grid>
                     </StackLayout>
                 </Frame>

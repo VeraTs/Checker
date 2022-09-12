@@ -81,27 +81,27 @@
                         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
                                FontAttributes="Bold"
                                TextColor="DarkBlue"
-                               FontSize="30"
+                               FontSize="25"
                                Text="{Binding  TableNumber}"/>
                         <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
                                FontAttributes="Bold"
                                TextColor="DarkBlue"
                                VerticalOptions="Start"
                                HorizontalOptions="Start"
-                               FontSize="30"
+                               FontSize="25"
                                Text="{Binding Cost}"/>
                         <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
                                FontAttributes="Bold"
                                TextColor="DarkBlue"
                                VerticalOptions="Start"
                                HorizontalOptions="Start"
-                               FontSize="30"
+                               FontSize="25"
                                Text="{Binding Remains}"/>
                         <Label Grid.Column="0" Grid.Row="4"
                                Grid.ColumnSpan="3" 
                                FontAttributes="Bold"
                                TextColor="DarkBlue"
-                               FontSize="30"
+                               FontSize="25"
                                VerticalOptions="Start"
                                Text="{Binding Counter}"/>
 

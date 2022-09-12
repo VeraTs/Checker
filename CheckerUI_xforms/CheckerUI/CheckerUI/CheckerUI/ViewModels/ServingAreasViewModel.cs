@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using CheckerUI.Enums;
 using CheckerUI.Models;
 using CheckerUI.Views;
 using Xamarin.Forms;
@@ -42,13 +43,15 @@ namespace CheckerUI.ViewModels
             App.OrderHubConnection.On<Order>("ReceiveOrder", (order) =>
             {
                 // Application.Current.MainPage.DisplayAlert("Order received", "The Order " + order.id + " was successfully added to DB", "OK");
+                if (order.status == eOrderStatus.Done) return;
                 foreach (var orderItem in order.items)
                 {
                     orderItem.dish = mDishesDictionary[orderItem.dishId];
-
                 }
+
                 foreach (var orderItem in order.items)
                 {
+                    if (orderItem.status == eItemStatus.Served) continue;
                     var lineId = orderItem.dish.lineId;
                     var line = App.restaurant.lines.First(l => l.id == lineId);
                     var areaId = line.servingAreaId;
@@ -62,15 +65,16 @@ namespace CheckerUI.ViewModels
             });
             App.OrderHubConnection.On<List<Order>>("ReceiveOrders", (orders) =>
             {
-                foreach (var order in orders)
+                foreach (var order in orders.Where(order => order.status != eOrderStatus.Done))
                 {
                     foreach (var orderItem in order.items)
                     {
                         orderItem.dish = mDishesDictionary[orderItem.dishId];
-
                     }
+
                     foreach (var orderItem in order.items)
                     {
+                        if (orderItem.status == eItemStatus.Served) continue;
                         var lineId = orderItem.dish.lineId;
                         var line = App.restaurant.lines.First(l => l.id == lineId);
                         var areaId = line.servingAreaId;
