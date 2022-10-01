@@ -13,6 +13,9 @@ namespace CheckerServer.Models
         private readonly KitchenUtils r_KitchenUtils = null;
         private readonly Dictionary<int, Dictionary<int, LineDTO>> r_KitchenLines = new Dictionary<int, Dictionary<int, LineDTO>>();
         private readonly Dictionary<int, int> r_RestsActiveKitchens = new Dictionary<int, int>();
+        private readonly Dictionary<int, List<int>> r_OrderItemsStartedByOrder = new Dictionary<int,List<int>>();
+        private readonly Dictionary<int, List<int>> r_OrderItemsFinishedByOrder = new Dictionary<int,List<int>>();
+
         private readonly object r_RestUsesLock = new object();
         private readonly IHubContext<KitchenHub> _hubContext;
         private Timer? _timer = null;
@@ -119,6 +122,28 @@ namespace CheckerServer.Models
                     r_KitchenUtils.RemoveOrder(order);
                 }
             }
+
+            if (r_OrderItemsStartedByOrder.ContainsKey(orderId))
+            {
+                lock (r_OrderItemsStartedByOrder)
+                {
+                    if (r_OrderItemsStartedByOrder.ContainsKey(orderId))
+                    {
+                        r_OrderItemsStartedByOrder.Remove(orderId);
+                    }
+                }
+            }
+
+            if (r_OrderItemsFinishedByOrder.ContainsKey(orderId))
+            {
+                lock (r_OrderItemsFinishedByOrder)
+                {
+                    if (r_OrderItemsFinishedByOrder.ContainsKey(orderId))
+                    {
+                        r_OrderItemsFinishedByOrder.Remove(orderId);
+                    }
+                }
+            }
         }
 
         internal void UpdateContext(CheckerDBContext context)
@@ -169,7 +194,7 @@ namespace CheckerServer.Models
                     }
 
                     r_KitchenUtils.UpdateContext(context);
-                    Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests);
+                    Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests, r_OrderItemsStartedByOrder, r_OrderItemsFinishedByOrder);
 
                     // step 2.2
                     foreach (int restId in r_RestsActiveKitchens.Keys)
@@ -287,14 +312,45 @@ namespace CheckerServer.Models
                         r_KitchenLines[restId][lineId].DoingItems.Add(item);
                     }
 
+                    if (!r_OrderItemsStartedByOrder.ContainsKey(order.ID))
+                    {
+                        lock (r_OrderItemsStartedByOrder)
+                        {
+                            if (!r_OrderItemsStartedByOrder.ContainsKey(order.ID))
+                            {
+                                r_OrderItemsStartedByOrder.Add(order.ID, new List<int>());
+                            }
+                        }
+                    }
+
+                    lock (r_OrderItemsStartedByOrder[order.ID]){
+                        r_OrderItemsStartedByOrder[order.ID].Add(item.ID);
+                    }
+                    
                     break;
                 case eLineItemStatus.Done:
                     lock (r_KitchenLines[restId][lineId])
                     {
                         OrderItem savedItem = r_KitchenLines[restId][lineId].DoingItems.First(i => i.ID == item.ID);
                         r_KitchenLines[restId][lineId].DoingItems.Remove(savedItem);
-                        //r_KitchenLines[restId][lineId].DoneItems.Add(item);
                     }
+
+                    if (!r_OrderItemsFinishedByOrder.ContainsKey(order.ID))
+                    {
+                        lock (r_OrderItemsFinishedByOrder)
+                        {
+                            if (!r_OrderItemsFinishedByOrder.ContainsKey(order.ID))
+                            {
+                                r_OrderItemsFinishedByOrder.Add(order.ID, new List<int>());
+                            }
+                        }
+                    }
+
+                    lock (r_OrderItemsFinishedByOrder[order.ID])
+                    {
+                        r_OrderItemsFinishedByOrder[order.ID].Add(item.ID);
+                    }
+
                     break;
             }
         }

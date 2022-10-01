@@ -122,7 +122,7 @@ namespace CheckerServer.utils
 
         }
 
-        internal async Task<Dictionary<int, List<LineDTO>>> GetUpdatedLines(List<int> activeRests)
+        internal async Task<Dictionary<int, List<LineDTO>>> GetUpdatedLines(List<int> activeRests, Dictionary<int, List<int>> startedOrederItemsByOrder, Dictionary<int, List<int>> finishedOrederItemsByOrder)
         {
             // restId to Line list
             Dictionary<int, List<LineDTO>> updatedLines = new Dictionary<int, List<LineDTO>>();
@@ -137,6 +137,28 @@ namespace CheckerServer.utils
                 {
                     foreach (OrderPyramid order in r_RestaurantOrderQueuesList[restId])
                     {
+                        if (startedOrederItemsByOrder.ContainsKey(order.Id))
+                        {
+                            lock (startedOrederItemsByOrder[order.Id])
+                            {
+                                List<int> started = startedOrederItemsByOrder[order.Id];
+                                startedOrederItemsByOrder[order.Id] = new List<int>();
+                            }
+                            
+                            order.updateStartedItems(startedOrederItemsByOrder[order.Id]);
+                        }
+
+                        if (finishedOrederItemsByOrder.ContainsKey(order.Id))
+                        {
+                            lock (startedOrederItemsByOrder[order.Id])
+                            {
+                                List<int> started = startedOrederItemsByOrder[order.Id];
+                                startedOrederItemsByOrder[order.Id] = new List<int>();
+                            }
+
+                            order.updateStartedItems(startedOrederItemsByOrder[order.Id]);
+                        }
+
                         var items = order.GetAvailableItems();
                         if (items != null)
                         {
@@ -311,9 +333,9 @@ namespace CheckerServer.utils
     public class OrderPyramid
     {
         public int Id { get; private set; }
-        public Stack<TimedOrderItem>? starters = null;
-        public Stack<TimedOrderItem>? mains = null;
-        public Stack<TimedOrderItem>? desserts = null;
+        public TimedItemsStack? starters = null;
+        public TimedItemsStack? mains = null;
+        public TimedItemsStack? desserts = null;
 
         public OrderPyramid(int id)
         {
@@ -341,13 +363,6 @@ namespace CheckerServer.utils
                 else if (limit <= 0)
                 {
                     this.available = true;
-                    /*this.timer = new System.Timers.Timer(8000) { AutoReset = false };
-                    timer.Elapsed += (o, e) => {
-                        available = true;
-                        Console.WriteLine("---------------------------Hoho, timer! CAN SENT TO KITCHEN!-------------------------");
-                        Console.WriteLine("---------------------------Hoho, timer! Item:" + item.Dish.Name + "!-------------------------");
-                        timer.Stop();
-                    };*/
                 }
                 else
                 {
@@ -369,6 +384,64 @@ namespace CheckerServer.utils
             {
                 if (timer != null && timerUp)
                     timer.Start();
+            }
+        }
+
+        public class TimedItemsStack : Stack<TimedOrderItem>
+        {
+            Dictionary<int, TimedOrderItem> items = new Dictionary<int, TimedOrderItem>();
+            bool stackDone = false;
+            public bool isStackDone() {  return stackDone; }
+            public bool hasStartedItem(int itemId)
+            {
+                bool res = false;
+                if (items.ContainsKey(itemId))
+                {
+                    res = true;
+                    items.Remove(itemId);   // remove from items list - there will be no need for this again
+                    TimedOrderItem nextItem;
+                    if (base.TryPeek(out nextItem))
+                    {
+                        nextItem.StartTimer();   // start timer of next thing in stack
+                    }
+                }
+
+                return res;
+            }
+
+            public bool hasFinishedItem(int itemId)
+            {
+                bool res = false;
+                if (items.ContainsKey(itemId))
+                {
+                    res = true;
+                    items.Remove(itemId);   // remove from items list - there will be no need for this again
+                    if(items.Count == 0){
+                        // state that the stack is done
+                        stackDone = true;
+                    }
+                }
+
+                return res;
+            }
+
+            public new void Push(TimedOrderItem timedItem)
+            {
+                base.Push(timedItem);
+                items.Add(timedItem.item.ID, timedItem);
+                if (stackDone)
+                {
+                    stackDone=false;
+                }
+            }
+
+            internal void startItems()
+            {
+                TimedOrderItem firstItem;
+                if(base.TryPeek(out firstItem))
+                {
+                    firstItem.StartTimer();
+                }
             }
         }
 
@@ -405,7 +478,7 @@ namespace CheckerServer.utils
             if (items.Any(item => item.Dish.Type == eDishType.Drink))
             {
                 if (starters == null)
-                    starters = new Stack<TimedOrderItem>();
+                    starters = new TimedItemsStack();
 
                 items.ForEach(item =>
                 {
@@ -424,7 +497,7 @@ namespace CheckerServer.utils
                     // put everythinginto starters
                     if (starters == null)
                     {
-                        starters = new Stack<TimedOrderItem>();
+                        starters = new TimedItemsStack();
                     }
 
                     // while SortedDictionary is quicker for entering unsorted data, SortedList uses less memory and also
@@ -449,7 +522,7 @@ namespace CheckerServer.utils
                     // and basically just send everything to the kitchen at once and let them do whatever
                     if (starters == null)
                     {
-                        starters = new Stack<TimedOrderItem>();
+                        starters = new TimedItemsStack();
                     }
 
 
@@ -499,21 +572,21 @@ namespace CheckerServer.utils
                     if (startersList.Count > 0 && starters == null)
                     {
                         if (starters == null)
-                            starters = new Stack<TimedOrderItem>();
+                            starters = new TimedItemsStack();
                         addFromSortedList(startersList, starters);
                     }
 
                     if (mainsList.Count > 0 && mains == null)
                     {
                         if (mains == null)
-                            mains = new Stack<TimedOrderItem>();
+                            mains = new TimedItemsStack();
                         addFromSortedList(mainsList, mains);
                     }
 
                     if (dessertsList.Count > 0 && desserts == null)
                     {
                         if (desserts == null)
-                            desserts = new Stack<TimedOrderItem>();
+                            desserts = new TimedItemsStack();
                         addFromSortedList(dessertsList, desserts);
                     }
 
@@ -550,9 +623,17 @@ namespace CheckerServer.utils
             List<OrderItem> availableItems = null;
             if (starters != null && starters.Count > 0) { availableItems = getFromStack(starters); }
             else if (mains != null && mains.Count > 0) { availableItems = getFromStack(mains); }
-            else if (desserts != null && desserts.Count > 0) { availableItems = getFromStack(desserts); }
+            else if ( desserts != null && desserts.Count > 0) { availableItems = getFromStack(desserts); }
 
-            StartTimers();  // start timers for newly allowed items
+            if(starters!= null && starters.isStackDone()) 
+            {
+                mains.startItems();
+            } else if (mains != null && mains.isStackDone())
+            {
+                desserts.startItems();
+            }
+
+
 
             return availableItems;
         }
@@ -588,9 +669,53 @@ namespace CheckerServer.utils
 
             return availableItems;
         }
+
+        internal void updateStartedItems(List<int> startedItems)
+        {
+            foreach (int itemId in startedItems)
+            {
+                bool hasItem = false;
+                if (starters != null && starters.Count > 0)
+                {
+                    hasItem = starters.hasStartedItem(itemId);
+                }
+
+                if (!hasItem && mains!=null && mains.Count > 0)
+                {
+                    hasItem = mains.hasStartedItem(itemId);
+                }
+
+                if (!hasItem && desserts != null && desserts.Count > 0)
+                {
+                    hasItem = desserts.hasStartedItem(itemId);
+                }
+            }
+        }
+
+        internal void updateFinishedItems(List<int> finishedItems)
+        {
+            foreach (int itemId in finishedItems)
+            {
+                bool hasItem = false;
+                if (starters != null && starters.Count > 0)
+                {
+                    hasItem = starters.hasFinishedItem(itemId);
+                }
+
+                if (!hasItem && mains != null && mains.Count > 0)
+                {
+                    hasItem = mains.hasFinishedItem(itemId);
+                }
+
+                if (!hasItem && desserts != null && desserts.Count > 0)
+                {
+                    hasItem = desserts.hasFinishedItem(itemId);
+                }
+            }
+        }
     }
 
-
+    
     public class DuplicateKeyComparer<Tkey> : IComparer<Tkey> where Tkey : IComparable
     {
         public int Compare(Tkey? x, Tkey? y)

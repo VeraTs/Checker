@@ -105,8 +105,11 @@ namespace CheckerServer.Hubs
                     // now just update KitchenManager
                     KitchenManager manager = Services.GetService<KitchenManager>();
                     Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
-                    manager.ItemWasMoved(order, item);
-                    await Clients.Caller.SendAsync("ItemMoved", item);
+                    if (manager != null)
+                    {
+                        manager.ItemWasMoved(order, item);
+                        await Clients.Caller.SendAsync("ItemMoved", item);
+                    }
                 }
                 else
                 {
