@@ -194,7 +194,23 @@ namespace CheckerServer.Models
                     }
 
                     r_KitchenUtils.UpdateContext(context);
-                    Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests, r_OrderItemsStartedByOrder, r_OrderItemsFinishedByOrder);
+
+                    Dictionary<int, List<int>> startedItems;
+                    Dictionary<int, List<int>> finishedItems;
+                    
+                    lock (r_OrderItemsFinishedByOrder)
+                    {
+                        finishedItems = new Dictionary<int, List<int>>(r_OrderItemsFinishedByOrder);
+                        r_OrderItemsFinishedByOrder.Clear();
+                    }
+
+                    lock (r_OrderItemsStartedByOrder)
+                    {
+                        startedItems = new Dictionary<int, List<int>>(r_OrderItemsStartedByOrder);
+                        r_OrderItemsStartedByOrder.Clear();
+                    }
+                    Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests, startedItems, finishedItems);
+                    
 
                     // step 2.2
                     foreach (int restId in r_RestsActiveKitchens.Keys)
@@ -216,17 +232,7 @@ namespace CheckerServer.Models
                     }
 
                     // step 2.3
-                    int success = r_KitchenUtils.LoadNewOrders();
-                    if (success > 0)
-                    {
-                        // yay, things loaded and hoarded - continue with my life, this will happen again, obvs.
-                    }
-                    else
-                    {
-                        // should I report a signalR error? And if so - to whom?
-                        // actually there could be a situation where there is nothing to save
-                        //await Clients.All.SendAsync("SignalRError", "Error in uploading new orders to the management system");
-                    }
+                    r_KitchenUtils.LoadNewOrders();
 
                     // step 2.4
                     r_KitchenUtils.ClearOrders();
@@ -248,17 +254,18 @@ namespace CheckerServer.Models
 
                         readyToRunRests.Clear();
                     }
-
-                    /*if(updatedLines != null)
-                        await _hubContext.Clients.All.SendAsync("updatedLines", updatedLines);*/
                 }
             }
-
-
-            // can't lock if there us async inside :CRY:
         }
 
-
+        /****
+         *  update the output for "update lines" to reflect changes made
+         *  
+         *  add new locked items
+         *  remove from locked items that belong in todo, add to todo
+         *  remove from todo items that belong in doing, add to doing
+         *  remove from doing items that belong in done, add to done
+         */
         private void updateOutgoingLines(int restId, LineDTO lineDTO)
         {
             if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
@@ -279,19 +286,36 @@ namespace CheckerServer.Models
                         }
                     });
 
-                    lineDTO.ToDoItems.ForEach(item => {
-                        OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
-                        if (oi != null)
-                        {
-                            r_KitchenLines[restId][lineDTO.lineId].LockedItems.Remove(oi);
-                        }
+                    lineDTO.ToDoItems.ForEach(item => 
+                        removeAndAdd(r_KitchenLines[restId][lineDTO.lineId].LockedItems, r_KitchenLines[restId][lineDTO.lineId].ToDoItems, item)
+                     );
 
-                        oi = r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Find(i => i.ID == item.ID);
-                        if (oi == null)
-                            r_KitchenLines[restId][lineDTO.lineId].ToDoItems.Add(item);
+                    lineDTO.DoingItems.ForEach(item => 
+                        removeAndAdd(r_KitchenLines[restId][lineDTO.lineId].ToDoItems, r_KitchenLines[restId][lineDTO.lineId].DoingItems, item)
+                     );
 
-                    });
+                    lineDTO.DoneItems.ForEach(item => 
+                        removeAndAdd(r_KitchenLines[restId][lineDTO.lineId].DoingItems, r_KitchenLines[restId][lineDTO.lineId].DoneItems, item)
+                     );
                 }
+            }
+        }
+
+        private void removeAndAdd(List<OrderItem> from, List<OrderItem> to, OrderItem item)
+        {
+            OrderItem? oi = from.Find(i => i.ID == item.ID);
+            if (oi != null)
+            {
+                from.Remove(oi);
+            }
+
+            oi = to.Find(i => i.ID == item.ID);
+            if (oi == null)
+                to.Add(item);
+            else
+            {
+                oi.LineStatus = item.LineStatus;
+                oi.Status = item.Status;
             }
         }
 
@@ -323,7 +347,7 @@ namespace CheckerServer.Models
                         }
                     }
 
-                    lock (r_OrderItemsStartedByOrder[order.ID]){
+                    lock (r_OrderItemsStartedByOrder){
                         r_OrderItemsStartedByOrder[order.ID].Add(item.ID);
                     }
                     
@@ -346,7 +370,7 @@ namespace CheckerServer.Models
                         }
                     }
 
-                    lock (r_OrderItemsFinishedByOrder[order.ID])
+                    lock (r_OrderItemsFinishedByOrder)
                     {
                         r_OrderItemsFinishedByOrder[order.ID].Add(item.ID);
                     }
