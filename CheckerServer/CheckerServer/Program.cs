@@ -6,20 +6,25 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.InMemory;
 using CheckerServer.Hubs;
 using CheckerServer.Models;
+using CheckerServer.utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// for using azure hosting with sql server service
+/*builder.Services.AddDbContext<CheckerDBContext>(options =>
+                  options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));*/
+
 builder.Services.AddDbContext<CheckerDBContext>(options =>
-                  options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING")));
+                  options.UseSqlServer(builder.Configuration.GetConnectionString("localDB")));
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<KitchenManager>();
+builder.Services.AddSingleton<RestaurantManager>();
 
-builder.Host.ConfigureServices(services => { services.AddHostedService<KitchenManager>(provider => provider.GetService<KitchenManager>()); });
+builder.Host.ConfigureServices(services => { services.AddHostedService<RestaurantManager>(provider => provider.GetService<RestaurantManager>()); });
 
 var app = builder.Build();
 

@@ -22,9 +22,21 @@ namespace CheckerServer.Models
         public IServiceProvider Services { get; }
         private static int counter = 0;
         private static bool shouldRun = true;
-        private List<int> readyToRunRests = new List<int>();
 
-        public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext)
+        internal void closeForDay()
+        {
+            r_isOpen = false;
+        }
+        internal void openForDay()
+        {
+            r_isOpen = true;
+        }
+
+        private List<int> readyToRunRests = new List<int>();
+        private bool r_isOpen = false;
+        private Restaurant r_Restaurant;
+
+        public KitchenManager(IServiceProvider serviceProvider, IHubContext<KitchenHub> kitchenHubContext, int restId)
         {
             Services = serviceProvider;
             _hubContext = kitchenHubContext;
@@ -36,11 +48,12 @@ namespace CheckerServer.Models
                 {
                     r_KitchenUtils = new KitchenUtils(context);
 
-                    List<Restaurant> rests = context.Restaurants.ToList();
-                    rests.ForEach(r =>
+                    Restaurant? rest = context.Restaurants.Find(restId);
+                    if(rest != null)
                     {
-                        setUpRest(context, r);
-                    });
+                        r_Restaurant = rest;
+                        setUpRest(context, rest);
+                    }
                 }
             }
         }
@@ -320,7 +333,6 @@ namespace CheckerServer.Models
         }
 
 
-
         internal void ItemWasMoved(Order order, OrderItem item)
         {
             int lineId = item.Dish.LineId;
@@ -378,6 +390,7 @@ namespace CheckerServer.Models
                     break;
             }
         }
+
 
         internal void AddGroupMember(int restId)
         {

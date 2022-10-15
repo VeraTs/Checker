@@ -80,7 +80,7 @@ namespace CheckerServer.Controllers
 
                 if(rest != null && serviceProvider !=null)
                 {
-                    KitchenManager? manager = serviceProvider.GetService<KitchenManager>();
+                    RestaurantManager? manager = serviceProvider.GetService<RestaurantManager>();
                     if(manager != null)
                     {
                         manager.RestaurantReadyToWork(rest.ID);

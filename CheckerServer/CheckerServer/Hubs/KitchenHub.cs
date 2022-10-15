@@ -103,11 +103,12 @@ namespace CheckerServer.Hubs
                 {
                     // yay - success
                     // now just update KitchenManager
-                    KitchenManager manager = Services.GetService<KitchenManager>();
+                    RestaurantManager? manager = Services.GetService<RestaurantManager>();
                     Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
-                    if (manager != null)
+                    if (manager != null && order!= null)
                     {
-                        manager.ItemWasMoved(order, item);
+                        KitchenManager kitchen = manager.getKitchenForRestaurant(order.RestaurantId);
+                        kitchen.ItemWasMoved(order, item);
                         await Clients.Caller.SendAsync("ItemMoved", item);
                     }
                 }
@@ -139,8 +140,8 @@ namespace CheckerServer.Hubs
             else
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, rest.Name);
-                var manager = Services.GetService<KitchenManager>();
-                manager.AddGroupMember(restId);
+                RestaurantManager manager = Services.GetService<RestaurantManager>();
+                manager.getKitchenForRestaurant(restId).AddGroupMember(restId);
                 await Clients.Group(rest.Name).SendAsync("NewGroupMember", $"{Context.ConnectionId} has joined the group {rest.Name}.");
             }
 
