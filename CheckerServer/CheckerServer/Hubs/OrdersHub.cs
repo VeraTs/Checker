@@ -271,7 +271,7 @@ namespace CheckerServer.Hubs
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, rest.Name);
                 RestaurantManager manager = Services.GetService<RestaurantManager>();
-                manager.getKitchenForRestaurant(restId).AddGroupMember(restId);
+                manager.getKitchenForRestaurant(restId).AddGroupMember();
                 await Clients.Group(rest.Name).SendAsync("NewGroupMember", $"{Context.ConnectionId} has joined the group {rest.Name}.");
                 await getAllOrders();
             }

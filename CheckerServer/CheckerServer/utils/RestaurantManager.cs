@@ -60,7 +60,7 @@ namespace CheckerServer.utils
         {
             if (kitchens.ContainsKey(restId))
             {
-                kitchens[restId].AddGroupMember(restId);
+                kitchens[restId].AddGroupMember();
             }
         }
 
@@ -68,7 +68,7 @@ namespace CheckerServer.utils
         {
             if (kitchens.ContainsKey(restId))
             {
-                kitchens[restId].RemoveGroupMember(restId);
+                kitchens[restId].RemoveGroupMember();
             }
         }
 

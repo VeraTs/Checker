@@ -11,8 +11,8 @@ namespace CheckerServer.Models
     {
         private CheckerDBContext _context = null;
         private readonly KitchenUtils r_KitchenUtils = null;
-        private readonly Dictionary<int, Dictionary<int, LineDTO>> r_KitchenLines = new Dictionary<int, Dictionary<int, LineDTO>>();
-        private readonly Dictionary<int, int> r_RestsActiveKitchens = new Dictionary<int, int>();
+        private readonly Dictionary<int, LineDTO> r_KitchenLines = new Dictionary<int, LineDTO>();
+        private int r_RestsActiveKitchens = 0;
         private readonly Dictionary<int, List<int>> r_OrderItemsStartedByOrder = new Dictionary<int,List<int>>();
         private readonly Dictionary<int, List<int>> r_OrderItemsFinishedByOrder = new Dictionary<int,List<int>>();
 
@@ -46,7 +46,7 @@ namespace CheckerServer.Models
                  scope.ServiceProvider.GetRequiredService<
                      DbContextOptions<CheckerDBContext>>()))
                 {
-                    r_KitchenUtils = new KitchenUtils(context);
+                    r_KitchenUtils = new KitchenUtils(context, restId);
 
                     Restaurant? rest = context.Restaurants.Find(restId);
                     if(rest != null)
@@ -60,10 +60,9 @@ namespace CheckerServer.Models
 
         private void setUpRest(CheckerDBContext context, Restaurant r)
         {
-            r_KitchenLines.Add(r.ID, new Dictionary<int, LineDTO>());
             // init the kitchen lines with order items
             initLines(context, r);
-            r_RestsActiveKitchens.Add(r.ID, 0);
+            r_isOpen = true;
             List<ServingArea> areas = context.ServingAreas.Where(sa => sa.RestaurantId == r.ID).ToList();
             areas.ForEach(area =>
             {
@@ -84,9 +83,9 @@ namespace CheckerServer.Models
                         {
                             OrderItem iDTO = new OrderItem() { Changes = i.Changes, DishId = i.DishId, ID = i.ID, LineStatus = i.LineStatus, OrderId = i.OrderId, ServingAreaZone = i.ServingAreaZone, Status = i.Status };
                             int lineId = i.Dish.LineId;
-                            if (!r_KitchenLines[rest.ID].ContainsKey(lineId))
+                            if (!r_KitchenLines.ContainsKey(lineId))
                             {
-                                r_KitchenLines[rest.ID].Add(lineId, new LineDTO() { lineId = lineId });
+                                r_KitchenLines.Add(lineId, new LineDTO() { lineId = lineId });
                             }
 
                             if (i.Status == eItemStatus.AtLine || i.Status == eItemStatus.Ordered)
@@ -94,28 +93,28 @@ namespace CheckerServer.Models
                                 switch (i.LineStatus)
                                 {
                                     case eLineItemStatus.ToDo:
-                                        if (r_KitchenLines[rest.ID][lineId].ToDoItems == null)
-                                            r_KitchenLines[rest.ID][lineId].ToDoItems = new List<OrderItem>();
-                                        r_KitchenLines[rest.ID][lineId].ToDoItems.Add(iDTO);
+                                        if (r_KitchenLines[lineId].ToDoItems == null)
+                                            r_KitchenLines[lineId].ToDoItems = new List<OrderItem>();
+                                        r_KitchenLines[lineId].ToDoItems.Add(iDTO);
                                         break;
                                     case eLineItemStatus.Locked:
-                                        if (r_KitchenLines[rest.ID][lineId].LockedItems == null)
-                                            r_KitchenLines[rest.ID][lineId].LockedItems = new List<OrderItem>();
-                                        r_KitchenLines[rest.ID][lineId].LockedItems.Add(iDTO);
+                                        if (r_KitchenLines[lineId].LockedItems == null)
+                                            r_KitchenLines[lineId].LockedItems = new List<OrderItem>();
+                                        r_KitchenLines[lineId].LockedItems.Add(iDTO);
                                         break;
                                     case eLineItemStatus.Doing:
-                                        if (r_KitchenLines[rest.ID][lineId].DoingItems == null)
-                                            r_KitchenLines[rest.ID][lineId].DoingItems = new List<OrderItem>();
-                                        r_KitchenLines[rest.ID][lineId].DoingItems.Add(iDTO);
+                                        if (r_KitchenLines[lineId].DoingItems == null)
+                                            r_KitchenLines[lineId].DoingItems = new List<OrderItem>();
+                                        r_KitchenLines[lineId].DoingItems.Add(iDTO);
                                         break;
                                 }
                             }
                             else if (i.Status == eItemStatus.Ordered)
                             {
-                                if (r_KitchenLines[rest.ID][lineId].LockedItems == null)
-                                    r_KitchenLines[rest.ID][lineId].LockedItems = new List<OrderItem>();
+                                if (r_KitchenLines[lineId].LockedItems == null)
+                                    r_KitchenLines[lineId].LockedItems = new List<OrderItem>();
 
-                                r_KitchenLines[rest.ID][lineId].LockedItems.Add(iDTO);
+                                r_KitchenLines[lineId].LockedItems.Add(iDTO);
                             }
                         });
                     }
@@ -168,30 +167,22 @@ namespace CheckerServer.Models
             }
         }
 
-        // manage the kitchen utils
-        public async Task ManageKitchenAsync()
-        {
-            // we're currently ignoring multiple restaurants, and assuming singal restaurant
-            // for multiple restaurants, we will have multiple users, and in the SignalR case,
-            // multiple Clients associated with the user, in a Group
-
-
-            /**
+        /**
              * How To manage a kitchen?
              *  1) Load everything (done in ctor!)
              *  2) while server operating:
              *      2.1) Check all open orders, and update the OrderITem lists for each Line
              *              \----- 'GetUpdatedLines' - will return a mapping restId -> {line | line in rest, with updated orderItem lists inside}
-             *      2.2) For each line, send the Line and lists to each relevant restaurant
+             *      2.2) For each line, send the Line and lists to the restaurant
              *              \----- foreach(int key in keys) { await Clients.Group(...).SendAsync(event thing) }
              *      2.3) if there are new orders, sift them into the KitchenUtils
              *              \----- 'LoadNewOrders' with input of active orders from DB (actually, is input needed? KitchenUtils has context access)
              *      2.4) if there are closed orders, remove them from the KitchenUtils
              *              \----- 'ClearDeadOrders' with no input needed
-             *      2.5) Check for new restaurants to load
              * 
              */
-
+        public async Task ManageKitchenAsync()
+        {
             using (var scope = Services.CreateScope())
             {
                 using (var context = new CheckerDBContext(
@@ -199,13 +190,6 @@ namespace CheckerServer.Models
                     DbContextOptions<CheckerDBContext>>()))
                 {
                     // step 2.1
-                    // restId to Lines
-                    List<int> activeRests = new List<int>();
-                    lock (r_RestUsesLock)
-                    {
-                        r_RestsActiveKitchens.Where(r => r.Value > 0).ToList().ForEach(r => activeRests.Add(r.Key));
-                    }
-
                     r_KitchenUtils.UpdateContext(context);
 
                     Dictionary<int, List<int>> startedItems;
@@ -222,26 +206,19 @@ namespace CheckerServer.Models
                         startedItems = new Dictionary<int, List<int>>(r_OrderItemsStartedByOrder);
                         r_OrderItemsStartedByOrder.Clear();
                     }
-                    Dictionary<int, List<LineDTO>> updatedLines = await r_KitchenUtils.GetUpdatedLines(activeRests, startedItems, finishedItems);
-                    
+                    List<LineDTO> updatedLines = await r_KitchenUtils.GetUpdatedLines(startedItems, finishedItems);
+
 
                     // step 2.2
-                    foreach (int restId in r_RestsActiveKitchens.Keys)
+                    if (r_isOpen)
                     {
-                        if (r_RestsActiveKitchens[restId] > 0)
+                        foreach (LineDTO lineDTO in updatedLines)
                         {
-                            Restaurant rest = await context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
-                            if (updatedLines.ContainsKey(restId))
-                            {
-                                foreach(LineDTO lineDTO in updatedLines[restId])
-                                {
-                                    updateOutgoingLines(restId, lineDTO);
-                                }
-                            }
-
-                            // not awaited since this pretains to different restaurants
-                            _hubContext.Clients.Group(rest.Name).SendAsync("UpdatedLines", r_KitchenLines[restId].Values);
+                            updateOutgoingLines(lineDTO);
                         }
+
+                        // not awaited since this pretains to different restaurants
+                        await _hubContext.Clients.Group(r_Restaurant.Name).SendAsync("UpdatedLines", r_KitchenLines.Values);
                     }
 
                     // step 2.3
@@ -249,24 +226,6 @@ namespace CheckerServer.Models
 
                     // step 2.4
                     r_KitchenUtils.ClearOrders();
-
-                    // step 2.5
-                    lock (readyToRunRests)
-                    {
-                        if(readyToRunRests.Count > 0)
-                        {
-                            readyToRunRests.ForEach(async id =>
-                            {
-                                Restaurant? rest = await context.Restaurants.FindAsync(id);
-                                if(rest!= null)
-                                {
-                                    setUpRest(context, rest);
-                                }
-                            });
-                        }
-
-                        readyToRunRests.Clear();
-                    }
                 }
             }
         }
@@ -279,36 +238,36 @@ namespace CheckerServer.Models
          *  remove from todo items that belong in doing, add to doing
          *  remove from doing items that belong in done, add to done
          */
-        private void updateOutgoingLines(int restId, LineDTO lineDTO)
+        private void updateOutgoingLines(LineDTO lineDTO)
         {
-            if (!r_KitchenLines[restId].ContainsKey(lineDTO.lineId))
+            if (!r_KitchenLines.ContainsKey(lineDTO.lineId))
             {
-                r_KitchenLines[restId][lineDTO.lineId] = lineDTO;
+                r_KitchenLines[lineDTO.lineId] = lineDTO;
             }
             else
             {
-                lock (r_KitchenLines[restId][lineDTO.lineId])
+                lock (r_KitchenLines[lineDTO.lineId])
                 {
                     // the only actual thing that is updated in KitchenUtils.GetUpdatedLines
 
                     lineDTO.LockedItems.ForEach(item => {
-                        OrderItem? oi = r_KitchenLines[restId][lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
+                        OrderItem? oi = r_KitchenLines[lineDTO.lineId].LockedItems.Find(i => i.ID == item.ID);
                         if (oi == null)
                         {
-                            r_KitchenLines[restId][lineDTO.lineId].LockedItems.Add(item);
+                            r_KitchenLines[lineDTO.lineId].LockedItems.Add(item);
                         }
                     });
 
                     lineDTO.ToDoItems.ForEach(item => 
-                        removeAndAdd(r_KitchenLines[restId][lineDTO.lineId].LockedItems, r_KitchenLines[restId][lineDTO.lineId].ToDoItems, item)
+                        removeAndAdd(r_KitchenLines[lineDTO.lineId].LockedItems, r_KitchenLines[lineDTO.lineId].ToDoItems, item)
                      );
 
                     lineDTO.DoingItems.ForEach(item => 
-                        removeAndAdd(r_KitchenLines[restId][lineDTO.lineId].ToDoItems, r_KitchenLines[restId][lineDTO.lineId].DoingItems, item)
+                        removeAndAdd(r_KitchenLines[lineDTO.lineId].ToDoItems, r_KitchenLines[lineDTO.lineId].DoingItems, item)
                      );
 
                     lineDTO.DoneItems.ForEach(item => 
-                        removeAndAdd(r_KitchenLines[restId][lineDTO.lineId].DoingItems, r_KitchenLines[restId][lineDTO.lineId].DoneItems, item)
+                        removeAndAdd(r_KitchenLines[lineDTO.lineId].DoingItems, r_KitchenLines[lineDTO.lineId].DoneItems, item)
                      );
                 }
             }
@@ -341,11 +300,11 @@ namespace CheckerServer.Models
             switch (lineStatus)
             {
                 case eLineItemStatus.Doing:
-                    lock (r_KitchenLines[restId][lineId])
+                    lock (r_KitchenLines[lineId])
                     {
-                        OrderItem savedItem = r_KitchenLines[restId][lineId].ToDoItems.First(i => i.ID == item.ID);
-                        r_KitchenLines[restId][lineId].ToDoItems.Remove(savedItem);
-                        r_KitchenLines[restId][lineId].DoingItems.Add(item);
+                        OrderItem savedItem = r_KitchenLines[lineId].ToDoItems.First(i => i.ID == item.ID);
+                        r_KitchenLines[lineId].ToDoItems.Remove(savedItem);
+                        r_KitchenLines[lineId].DoingItems.Add(item);
                     }
 
                     if (!r_OrderItemsStartedByOrder.ContainsKey(order.ID))
@@ -365,10 +324,10 @@ namespace CheckerServer.Models
                     
                     break;
                 case eLineItemStatus.Done:
-                    lock (r_KitchenLines[restId][lineId])
+                    lock (r_KitchenLines[lineId])
                     {
-                        OrderItem savedItem = r_KitchenLines[restId][lineId].DoingItems.First(i => i.ID == item.ID);
-                        r_KitchenLines[restId][lineId].DoingItems.Remove(savedItem);
+                        OrderItem savedItem = r_KitchenLines[lineId].DoingItems.First(i => i.ID == item.ID);
+                        r_KitchenLines[lineId].DoingItems.Remove(savedItem);
                     }
 
                     if (!r_OrderItemsFinishedByOrder.ContainsKey(order.ID))
@@ -392,28 +351,25 @@ namespace CheckerServer.Models
         }
 
 
-        internal void AddGroupMember(int restId)
+        internal void AddGroupMember()
         {
             lock (r_RestUsesLock)
             {
-                r_RestsActiveKitchens[restId]++;
+                r_RestsActiveKitchens++;
             }
         }
 
-        internal void RemoveGroupMember(int restId)
+        internal void RemoveGroupMember()
         {
             lock (r_RestUsesLock)
             {
-                r_RestsActiveKitchens[restId]--;
+                r_RestsActiveKitchens--;
             }
         }
 
-        internal void RestaurantReadyToWork(int restId)
+        internal void RestaurantReadyToWork()
         {
-            lock (readyToRunRests)
-            {
-                readyToRunRests.Add(restId);
-            }
+            r_isOpen = true;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

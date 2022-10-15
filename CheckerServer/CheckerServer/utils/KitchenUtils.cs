@@ -7,24 +7,21 @@ namespace CheckerServer.utils
 {
     public class KitchenUtils
     {
-        // restaurantID -> major list of queues that depict orders
-        private readonly Dictionary<int, List<OrderPyramid>> r_RestaurantOrderQueuesList = new Dictionary<int, List<OrderPyramid>>();
+        //  major list of queues that depict orders
+        private readonly List<OrderPyramid> r_RestaurantOrderQueuesList = new List<OrderPyramid>();
 
         // lineID -> Line with ORDERED LISTS!~!!! so this needs to be kept updated!
         private Dictionary<int, LineDTO> r_Lines = new Dictionary<int, LineDTO>();
 
         private CheckerDBContext _Context;
+        private readonly int r_RestId;
 
         // the BIG INIT!
-        public KitchenUtils(CheckerDBContext context)
+        public KitchenUtils(CheckerDBContext context, int restId)
         {
             _Context = context;
-            List<Restaurant> rests = context.Restaurants.ToList();
-            List<Line> lines = context.Lines.Include("ServingArea").ToList();
-            foreach (Restaurant restaurant in rests)
-            {
-                r_RestaurantOrderQueuesList.Add(restaurant.ID, new List<OrderPyramid>());
-            }
+            r_RestId = restId;
+            List<Line> lines = context.Lines.Include("ServingArea").Where(l => l.RestaurantId == restId).ToList();
 
             foreach (Line line in lines)
             {
@@ -39,30 +36,17 @@ namespace CheckerServer.utils
             _Context = context;
         }
 
-        // assumes rest is already in context now
-        // for when an entirely new restaurant is added
-        public void AddRestaurant(Restaurant rest)
-        {
-            r_RestaurantOrderQueuesList.Add(rest.ID, new List<OrderPyramid>());
-            List<Line> lines = _Context.Lines.Where(l => l.ServingArea.RestaurantId == rest.ID).Include("ServingArea").ToList();
-
-            foreach (Line line in lines)
-            {
-                r_Lines.Add(line.ID, new LineDTO() { line = line });
-            }
-        }
-
         // load all active orders in system
         public void LoadAllOrders()
         {
             List<Order> orders = _Context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(item => item.Dish)
-                .Where(o => o.Status != eOrderStatus.Done).ToList();
+                .Where(o => o.Status != eOrderStatus.Done && o.RestaurantId == r_RestId).ToList();
 
             orders.ForEach(o =>
             {
-                r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
+                r_RestaurantOrderQueuesList.Add(getQueuesForOrder(o));
                 o.Status = eOrderStatus.InProgress;
             });
         }
@@ -76,53 +60,45 @@ namespace CheckerServer.utils
             return orderQueue;
         }
 
-        internal async Task<Dictionary<int, List<LineDTO>>> GetUpdatedLines(List<int> activeRests, Dictionary<int, List<int>> startedOrederItemsByOrder, Dictionary<int, List<int>> finishedOrederItemsByOrder)
+        internal async Task<List<LineDTO>> GetUpdatedLines(Dictionary<int, List<int>> startedOrederItemsByOrder, Dictionary<int, List<int>> finishedOrederItemsByOrder)
         {
-            // restId to Line list
-            Dictionary<int, List<LineDTO>> updatedLines = new Dictionary<int, List<LineDTO>>();
+            List<LineDTO> updatedLines = new List<LineDTO>();
             List<OrderItem>? availableItems = null;
             List<OrderItem>? lockedItems = null;
             List<int> availableItemIDS = new List<int>();
 
-            // for every restaurant that is active - 
-            foreach (int restId in r_RestaurantOrderQueuesList.Keys)
+            foreach (OrderPyramid order in r_RestaurantOrderQueuesList)
             {
-                if (activeRests != null && activeRests.Contains(restId))
+                if (startedOrederItemsByOrder.ContainsKey(order.Id))
                 {
-                    foreach (OrderPyramid order in r_RestaurantOrderQueuesList[restId])
+                    List<int> started;
+                    lock (startedOrederItemsByOrder[order.Id])
                     {
-                        if (startedOrederItemsByOrder.ContainsKey(order.Id))
-                        {
-                            List<int> started;
-                            lock (startedOrederItemsByOrder[order.Id])
-                            {
-                                started = new List<int>(startedOrederItemsByOrder[order.Id]);
-                                startedOrederItemsByOrder[order.Id].Clear();
-                            }
-                            
-                            order.updateStartedItems(started);
-                        }
+                        started = new List<int>(startedOrederItemsByOrder[order.Id]);
+                        startedOrederItemsByOrder[order.Id].Clear();
+                    }
 
-                        if (finishedOrederItemsByOrder.ContainsKey(order.Id))
-                        {
-                            List<int> finished;
-                            lock (finishedOrederItemsByOrder[order.Id])
-                            {
-                                finished = new List<int>(finishedOrederItemsByOrder[order.Id]);
-                                finishedOrederItemsByOrder[order.Id].Clear();
-                            }
+                    order.updateStartedItems(started);
+                }
 
-                            order.updateFinishedItems(finished);
-                        }
+                if (finishedOrederItemsByOrder.ContainsKey(order.Id))
+                {
+                    List<int> finished;
+                    lock (finishedOrederItemsByOrder[order.Id])
+                    {
+                        finished = new List<int>(finishedOrederItemsByOrder[order.Id]);
+                        finishedOrederItemsByOrder[order.Id].Clear();
+                    }
 
-                        var items = order.GetAvailableItems();
-                        if (items != null)
-                        {
-                            foreach (OrderItem item in items)
-                            {
-                                availableItemIDS.Add(item.ID);
-                            }
-                        }
+                    order.updateFinishedItems(finished);
+                }
+
+                var items = order.GetAvailableItems();
+                if (items != null)
+                {
+                    foreach (OrderItem item in items)
+                    {
+                        availableItemIDS.Add(item.ID);
                     }
                 }
             }
@@ -169,8 +145,11 @@ namespace CheckerServer.utils
 
             int success = await _Context.SaveChangesAsync();
 
-
-            lockedItems = _Context.OrderItems.Where(oi => oi.LineStatus == eLineItemStatus.Locked && oi.Status != eItemStatus.AtLine).Include("Dish").ToList();
+            List<Order> orders = await _Context.Orders.Where(o => o.RestaurantId == r_RestId).ToListAsync();
+            List<int> orderIds = new List<int>();
+            orders.ForEach(o => orderIds.Add(o.ID));
+           
+            lockedItems = _Context.OrderItems.Where(oi =>  orderIds.Contains(oi.OrderId) && oi.LineStatus == eLineItemStatus.Locked && oi.Status != eItemStatus.AtLine).Include("Dish").ToList();
             if (lockedItems != null)
             {
                 foreach (OrderItem item in lockedItems)
@@ -201,7 +180,7 @@ namespace CheckerServer.utils
                 }
             }
 
-            var doingItems = _Context.OrderItems.Where(oi => oi.LineStatus == eLineItemStatus.Doing && oi.Status == eItemStatus.AtLine).Include("Dish").ToList();
+            var doingItems = _Context.OrderItems.Where(oi => orderIds.Contains(oi.OrderId) && oi.LineStatus == eLineItemStatus.Doing && oi.Status == eItemStatus.AtLine).Include("Dish").ToList();
             if(doingItems!= null && doingItems.Count > 0)
             {
                 foreach(OrderItem item in doingItems)
@@ -216,7 +195,7 @@ namespace CheckerServer.utils
                 }
             }
 
-            var finishedItems = _Context.OrderItems.Where(oi => oi.LineStatus == eLineItemStatus.Done).Include("Dish").ToList();
+            var finishedItems = _Context.OrderItems.Where(oi => orderIds.Contains(oi.OrderId) && oi.LineStatus == eLineItemStatus.Done).Include("Dish").ToList();
             if(finishedItems!= null && finishedItems.Count > 0)
             {
                 foreach(OrderItem item in finishedItems)
@@ -235,12 +214,6 @@ namespace CheckerServer.utils
             {
                 foreach (int thing in r_Lines.Keys)
                 {
-                    var temp = r_Lines[thing].line.ServingArea.RestaurantId;
-                    if (!updatedLines.ContainsKey(temp))
-                    {
-                        updatedLines.Add(r_Lines[thing].line.ServingArea.RestaurantId, new List<LineDTO>());
-                    }
-
                     List<OrderItem> toDoItems = new List<OrderItem>();
                     r_Lines[thing].ToDoItems.ForEach(item => toDoItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
@@ -250,7 +223,7 @@ namespace CheckerServer.utils
                     //List<OrderItem> doneItems = new List<OrderItem>();
                     //r_Lines[thing].DoingItems.ForEach(item => doneItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
-                    updatedLines[r_Lines[thing].line.ServingArea.RestaurantId].Add(new LineDTO()
+                    updatedLines.Add(new LineDTO()
                     {
                         lineId = thing,
                         DoingItems = doingItems2,
@@ -266,10 +239,10 @@ namespace CheckerServer.utils
 
         internal void RemoveOrder(Order order)
         {
-            OrderPyramid? op = r_RestaurantOrderQueuesList[order.RestaurantId].Find(p => p.Id == order.ID);
+            OrderPyramid? op = r_RestaurantOrderQueuesList.Find(p => p.Id == order.ID);
             if (op != null)
             {
-                r_RestaurantOrderQueuesList[order.RestaurantId].Remove(op);
+                r_RestaurantOrderQueuesList.Remove(op);
             }
         }
 
@@ -279,14 +252,14 @@ namespace CheckerServer.utils
             List<Order> orders = _Context.Orders
                 .Include(o => o.Items)
                 .ThenInclude(item => item.Dish)
-                .Where(o => o.Status != eOrderStatus.Done).ToList();
+                .Where(o => o.Status != eOrderStatus.Done && o.RestaurantId == r_RestId).ToList();
 
             orders.ForEach(o =>
             {
                 // only add orders that have items that need to go to kitchen
                 if (o.Items.Any(item => item.Status == eItemStatus.Ordered))
                 {
-                    r_RestaurantOrderQueuesList[o.RestaurantId].Add(getQueuesForOrder(o));
+                    r_RestaurantOrderQueuesList.Add(getQueuesForOrder(o));
                     o.Status = eOrderStatus.InProgress;
                 }
             });
@@ -297,20 +270,17 @@ namespace CheckerServer.utils
         // this removes closed orders from the collection
         internal void ClearOrders()
         {
-            List<Order> closedOrders = _Context.Orders.Where(o => o.Status == eOrderStatus.Done).ToList();
-            foreach (int id in r_RestaurantOrderQueuesList.Keys)
+            List<Order> closedOrders = _Context.Orders.Where(o => o.RestaurantId == r_RestId && o.Status == eOrderStatus.Done).ToList();
+            List<OrderPyramid> toClose = new List<OrderPyramid>();
+            r_RestaurantOrderQueuesList.ForEach(o =>
             {
-                List<OrderPyramid> toClose = new List<OrderPyramid>();
-                r_RestaurantOrderQueuesList[id].ForEach(o =>
+                if (closedOrders.Any(co => co.ID == o.Id))
                 {
-                    if (closedOrders.Any(co => co.ID == o.Id))
-                    {
-                        toClose.Add(o);
-                    }
-                });
+                    toClose.Add(o);
+                }
+            });
 
-                toClose.ForEach(o => r_RestaurantOrderQueuesList[id].Remove(o));
-            }
+            toClose.ForEach(o => r_RestaurantOrderQueuesList.Remove(o));
         }
     }
 
