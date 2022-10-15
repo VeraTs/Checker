@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.InMemory;
 using CheckerServer.Hubs;
-using CheckerServer.Models;
 using CheckerServer.utils;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using CheckerServer.Data;
+﻿using CheckerServer.Data;
 using CheckerServer.Models;
 using CheckerServer.utils;
 using Microsoft.AspNetCore.SignalR;

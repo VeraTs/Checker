@@ -1,10 +1,10 @@
 ﻿using CheckerServer.Data;
 using CheckerServer.Hubs;
-using CheckerServer.utils;
+using CheckerServer.Models;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CheckerServer.Models
+namespace CheckerServer.utils
 {
     // manages the kitchens for all the restaurants
     public class KitchenManager : IHostedService, IDisposable
