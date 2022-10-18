@@ -6,6 +6,20 @@ using CheckerServer.utils;
 
 namespace CheckerServer.Hubs
 {
+    /***
+     * Orders Hub
+     * 
+     * For use by Waiter:
+     *      - get all orders
+     *      - add order
+     *      - pay for order
+     *      - close order
+     *      - pick up item from serving area
+     *      
+     * For use by Serving Areas View:
+     *      - view all orders
+     * 
+     * ***/
     public class OrdersHub : Hub
     {
         private readonly CheckerDBContext _context;
@@ -17,7 +31,7 @@ namespace CheckerServer.Hubs
             _context = context;
         }
 
-        // gets all orders in system
+        /*** gets all orders in system ***/
         private async Task getAllOrders()
         {
             List<Order> orders = await _context.Orders.Include("Items").ToListAsync();
@@ -25,6 +39,11 @@ namespace CheckerServer.Hubs
             await Clients.Caller.SendAsync("ReceiveOrders", orders);
         }
 
+        /*** 
+         * Add Order
+         * 
+         * first add the order itself to db to get orderId, and after applying it to all items, add orderitems to db
+         * ***/
         public async Task AddOrder(Order order)
         {
             List<OrderItem> items = order.Items;
@@ -68,7 +87,13 @@ namespace CheckerServer.Hubs
             }
         }
 
-        public async Task AddOrderItem(OrderItem item)  // orderItem should contain the order id propertly.
+        /***
+         * Adds individual item to existing order
+         * 
+         * item must have correct order id
+         * 
+         * ***/
+        public async Task AddOrderItem(OrderItem item)
         {
             Order? order = await _context.Orders.FirstOrDefaultAsync(o => o.ID == item.OrderId);
             int success = -1;
@@ -101,8 +126,10 @@ namespace CheckerServer.Hubs
             }
         }
 
-
-
+        /***
+         * For Waiter : report order item picked up from serving area
+         * 
+         * ***/
         public async Task PickUpItemForServing(int itemId)
         {
             OrderItem item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(oi => oi.ID == itemId);
@@ -135,12 +162,14 @@ namespace CheckerServer.Hubs
             }
         }
 
-        // for closing order by waiter: given a sum payes it (to fully or partially pay for the order),
-        // after successful payment is made, waiter is immediately informed, and after, all waiters get update of payment.
+        /***
+         * For Waiter: closing an order
+         * given a sum payes it (to fully or partially pay for the order),
+         * after successful payment is made, waiter is immediately informed, and after, all waiters get update of payment. 
+        * ***/
         public async Task PayForOrder(int orderId, float sum)
         {
             bool isOrder = await _context.Orders.AnyAsync(o => o.ID == orderId);
-            // change so that if payment is smade every waiter gets an update
             if (isOrder)
             {
                 Order order = await _context.Orders.FirstAsync(o => o.ID == orderId);
@@ -179,7 +208,7 @@ namespace CheckerServer.Hubs
             }
         }
 
-        // deprecated
+
         public async Task GetAllOrderItemsForLine(Line line)
         {
             // get all orderItems that are registered as AtLine for this line
@@ -197,7 +226,7 @@ namespace CheckerServer.Hubs
             await Clients.Caller.SendAsync("ReceiveAllOrderItemsForLine", line, lockedItems, toDoItems, doingItems);
         }
 
-        // actually release from locked state to ToDo line status
+        /*** sends an ordered item to the kitchen ***/
         public async Task SendItemToKitchen(int itemId)
         {
             OrderItem actualItem = _context.OrderItems.FirstOrDefaultAsync(oi => oi.ID == itemId).Result;
@@ -233,22 +262,6 @@ namespace CheckerServer.Hubs
             }
         }
 
-        // not tested yet
-        public async Task ChangeOrderItemStatus(OrderItem item, eItemStatus newStatus)
-        {
-            if (item == null)
-            {
-                await Clients.Caller.SendAsync("SignalRError", "Couldn't Alter status of null item");
-            }
-            else
-            {
-                OrderItem actualItem = _context.OrderItems.FirstOrDefaultAsync(oi => oi.ID == item.ID).Result;
-                if (item == null)
-                {
-                    await Clients.Caller.SendAsync("SignalRError", "Couldn't Alter status of invalid item");
-                }
-            }
-        }
 
         /**********************************************
          * 
@@ -259,7 +272,13 @@ namespace CheckerServer.Hubs
          * 
          * 
          **********************************************/
+        /******************* IMPORTANT - THIS IS NOT RECONNECT SAFE
+         * 
+         * meaning that if a client disconnects from the hub, on reconnecting they MUST REREGISTER WITH THE GROUP
+         * 
+         * ***************************/
 
+        /*** Register for group - to be included in updates ***/
         public async Task RegisterForGroup(int restId)
         {
             Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
@@ -278,6 +297,7 @@ namespace CheckerServer.Hubs
 
         }
 
+        /*** UnRegister from group ***/
         public async Task UnRegisterForGroup(int restId)
         {
             Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);

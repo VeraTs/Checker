@@ -10,7 +10,7 @@ namespace CheckerServer.utils
         //  major list of queues that depict orders
         private readonly List<OrderPyramid> r_RestaurantOrderQueuesList = new List<OrderPyramid>();
 
-        // lineID -> Line with ORDERED LISTS!~!!! so this needs to be kept updated!
+        // lineID -> Line with ORDERED LISTS
         private Dictionary<int, LineDTO> r_Lines = new Dictionary<int, LineDTO>();
 
         private CheckerDBContext _Context;
@@ -36,7 +36,7 @@ namespace CheckerServer.utils
             _Context = context;
         }
 
-        // load all active orders in system
+        /*** load all active orders for restaurant ***/
         public void LoadAllOrders()
         {
             List<Order> orders = _Context.Orders
@@ -51,6 +51,7 @@ namespace CheckerServer.utils
             });
         }
 
+        /*** creates an order pyramid populated with the order items and enters it into the collection ***/
         private OrderPyramid getQueuesForOrder(Order order)
         {
             OrderPyramid orderQueue = new OrderPyramid(order.ID);
@@ -60,6 +61,12 @@ namespace CheckerServer.utils
             return orderQueue;
         }
 
+        /*** 
+         * gets the updated line states:
+         *  - newly available items for ToDo
+         *  - new locked items
+         *  - items that were moved to doing or done
+         * ***/
         internal async Task<List<LineDTO>> GetUpdatedLines(Dictionary<int, List<int>> startedOrederItemsByOrder, Dictionary<int, List<int>> finishedOrederItemsByOrder)
         {
             List<LineDTO> updatedLines = new List<LineDTO>();
@@ -175,8 +182,6 @@ namespace CheckerServer.utils
                     bool hasItem = r_Lines[item.Dish.LineId].LockedItems.Any(i => i.ID == item.ID);
                     if (!hasItem)
                         r_Lines[item.Dish.LineId].LockedItems.Add(item);
-                    // issue detected - this is not a tracked item any more, so they all need to be retracked.
-                    //item.Status = eItemStatus.AtLine;
                 }
             }
 
@@ -220,9 +225,6 @@ namespace CheckerServer.utils
                     List<OrderItem> doingItems2 = new List<OrderItem>();
                     r_Lines[thing].DoingItems.ForEach(item => doingItems2.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
 
-                    //List<OrderItem> doneItems = new List<OrderItem>();
-                    //r_Lines[thing].DoingItems.ForEach(item => doneItems.Add(new OrderItem() { ID = item.ID, Changes = item.Changes, DishId = item.DishId, LineStatus = item.LineStatus, OrderId = item.OrderId, ServingAreaZone = item.ServingAreaZone, Status = item.Status }));
-
                     updatedLines.Add(new LineDTO()
                     {
                         lineId = thing,
@@ -237,6 +239,7 @@ namespace CheckerServer.utils
             return updatedLines;
         }
 
+        /*** remove order from pyramid collection ***/
         internal void RemoveOrder(Order order)
         {
             OrderPyramid? op = r_RestaurantOrderQueuesList.Find(p => p.Id == order.ID);
@@ -246,7 +249,7 @@ namespace CheckerServer.utils
             }
         }
 
-        // loads new orders from dbContext
+        /*** loads new orders from dbContext ***/
         internal int LoadNewOrders()
         {
             List<Order> orders = _Context.Orders
@@ -267,7 +270,7 @@ namespace CheckerServer.utils
             return _Context.SaveChanges();
         }
 
-        // this removes closed orders from the collection
+        /*** this removes closed orders from the collection ***/
         internal void ClearOrders()
         {
             List<Order> closedOrders = _Context.Orders.Where(o => o.RestaurantId == r_RestId && o.Status == eOrderStatus.Done).ToList();
@@ -285,7 +288,7 @@ namespace CheckerServer.utils
     }
 
 
-
+    /*** the main data model for this util ***/
     public class OrderPyramid
     {
         public int Id { get; private set; }
@@ -298,8 +301,11 @@ namespace CheckerServer.utils
             Id = id;
         }
 
-        // to set up, you get an order item and a time limit.
-        // when the time limit is up, the status will change to AVAILABLE
+        /*** 
+         * TimedOrderItem - a packaging with a timer for OrderItem to time it's moce from Locked to ToDo line state
+         * to set up, you get an order item and a time limit.
+         * when the time limit is up, the status will change to AVAILABLE 
+        ***/
         public class TimedOrderItem
         {
             public OrderItem item;
@@ -343,6 +349,13 @@ namespace CheckerServer.utils
             }
         }
 
+        /***
+         * Timed Items Stack
+         * to manage each ordered stack (starters, amins, etc.) well,
+         * and to save a reference for relation between items of same stack in a single order
+         * for when one is moved to doing and another, previously locked item, can have the timer started
+         * to eventually shift it to the ToDo line state
+         * ***/
         public class TimedItemsStack : Stack<TimedOrderItem>
         {
             Dictionary<int, TimedOrderItem> items = new Dictionary<int, TimedOrderItem>();
@@ -418,7 +431,7 @@ namespace CheckerServer.utils
             }
         }
 
-        // using peek after try peek for getting actual object and not a copy - TODO : find out why peek returns item with timer = null
+        /*** starts the timers of a single stack ***/
         public void StartTimers()
         {
             TimedOrderItem firstItem;
@@ -445,6 +458,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** enter items into the pyramid according to dish types and order type ***/
         internal void enterItems(List<OrderItem> items, eOrderType orderType)
         {
             // enters things according to order type
@@ -578,8 +592,7 @@ namespace CheckerServer.utils
             StartTimers();
         }
 
-        // something here isn't right :SWEAT  maybe I should use a stack and not a queue for this to be easier
-        // since I want the last thing entered to be the first thing out
+        /*** adds items from a sorted list into an TimedItemsStack***/
         private void addFromSortedList(SortedList<double, OrderItem> sortedList, TimedItemsStack timedQueue)
         {
             if (sortedList.Count > 0)
@@ -595,6 +608,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** returns a collection of orderitems that are available for the cook to start - items that are now in the ToDo line state***/
         internal IEnumerable<OrderItem> GetAvailableItems()
         {
             List<OrderItem> availableItems = null;
@@ -615,6 +629,7 @@ namespace CheckerServer.utils
             return availableItems;
         }
 
+        /*** returns a list of OrderItems from a given timed items stack ***/
         private List<OrderItem> getFromStack(TimedItemsStack stack)
         {
             List<OrderItem> availableItems = new List<OrderItem>();
@@ -647,6 +662,7 @@ namespace CheckerServer.utils
             return availableItems;
         }
 
+        /*** updates the states of the pyramid orderitems according to items in this order that were started ***/
         internal void updateStartedItems(List<int> startedItems)
         {
             foreach (int itemId in startedItems)
@@ -669,6 +685,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** updates the states of the pyramid orderitems according to items in this order that were finished ***/
         internal void updateFinishedItems(List<int> finishedItems)
         {
             foreach (int itemId in finishedItems)
@@ -692,7 +709,7 @@ namespace CheckerServer.utils
         }
     }
 
-    
+    /*** comperator to accomodate the estimated Make Time deltas which are sometimes the same ***/
     public class DuplicateKeyComparer<Tkey> : IComparer<Tkey> where Tkey : IComparable
     {
         public int Compare(Tkey? x, Tkey? y)

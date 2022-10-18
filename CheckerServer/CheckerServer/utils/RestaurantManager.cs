@@ -6,6 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CheckerServer.utils
 {
+    /***
+     * Manages all restaurants and keeps references to their kitchens
+     * 
+     * ***/
     public class RestaurantManager : IHostedService, IDisposable
     {
         private readonly Dictionary<int, KitchenManager> kitchens = new Dictionary<int, KitchenManager>();
@@ -33,6 +37,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** add new restaurant to service ***/
         private void setUpRest(int restId)
         {
             lock (kitchens)
@@ -44,7 +49,7 @@ namespace CheckerServer.utils
             }
         }
 
-        /* returns the kitchen for given restaurant */
+        /*** returns the kitchen for given restaurant ***/
         public KitchenManager getKitchenForRestaurant(int restId)
         {
             KitchenManager kitchenManager = null;

@@ -6,7 +6,6 @@ namespace CheckerServer.utils
 {
     public class StatisticUtils
     {
-
         public async static Task<Boolean> updateDishStat(IServiceProvider serviceProvider, OrderItem orderItem)
         {
             using (var scope = serviceProvider.CreateScope())
@@ -46,7 +45,6 @@ namespace CheckerServer.utils
                         success = false;
                     }
 
-                    //this.Dish.AvrageMonthSales = (this.Dish.AvrageMonthSales * this.Dish.ThisMonthSales + (int)doneTime) / (this.Dish.ThisMonthSales + 1);
                     return success;
                 }
             }

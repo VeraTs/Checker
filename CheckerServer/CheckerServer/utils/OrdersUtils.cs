@@ -9,6 +9,7 @@ namespace CheckerServer.utils
     {
         private static Dictionary<int, Dictionary<int, Dictionary<int, OrderItem?>>> servingAreasPerRestaurant = new Dictionary<int, Dictionary<int, Dictionary<int,OrderItem?>>>();
 
+        /*** orderitem state changes as needed and serving area state changes as needed ***/
         public static async Task<Boolean> prepareItemForServing(CheckerDBContext context, OrderItem item)
         {
             Boolean success = false;
@@ -37,6 +38,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** manages the serving areas in the service ***/
         public static Boolean addServingArea(ServingArea area)
         {
             Boolean res = true;
@@ -87,6 +89,7 @@ namespace CheckerServer.utils
             return res;
         }
 
+        /*** report a spot in a serving area is filled by an order item ***/
         public static Boolean fillSpotInServingArea(ServingArea area, OrderItem item, int spot)
         {
             Boolean res = true;
@@ -111,6 +114,7 @@ namespace CheckerServer.utils
             return res;
         }
 
+        /*** report a spot in the serving area no longer contains an order item ***/
         public static Boolean freeSpot(ServingArea area, OrderItem item)
         {
             Boolean res = true;
@@ -135,6 +139,7 @@ namespace CheckerServer.utils
             return res;
         }
 
+        /*** finds spot in serving area to place finished order item ***/
         public static int findSpotInServingArea(ServingArea area)
         {
             int spot = -1;

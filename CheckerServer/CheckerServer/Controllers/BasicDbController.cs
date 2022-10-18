@@ -7,6 +7,9 @@ using CheckerServer.utils;
 
 namespace CheckerServer.Controllers
 {
+    /***
+     * the basis for all the direct to db controllers in the service
+     * ***/
     [ApiController]
     public abstract class BasicDbController<T> : ControllerBase where T: BaseDBItem
     {
@@ -18,16 +21,17 @@ namespace CheckerServer.Controllers
             r_Set = set;
         }
 
-        // getting all instances of this entity type. 
-        // for more specified Includes and terms, please override.
+        /*** getting all instances of this entity type. 
+            * for more specified Includes and terms, please override.
+            * ***/
         internal virtual async Task<ActionResult<IEnumerable<T>>> get()
         {
             var res = await r_Set.ToListAsync();
             return res;
         }
 
-        // getting a specific instance of this entity type. 
-        // for more specified Includes and terms, please override.
+        /*** getting a specific instance of this entity type. 
+         * for more specified Includes and terms, please override. ***/
         internal virtual async Task<ActionResult<T>> getSpecific(int id)
         {
             var res = await r_Set.FirstOrDefaultAsync(item => item.ID == id);
@@ -95,8 +99,9 @@ namespace CheckerServer.Controllers
             }
         }
 
-        // this method is specific to each entity type, so must be configured.
-        // Don't forget to check for null!
+        /*** this method is specific to each entity type, so must be configured.
+         * Don't forget to check for null! 
+         * ***/
         protected abstract void updateItem(T existingItem, T updatedItem);
 
         // PUT : edit existing instance

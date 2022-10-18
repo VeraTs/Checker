@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CheckerServer.utils
 {
-    // manages the kitchens for all the restaurants
+    // manages the kitchens for a restaurant
     public class KitchenManager : IHostedService, IDisposable
     {
         private CheckerDBContext _context = null;
@@ -20,19 +20,20 @@ namespace CheckerServer.utils
         private readonly IHubContext<KitchenHub> _hubContext;
         private Timer? _timer = null;
         public IServiceProvider Services { get; }
-        private static int counter = 0;
         private static bool shouldRun = true;
 
+        /*** open restaurant doors ***/
         internal void closeForDay()
         {
             r_isOpen = false;
         }
+
+        /*** close restaurant doors ***/
         internal void openForDay()
         {
             r_isOpen = true;
         }
 
-        private List<int> readyToRunRests = new List<int>();
         private bool r_isOpen = false;
         private Restaurant r_Restaurant;
 
@@ -58,6 +59,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** load all needed details from DB ***/
         private void setUpRest(CheckerDBContext context, Restaurant r)
         {
             // init the kitchen lines with order items
@@ -70,6 +72,7 @@ namespace CheckerServer.utils
             });
         }
 
+        /*** initialize the line details ***/
         private void initLines(CheckerDBContext context, Restaurant rest)
         {
             // Orders
@@ -121,6 +124,7 @@ namespace CheckerServer.utils
                 });
         }
 
+        /*** close order (triggered by orders hub) ***/
         internal async Task CloseOrder(int orderId)
         {
             using (var scope = Services.CreateScope())
@@ -273,6 +277,7 @@ namespace CheckerServer.utils
             }
         }
 
+        /*** remove from one list and add to another ***/
         private void removeAndAdd(List<OrderItem> from, List<OrderItem> to, OrderItem item)
         {
             OrderItem? oi = from.Find(i => i.ID == item.ID);
@@ -291,7 +296,7 @@ namespace CheckerServer.utils
             }
         }
 
-
+        /*** change item state and line state accordingly to moved item ***/
         internal void ItemWasMoved(Order order, OrderItem item)
         {
             int lineId = item.Dish.LineId;

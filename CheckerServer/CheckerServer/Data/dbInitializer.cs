@@ -5,6 +5,7 @@ namespace CheckerServer.Data
 {
     public class dbInitializer
     {
+        // for a quick start to an empty DB
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new CheckerDBContext(

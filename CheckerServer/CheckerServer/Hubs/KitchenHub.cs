@@ -6,6 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CheckerServer.Hubs
 {
+    /***
+     * Kitchen Hub
+     * 
+     * For use by Kitchen:
+     *      - get updated line state (order items in ordered lists Locked, ToDo, Doing, Done)
+     *      - change item status (todo -> doing, doing -> done)
+     *      
+     * ***/
     public class KitchenHub : Hub
     {
         private readonly CheckerDBContext _context;
@@ -21,7 +29,7 @@ namespace CheckerServer.Hubs
 
         private object locker = new object();
 
-        // checks if orderITem is legitimate and moves it if it is
+        /*** checks if orderITem is legitimate and moves it if it is ***/
         public async Task MoveOrderItemToDoing(int id)
         {
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
@@ -37,7 +45,7 @@ namespace CheckerServer.Hubs
             }
         }
 
-        // checks if orderITem is legitimate and moves it if it is
+        /*** checks if orderITem is legitimate and moves it if it is ***/
         public async Task MoveOrderItemToDone(int id)
         {
             OrderItem? item = await _context.OrderItems.Include("Dish").FirstOrDefaultAsync(item => item.ID == id);
@@ -65,6 +73,7 @@ namespace CheckerServer.Hubs
             }
         }
 
+        /*** reports to all who listen to ordershub that there is a new item to be served ***/
         internal async Task<int> itemToBeServed(OrderItem orderItem, Restaurant rest)
         {
             int spot = -1;
@@ -92,6 +101,7 @@ namespace CheckerServer.Hubs
             return spot;
         }
 
+        /*** moves item from todo list to doing list, etc. ***/
         private async Task moveFromListToList(OrderItem item, eLineItemStatus prevStatus, eLineItemStatus nextStatus, string prevListName, string nextListName)
         {
             if (item.LineStatus == prevStatus)
@@ -122,13 +132,23 @@ namespace CheckerServer.Hubs
             }
         }
 
-        // temporary group registration with rest name
-        // in future will be with actual protection and privacy thing
+        /**********************************************
+         * 
+         * 
+         * 
+         *          G   R   O   U   P   S   !
+         * 
+         * 
+         * 
+         **********************************************/
+
         /******************* IMPORTANT - THIS IS NOT RECONNECT SAFE
          * 
          * meaning that if a client disconnects from the hub, on reconnecting they MUST REREGISTER WITH THE GROUP
          * 
          * ***************************/
+
+        /*** Register for group - to be included in updates ***/
         public async Task RegisterForGroup(int restId)
         {
             Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
@@ -146,6 +166,7 @@ namespace CheckerServer.Hubs
 
         }
 
+        /*** UnRegister from group ***/
         public async Task UnRegisterForGroup(int restId)
         {
             Restaurant rest = await _context.Restaurants.FirstOrDefaultAsync(r => r.ID == restId);
