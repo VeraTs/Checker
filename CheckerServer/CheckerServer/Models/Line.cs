@@ -10,17 +10,23 @@ namespace CheckerServer.Models
         public string Name { get; set; }
         [ForeignKey("ServingArea")]
         public int ServingAreaId { get; set; } // id of serving area related to this line
+        [ForeignKey("Restaurant")]
+        public int? RestaurantId { get; set; }
+
+        public virtual ServingArea? ServingArea { get; set; }
 
         public int Limit { get; set; } = -1; // -1 means no limit
         
-        public LineState State { get; set; } = LineState.Closed; // starts off closed, changes to open upon user request
+        public eLineState State { get; set; } = eLineState.Closed; // starts off closed, changes to open upon user request
 
         public List<Dish> Dishes { get; set; } = new List<Dish>();  // dishes made in this Line
 
         public List<Maker> Makers { get; set; } = new List<Maker>();    // makers that live in this line
+
+
     }
 
-    public enum LineState
+    public enum eLineState
     {
         Closed,
         Open,

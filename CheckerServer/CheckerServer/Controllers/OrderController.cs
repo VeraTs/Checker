@@ -1,5 +1,6 @@
 ﻿using CheckerServer.Data;
 using CheckerServer.Models;
+using CheckerServer.utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,9 @@ namespace CheckerServer.Controllers
     {
         public OrderController(CheckerDBContext context)
             : base(context, context.Orders) 
-        { }
+        {
+            
+        }
 
         protected override void updateItem(Order existingItem, Order updatedItem)
         {
@@ -28,7 +31,7 @@ namespace CheckerServer.Controllers
         override internal async Task<ActionResult<IEnumerable<Order>>> get()
         {
             var res = await r_Set
-                .Include("Items.Dish")
+                .Include("Items")
                 .ToListAsync();
 
             return res;

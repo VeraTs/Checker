@@ -15,9 +15,18 @@ namespace CheckerServer.Data
         public DbSet<Measurement> Measurements { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<DishStatistic> DishStatistics { get; set; }
         public DbSet<RestMenu> RestMenus { get; set; }
         public DbSet<Line> Lines { get; set; }
         public DbSet<ServingArea> ServingAreas { get; set; }
+        public DbSet<Maker> Maker { get; set; }
+
+        public DbSet<Statistic> Statistics { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Statistic>()
+                .HasKey(stat => new { stat.Month,  stat.DishId});
+        }
+
     }
 }

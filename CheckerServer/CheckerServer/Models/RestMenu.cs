@@ -13,5 +13,7 @@ namespace CheckerServer.Models
 
         // practicals
         public List<Dish> Dishes { get; set; } = new List<Dish>();
+
+       
     }
 }

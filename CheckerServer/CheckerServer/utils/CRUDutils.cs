@@ -11,10 +11,6 @@ namespace CheckerServer.utils
             {
                 msg = "You cannot decide an item id on your own";
             }
-/*            else if(!string.IsNullOrEmpty(exceptionMsg))
-            {
-                msg = exceptionMsg;
-            }*/
             else
             {
                 msg = "Database Error has Occured. Make sure all input fields are valid.";

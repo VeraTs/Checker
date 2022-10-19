@@ -5,6 +5,7 @@ namespace CheckerServer.Data
 {
     public class dbInitializer
     {
+        // for a quick start to an empty DB
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new CheckerDBContext(
@@ -21,6 +22,8 @@ namespace CheckerServer.Data
                     {
                         Name = "My First Shop!",
                         ContactName = "John",
+                        Password = "123456",
+                        Email ="abc@gmail.com",
                         Phone = "052-446-7089"
                     });
                 context.SaveChanges();
