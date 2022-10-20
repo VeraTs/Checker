@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
+             xmlns:ordersViews="clr-namespace:CheckerWaitersApp.Views.OrdersViews;assembly=CheckerWaitersApp"
+             xmlns:effects="http://xamarin.com/schemas/2020/toolkit"
+             x:DataType="viewmodels:OrderViewModel" 
+             x:Class="CheckerWaitersApp.Views.OrdersViews.OrderCardView">
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+               HasShadow="True"
+               Padding="0"
+               CornerRadius="10"
+               Margin="2"
+               BackgroundColor="Azure"  BorderColor="Black">
+            <StackLayout IsClippedToBounds="True" 
+                         VerticalOptions="FillAndExpand"  
+                         HorizontalOptions="FillAndExpand"  >
+
+                <StackLayout
+                        Orientation="Horizontal" IsClippedToBounds="True"  
+                        VerticalOptions="FillAndExpand"  
+                        HorizontalOptions="FillAndExpand"  >
+                    <BoxView Color="DarkCyan"  WidthRequest="10"/>
+
+                    <Grid IsClippedToBounds="True" HeightRequest="600"
+                          VerticalOptions="FillAndExpand"  
+                          HorizontalOptions="FillAndExpand"  >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width=".1*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.01*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label x:Name="LabelOrderId" 
+                            Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+                               FontAttributes="Bold"
+                               TextColor="Black"
+                               VerticalOptions="Center"
+                               HorizontalOptions="StartAndExpand"
+                               FontSize="35"
+                               Text="{Binding OrderID}"/>
+                        <Frame x:Name="frameFull" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"  
+                                           BorderColor="Black">
+                            <ImageButton 
+                            x:Name="CloseOrderButton"
+                            BackgroundColor="Transparent"
+                            VerticalOptions="CenterAndExpand"
+                            Margin="2"
+                            BorderColor="Transparent"
+                            BorderWidth="1"
+                            HorizontalOptions="EndAndExpand"
+                            WidthRequest="40" 
+                            Source="iconTrashOpen"
+                            Clicked="CloseOrderImageButton_OnClicked"
+                            Command="{ Binding PayForOrder}"/>
+                            </Frame>
+                        <Frame x:Name="FramePartial" Grid.Row="3" Grid.RowSpan="3" Grid.Column="3" Grid.ColumnSpan="2"  
+                               BorderColor="Black" BackgroundColor="Transparent">
+                        <ImageButton 
+                            BackgroundColor="Transparent"
+                            VerticalOptions="Center"
+                            Margin="2"
+                            BorderColor="Transparent"
+                            HorizontalOptions="Center"
+                            WidthRequest="40" 
+                            Source="icon_dollar"
+                            Command="{ Binding PayPartialForOrder}"
+                            Clicked="ImageButton_OnClicked"/>
+                        </Frame>
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                               FontAttributes="Bold"
+                               TextColor="DarkBlue"
+                               FontSize="25"
+                               Text="{Binding  TableNumber}"/>
+                        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+                               FontAttributes="Bold"
+                               TextColor="DarkBlue"
+                               VerticalOptions="Start"
+                               HorizontalOptions="Start"
+                               FontSize="25"
+                               Text="{Binding Cost}"/>
+                        <Label Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"
+                               FontAttributes="Bold"
+                               TextColor="DarkBlue"
+                               VerticalOptions="Start"
+                               HorizontalOptions="Start"
+                               FontSize="25"
+                               Text="{Binding Remains}"/>
+                        <Label Grid.Column="0" Grid.Row="4"
+                               Grid.ColumnSpan="3" 
+                               FontAttributes="Bold"
+                               TextColor="DarkBlue"
+                               FontSize="25"
+                               VerticalOptions="Start"
+                               Text="{Binding Counter}"/>
+
+                        <BoxView Grid.Column="0" Grid.ColumnSpan="5" Grid.Row="4" 
+                                 Color="Transparent" WidthRequest="10"/>
+                    </Grid>
+                </StackLayout>
+            <ordersViews:OrderItemsCardView></ordersViews:OrderItemsCardView>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

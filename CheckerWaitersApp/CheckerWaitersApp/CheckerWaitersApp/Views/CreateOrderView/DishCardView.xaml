@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:CheckerWaitersApp.ViewModels"
+             xmlns:effects="http://xamarin.com/schemas/2020/toolkit"
+             x:DataType="viewmodels:DishViewModel"
+             x:Class="CheckerWaitersApp.Views.CreateOrderView.DishCardView">
+    <ContentView.Content>
+        <effects:Expander  
+            Margin="0" 
+            IsClippedToBounds="True" IsEnabled="False">
+            <effects:Expander.Header>
+                <Frame x:Name="ItemFrame"
+                       IsClippedToBounds="True"  
+                       HasShadow="True"
+                       Padding="0" 
+                       HeightRequest="70"
+                       CornerRadius="10"
+                       Margin="0"
+                       BackgroundColor="Azure"
+                       BorderColor="Gray">
+                    <StackLayout Orientation="Horizontal" IsClippedToBounds="True">
+                        <BoxView Color="DarkCyan" WidthRequest="10"/>
+
+                        <Grid IsClippedToBounds="True" Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width=".1*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width=".1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="1" Text="{Binding  DishName}"
+                                   FontFamily="FAS"
+                                   FontSize="20"
+
+                                   FontAttributes="Bold"
+                                   TextColor="Black"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+            </effects:Expander.Header>
+
+            <Frame IsClippedToBounds="True"  
+                   HasShadow="True"
+                   Padding="0" 
+                   CornerRadius="10"
+                   Margin="0"
+                   BackgroundColor="Azure"  BorderColor="Black">
+                <StackLayout Orientation="Horizontal">
+                    <BoxView Color="DarkCyan" WidthRequest="10"/>
+                    <StackLayout Orientation="Vertical" Margin="10">
+
+                        <Label Text="{Binding  Description}"
+                               FontFamily="FAS"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               TextColor="Black"
+                               MaxLines="1"/>
+
+                        <Label Text="{Binding Price}"
+                               FontFamily="FAS"
+                               FontSize="Large"
+                               FontAttributes="Bold"
+                               TextColor="Black"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Start"/>
+
+                        <BoxView Color="Transparent" WidthRequest="10"/>
+
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </effects:Expander>
+    </ContentView.Content>
+</ContentView>
