@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CheckerUI.ViewModels;assembly=CheckerUI"
+             x:Class="CheckerUI.Views.MainPage" 
+             Title="Welcome to Checker" 
+             BackgroundColor="Azure" NavigationPage.HasNavigationBar="False"  BackgroundImageSource="PartialCover">
+    <ContentPage.BindingContext>
+        <viewModels:MainPageViewModel/>
+    </ContentPage.BindingContext>
+        <ContentPage.Content>
+        <StackLayout  Orientation="Horizontal" >
+            <StackLayout Orientation="Vertical" IsClippedToBounds="False">
+                <Frame 
+                IsClippedToBounds="True"  
+                HasShadow="False"
+                CornerRadius="10"
+                Margin="100,100,0,0"
+                Padding="0"
+                BackgroundColor="Transparent"
+                BorderColor="Transparent"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="EndAndExpand"
+                WidthRequest="700" HeightRequest="700">
+                    <Image Source="CheckerLogo" Aspect="AspectFit" HorizontalOptions="StartAndExpand"></Image>
+                </Frame>
+            </StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="1.2*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Frame Grid.Row="2"
+                       Grid.Column="1"
+                   HasShadow="True"
+                   CornerRadius="10"
+                   BackgroundColor="Transparent"
+                   WidthRequest="550" HeightRequest="220">
+                <StackLayout x:Name="SL1"
+                             Padding="0">
+                    <Frame IsClippedToBounds="True" CornerRadius="10" BorderColor="Black" HeightRequest="50" Margin="1">
+                        <Entry  x:Name="email" 
+                           Placeholder="Email"
+                           FontSize="25"
+                           ClearButtonVisibility="WhileEditing"
+                           PlaceholderColor="Black"
+                           Text="{Binding UserName}"/>
+                    </Frame>
+                    <Frame IsClippedToBounds="True" BorderColor="Black" CornerRadius="10" HeightRequest="50" Margin="1">
+                        <Entry x:Name="Password" Placeholder="Password" FontSize="25"
+                           Text ="{Binding Password}"
+                           IsPassword="{Binding  Path=HidePassword}"
+                           ClearButtonVisibility="WhileEditing" PlaceholderColor="Black" Margin="2"
+                           FlowDirection="MatchParent" />
+                    </Frame>
+
+                    <StackLayout Orientation="Vertical">
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Button 
+                            x:Name=" EnterButton"
+                            IsEnabled="True"
+                            BackgroundColor="#B6CACB"
+                            CornerRadius="10"
+                            Font="30"
+                            HorizontalOptions="FillAndExpand"
+                            Text="Login"
+                            TextColor="#000000" 
+                            Command="{Binding LogInCommand}" 
+                            BorderColor="#8C9B9A" 
+                            BorderWidth="5" 
+                            FontFamily="FAS"
+                            TextTransform="None"
+                            FontAttributes="Bold"/>
+                        <Button x:Name=" exitButton"
+                                BackgroundColor="LightGray"
+                                Command="{Binding ExitCommand}"
+                                CornerRadius="10"
+                                Font="30"
+                                HorizontalOptions="FillAndExpand"
+                                Text="Exit"
+                                TextColor="Black"
+                                TextTransform="None"
+                                BorderColor="#8C9B9A"
+                                BorderWidth="5"
+                                FontFamily="FAS"
+                                FontAttributes="Bold"/>
+                    </StackLayout>
+
+                </StackLayout>
+            </Frame>
+            </Grid>
+        </StackLayout>
+        </ContentPage.Content>
+</ContentPage>

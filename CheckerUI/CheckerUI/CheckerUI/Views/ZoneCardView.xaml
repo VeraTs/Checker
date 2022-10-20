@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:CheckerUI.ViewModels"
+             x:Class="CheckerUI.Views.ZoneCardView" 
+             x:DataType="viewmodels:ZoneViewModel">
+    <ContentView.Content>
+        <Frame IsClippedToBounds="True"  
+                                   HasShadow="True"
+                                   Padding="0" 
+                                   CornerRadius="10"
+                                   WidthRequest="337"
+                                   Margin="1"
+                                   BackgroundColor="White" 
+                                   BorderColor="Black">
+            <StackLayout>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=".4*"/>
+                        <RowDefinition Height=".05*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <BoxView Grid.Row="1" Color="Black"/>
+                    <Label
+                        Grid.Row="0" Text="{Binding ZoneId   }"
+                        FontSize="30"
+                        TextColor="Black"
+                        HorizontalOptions="Center" 
+                        VerticalOptions="Center" />
+                    <Label 
+                        Grid.Row="2"
+                        Text="{Binding  ItemName}"
+                        FontFamily="FAS"
+                        FontSize="30"
+                        TextColor="Black"
+                        FontAttributes="Bold"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"/>
+                </Grid>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

@@ -1,0 +1,11 @@
+﻿namespace CheckerUI.Enums
+{
+    public enum eDishType
+    {
+        UnDefined,
+        Starter,
+        Main,
+        Dessert,
+        Drink
+    }
+}
